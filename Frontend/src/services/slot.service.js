@@ -2,7 +2,7 @@ import axios from "axios";
 import AuthService from "./auth.service";
 
 
-const API_URL = "http://localhost:5000/api/slot/";
+const API_URL = "http://localhost:8080/api/slot/";
 
 class SlotService {
     async createSlot(date, startTime, capacity) {
