@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Row, Col, Space, Card, Breadcrumb, Checkbox } from 'antd';
+import { Layout, Row, Col, Space, Card, Breadcrumb } from 'antd';
 import 'antd/dist/antd.css';
 import './Home.css';
 import Navbar from '../components/Navbar/Navbar';
-import DisplayBookings from './DisplayBookings/DisplayBookings'; // this needs to be here
 import Credits from './Credits/Credits';
 import AuthService from "../services/auth.service";
 import history from "../history";
@@ -17,7 +16,6 @@ function Home() {
     //const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
     const arrSlots = [];
-    const [container, setContainer] = useState(null);
     const [slots, setSlots] = useState([])
 
     const currentUser = AuthService.getCurrentUser()
@@ -79,8 +77,9 @@ function Home() {
             <div>
                 <Card className='card'>
                     <Row gutter={10}>
-                        <Col style={{ padding: '8px 0' }} wrap="false">
-                            <p className='text'>{`Date: ${props.slot.date.slice(0, 10)} Time: ${Time(props.slot.startTime)}`}</p>
+                        <Col wrap="false">
+                            <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1>
+                            <p1 className='textCard'>{` \n Time: ${Time(props.slot.startTime)}`}</p1>
                         </Col>
                     </Row>
                 </Card>
@@ -93,38 +92,38 @@ function Home() {
         <div>
             <Navbar />
             <Layout>
-                <Header className='theTitle'>
-                    <p1>Hi {currentUser.firstName + " " + currentUser.lastName}</p1>
+                <Header  className='theTitle' >
+                    <h1 className="textHome">Welcome to Gym-worm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
                     <Layout className='layout'>
-                        <Row>
-                            <Col span={12}>
-                                <Row align='center'>
-                                    <Space direction="vertical" size={10} align='center'>
-                                        <p1 className='textHome'>Your Bookings</p1>
-                                        <Breadcrumb target={() => container} id="slots" >
-                                            <Space
-                                                style={{ background: "74828F", alignItems: "center" }}
-                                                direction="vertical" size={'small'}
-                                                align='center'
-                                            >
-                                                {slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))}
-                                                {slots.length === 0 ? <p1 className='textHome'> No Bookings </p1> : arrSlots.map(elements => <div> {elements} </div>)}
-                                            </Space>
-                                        </Breadcrumb>
-                                    </Space>
-                                </Row>
-                            </Col>
-                            <Col span={12}>
-                                <Row align='center'>
-                                    <Space direction="vertical" size={10} align='center'>
-                                        <p1 className='textHome'>Your Credit</p1>
-                                        <Credits></Credits>
-                                    </Space>
-                                </Row>
-                            </Col>
-                        </Row>
+                        <Card style={{whiteSpace: 'pre-line'}}>
+                        <Row align='center'>
+                                <Space direction="vertical" size={10} align='center'>
+                                    <p1 className="textTitle">Bookings</p1>
+                                    <Breadcrumb id="slots" >
+                                        <Space
+                                            style={{ background: "74828F", alignItems: "center" }}
+                                            direction="vertical" size={'small'}
+                                            align='center'
+                                        >
+                                            {slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))}
+                                            {slots.length === 0 ? <p1 className='textSubTitle'> No Bookings </p1> : arrSlots.map(elements => <div> {elements} </div>)}
+                                        </Space>
+                                    </Breadcrumb>
+                                </Space>
+                            </Row>
+                        </Card>
+                        <Card>
+                            <Row align='center'>
+                                <Space style={{ background: "74828F", alignItems: "center" }}
+                                            direction="vertical" size={'small'}
+                                            align='center'>
+                                    <p1 className="textTitle">Credits</p1>
+                                    <Credits></Credits>
+                                </Space>
+                            </Row>
+                        </Card>
                     </Layout>
                 </Content>
             </Layout>

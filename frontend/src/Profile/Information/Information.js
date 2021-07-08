@@ -64,14 +64,14 @@ function Information() {
 
     return (
         <div style={{ background: "74828F", alignItems: "center" }}>
-            <Row justify="center" style={{ padding: 20 }}>
+            <Row type="flex" justify="center" style={{ padding: 20 }}>
                 <Space direction="vertical" size={'large'} align='center'>
-                    <Avatar style={{ alignItems: 'center' }}
+                    <Avatar style={{ alignItems: 'center'}}
                         src={<Image src="https://i.chzbgr.com/full/9355435008/h67614A96/dish" />}
-                        size={200}
+                        size={150}
                     />
 
-                    <Input style={{ borderRadius: 35, width: 500 }}
+                    <Input style={{ display: "flex", borderRadius: 35, width: "50vw" }}
                         placeholder={currentUser.firstName}
                         onChange={onChangeFirstName}
                         prefix={<UserOutlined className="site-form-item-icon" />}
@@ -82,7 +82,7 @@ function Information() {
                         }
                     />
 
-                    <Input style={{ borderRadius: 35, width: 500 }}
+                    <Input style={{ borderRadius: 35, width: "50vw" }}
                         placeholder={currentUser.lastName}
                         onChange={onChangeLastName}
                         prefix={<UserOutlined className="site-form-item-icon" />}
@@ -93,7 +93,7 @@ function Information() {
                         }
                     />
 
-                    <Input style={{ borderRadius: 35, width: 500 }}
+                    <Input style={{ borderRadius: 35, width: "50vw" }}
                         placeholder={currentUser.email}
                         value={currentUser.email}
                         onChange={onChangeEmail}
@@ -105,7 +105,7 @@ function Information() {
                         }
                     />
 
-                    <Input style={{ borderRadius: 35, width: 500 }}
+                    <Input style={{ borderRadius: 35, width: "50vw" }}
                         placeholder={currentUser.contactNo}//{currentUser.contactNo.substring(0,4) + " " + currentUser.contactNo.substring(4,8)}
                         onChange={onChangeContactNo}
                         prefix={<PhoneOutlined className="site-form-item-icon" />}
@@ -119,7 +119,7 @@ function Information() {
                     <Button
                         type="primary"
                         shape="round"
-                        style={{ background: "#96c0ce", width: 200, border: "none" }}
+                        style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none" }}
                         onClick={() => {
                             onUpdate();
                         }}
@@ -130,7 +130,7 @@ function Information() {
                     <Button
                         type="primary"
                         shape="round"
-                        style={{ background: "#96c0ce", width: 200, border: "none", color: "red" }}
+                        style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
                         onClick={() => {
                             AuthService.logout();
                             history.push('/');
@@ -138,6 +138,17 @@ function Information() {
                         }}
                     >
                         Log Out
+                    </Button>
+                    <Button
+                        type="primary"
+                        shape="round"
+                        style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
+                        onClick={() => {
+                            history.push('/Admin');
+                            window.location.reload(false);
+                        }}
+                    >
+                        Admin page
                     </Button>
                 </Space>
             </Row>

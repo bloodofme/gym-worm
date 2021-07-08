@@ -5,7 +5,7 @@ import './Signup.css';
 import history from './../history';
 import AuthService from "../services/auth.service";
 
-document.body.style = 'background: #74828F;';
+document.body.style.backgroundColor = '#ebeced';
 
 const layout = {
     labelCol: {

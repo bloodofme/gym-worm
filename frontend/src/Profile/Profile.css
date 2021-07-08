@@ -1,7 +1,7 @@
 #components-layout-demo-responsive .logo {
     height: 32px;
     margin: 16px;
-    background: rgba(255, 255, 255, 0.2);
+    background: #fff;
   }
   
   .site-layout-sub-header-background {
@@ -11,3 +11,21 @@
   .site-layout-background {
     background: #fff;
   }
+
+  .textProfile {
+    color: #3E3E3B;
+    font-size: calc(15px + 0.5vw);
+  }
+
+  .settingsTitle {
+    background: #74828F;
+    text-align: center;
+    font-size: 2rem;
+    padding: 1rem 1rem;
+    height: 450px;
+    color: white;
+    background-image: url('./../image/settingsphoto.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}

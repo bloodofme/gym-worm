@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import './Bookings.css'
 import moment from 'moment';
 import history from './../history';
-import 'react-calendar-heatmap/dist/styles.css';
+//import 'react-calendar-heatmap/dist/styles.css';
 import { Input, Tooltip } from 'antd';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import SlotService from "../services/slot.service";
@@ -131,11 +131,13 @@ function MakeBookings() {
         return(
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={10}>
-                    <Col span={16} style={{ padding: '6px 2px' }} wrap="false">
-                        <p className='text'>{`Date: ${props.slot.date.slice(0,10)} Time: ${Time(props.slot.startTime)} Vacancy: ${props.slot.capacity}`}</p>
+                    <Row gutter={3}>
+                    <Col span={15} wrap="false">
+                        <text className='text'>{`Date: ${props.slot.date.slice(0,10)}`}</text>
+                        <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
+                        <text className='text'>{` \n Vacancy: ${props.slot.capacity}`}</text>
                     </Col>
-                    <Col span={3}>
+                    <Col span={5}>
                         <Checkbox className="ant-checkbox" onChange={onChange}/>
                     </Col>
                     </Row>
@@ -149,7 +151,6 @@ function MakeBookings() {
 
     return (
         <div style={{ background: "74828F", alignItems: "center" }}>
-            <Navbar />
             <Row justify="center" direction="vertical">
                 <Space
                     style={{ background: "74828F", alignItems: "center" }}
@@ -179,10 +180,10 @@ function MakeBookings() {
                         </Space>   
                     </Breadcrumb>
                     <Button
+                        className="bookingsButtons"
                         type="primary"
                         shape="round"
                         disabled={bookingsLen()}
-                        style={{ background: "#525564", width: 500, height: 50, fontSize: 25, border: "none", color: "#white" }}
                         onClick={() => {
                             bookedSlots.forEach(elements => {
                                 SlotService.bookSlot(elements._id, currentUser.id, currentUser.email)
@@ -203,10 +204,10 @@ function MakeBookings() {
                         Confirm Booking
                     </Button>
                     <Button
+                        className="bookingsButtons"
                         type="primary"
                         shape="round"
                         disabled={bookingsLen()}
-                        style={{ background: "#525564", width: 200, height: 50, fontSize: 25, border: "none", color: "#white" }}
                         onClick={() => {
                             history.push("/Bookings")
                             AuthService.updateCurrentUser(currentUser.email, currentUser.password);

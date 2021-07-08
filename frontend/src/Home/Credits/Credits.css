@@ -1,23 +1,31 @@
 .creditsStyle {
-    background: #96c0ce;
-    width: 350px;
-    height: 500px;
-    border-radius: 20px;
+    background: #A2AAB0;
+    max-width: 600px;
+    max-height: 900px;
+    border-radius: 0px;
     font-size: 1.2rem;
 }
 
 .amountCredits {
-    font-size: 100px;
+    font-size: calc(50px + 1.5vw);
     color: white;
     text-align: center;
     position: relative;
-    bottom: 15px;
+    bottom: 10px;
 }
 
 .penaltiesText {
-    font-size: 30px;
+    font-size:calc(20px + 1.5vw);
     color: white;
     text-align: center;
     position: relative;
-    bottom: 130px;
+    bottom: 50px;
+}
+
+.faceIcon {
+    font-size:calc(150px + 1.0vw);
+    color: white;
+    text-align: center;
+    position: relative;
+    bottom: 0px;
 }

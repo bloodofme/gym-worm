@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Space, Switch } from 'antd';
 import 'antd/dist/antd.css';
 import AuthService from "../../services/auth.service";
-
+import './../Profile.css'
 
 class Notif extends Component {
     constructor(props) {
@@ -62,31 +62,35 @@ class Notif extends Component {
         }
 
         return (
-            <div style={{ background: "#74828F", alignItems: "center" }}>
-                <Row justify="left" style={{ padding: 10 }}>
-                    <Space direction="vertical" size={'large'} align='centlefter'>
-
+            <div style={{ alignItems: "center" }}>
+                <Row justify="center" style={{ padding: 10 }}>
+                    <Space direction="vertical" size={'large'} align='center'>
+                        <Space size={'large'} align='center'>
+                        <h1 className="textProfile">Toggle Email Notifications</h1>
                         <Switch
-                            checkedChildren="Turn Off Email Notifcations"
-                            unCheckedChildren="Turn On Email Notifications"
+                            style={{bottom: "4px"}}
                             defaultChecked={currentUser.emailNotification}
                             onChange={emailNotifChange}
                         />
+                        </Space>
 
+                        <Space size={'large'} align='center'>
+                        <h1 className="textProfile">Toggle SMS Notifcations</h1>
                         <Switch
-                            checkedChildren="Turn Off SMS Notifcations"
-                            unCheckedChildren="Turn On SMS Notifications"
+                            style={{bottom: "4px"}}
                             defaultChecked={currentUser.contactNotification}
                             onChange={smsNotifChange}
                         />
+                        </Space>
 
+                        <Space size={'large'} align='center'>
+                        <h1 className="textProfile">Toggle Telegram Notifcations</h1>
                         <Switch
-                            checkedChildren="Turn Off Telegram Notifcations"
-                            unCheckedChildren="Turn On Telegram Notifications"
+                            style={{bottom: "4px"}}
                             defaultChecked={currentUser.telegramNotification}
                             onChange={telegramNotifChange}
                         />
-
+                        </Space>
                     </Space>
                 </Row>
             </div>

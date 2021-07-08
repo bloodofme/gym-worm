@@ -1,10 +1,15 @@
-.NavbarItems {
-    background: #525564;
-    height: 80px;
+.navbarItems {
+    background: #3E3E3B;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
+    justify-content: right;
+    height: 50px;
+    border: none;
+}
+
+.textNavbar {
+    color: #ebeced;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .navbar-logo {
@@ -36,18 +41,9 @@
     padding: 0.5rem 1rem;
 }
 
-.nav-links:hover {
-    background-color: #74828f;
-    border-radius: 4px;
-    transition: all 0.2s ease-out;
-}
 
 .fa-bars {
     color: white;
-}
-
-.nav-links.mobile {
-    display: none;
 }
 
 .menu-icon {

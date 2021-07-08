@@ -1,7 +1,7 @@
 import React from 'react';
 //import CalendarHeatmap from 'react-calendar-heatmap';
 import ReactTooltip from 'react-tooltip';
-import 'react-calendar-heatmap/dist/styles.css';
+//import 'react-calendar-heatmap/dist/styles.css';
 
 function HeatmapChart({givenDate, slots}) {
   const today = new Date(givenDate);

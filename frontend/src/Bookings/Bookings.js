@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
-import { Breadcrumb, Button, Space, Col, Row, Card, Checkbox } from 'antd';
+import { Button, Space, Col, Row, Card, Checkbox, Layout } from 'antd';
 import history from "../history";
 import 'antd/dist/antd.css';
 import './Bookings.css'
 import AuthService from "../services/auth.service";
 import SlotService from "../services/slot.service";
 import axios from "axios";
+import Makebookings from "./MakeBookings"
 
 const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+const { Header, Content } = Layout;
 
 function Bookings() {
     history.push('/Bookings');
 
-    const [container, setContainer] = useState(null);
     const [slots, setSlots] = useState([])
     const currentUser = AuthService.getCurrentUser()
 
@@ -70,6 +71,7 @@ function Bookings() {
 
     useEffect(() => {
         const temp = []
+        console.log(currentUser.bookings)
         currentUser.bookings.forEach(slot => {
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
@@ -81,73 +83,67 @@ function Bookings() {
                 console.log(temp)
             })()
         })
-
-    }, [])
+    })
 
     return (
-        <div style={{ background: "74828F", alignItems: "center" }}>
+        <div style={{ background: "#ebeced", alignItems: "center" }}>
             <Navbar />
-            <Row justify="center" direction="vertical">
-                <Space
-                    style={{ background: "74828F", alignItems: "center" }}
-                    direction="vertical"
-                    size={'large'}
-                    align='center'
-                >
-                    <text className="booking">Current Bookings</text>
-                    <div className="scrollable-container" ref={setContainer} style={{ height: 280 }}>
-                        <Breadcrumb target={() => container} id="slots" >
+            <Header className='bookingsHeader' >
+                    <h1 className="textHome">Bookings</h1>
+            </Header>
+            <Content>
+                <Layout className="layout">
+                    <Card style={{padding: "50px"}}>    
+                        <Row justify="center" direction="vertical">
                             <Space
                                 style={{ background: "74828F", alignItems: "center" }}
-                                direction="vertical" size={'small'}
+                                direction="vertical"
+                                size={'large'}
                                 align='center'
                             >
+                                <text className="booking">Current Bookings</text>
+                                    <Space
+                                        style={{ background: "74828F", alignItems: "center", padding: "30px" }}
+                                        direction="vertical" size={'small'}
+                                        align='center'
+                                    >
+                                        {
+                                            slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))
+                                        }
+                                        {
+                                            slots.length === 0 ? null : arrSlots.map(elements => <div> {elements} </div>)
+                                        }
 
-                                {
-                                    slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))
-                                }
-                                {
-                                    slots.length === 0 ? null : arrSlots.map(elements => <div> {elements} </div>)
-                                }
-
+                                    </Space>
+                                <Button
+                                    className="bookingsButtons"
+                                    type="primary"
+                                    shape="round"
+                                    onClick={() => {
+                                        cancelSlots.forEach(s => {
+                                            var id;
+                                            slots.forEach(element => {
+                                                if (s._id === element[0]._id) {
+                                                    id = element[1]
+                                                }
+                                            })
+                                            AuthService.cancelBooking(currentUser.email, id)
+                                            SlotService.cancelledBooking(s._id, currentUser.id)
+                                        })
+                                        alert("Slot cancelled");
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Cancel Bookings
+                                </Button>
                             </Space>
-                        </Breadcrumb>
-                    </div>
-                    <Button
-                        type="primary"
-                        shape="round"
-                        style={{ background: "#525564", width: 500, height: 50, fontSize: 25, border: "none", color: "#ff7d7d" }}
-                        onClick={() => {
-                            cancelSlots.forEach(s => {
-                                var id;
-                                slots.forEach(element => {
-                                    if (s._id === element[0]._id) {
-                                        id = element[1]
-                                    }
-                                })
-                                AuthService.cancelBooking(currentUser.email, id)
-                                SlotService.cancelledBooking(s._id, currentUser.id)
-                            })
-                            alert("Slot cancelled");
-                            window.location.reload();
-                        }}
-                    >
-                        Cancel Bookings
-                    </Button>
-                    <hr style={{ size: 10, width: 700, color: "white" }} />
-                    <Button
-                        type="primary"
-                        shape="round"
-                        style={{ background: "#525564", width: 500, height: 50, fontSize: 25, border: "none", color: "white" }}
-                        onClick={() => {
-                            history.push('/MakeBookings');
-                            window.location.reload(false);
-                        }}
-                    >
-                        Make New Bookings
-                    </Button>
-                </Space>
-            </Row>
+                        </Row>
+                    </Card>
+                    <Card style={{padding: "50px"}}>
+                        <Makebookings/>
+                    </Card>
+                </Layout>
+            </Content>
         </div>
     )
 }

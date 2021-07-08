@@ -3,26 +3,54 @@
     text-align: center;
     font-size: 2rem;
     padding: 1rem 1rem;
-    height: 100px;
+    height: 450px;
     color: white;
+    background-image: url('./../image/homephoto.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .textHome {
-    font-size: 2rem;
-    color: white;
+    position: absolute;
+    font-size: 3rem;
+    color: #EBECED;
+    text-align: center;
+    top: 250px;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.textCard {
+    font-size: calc(15px + 0.5vw);
+    color: #EBECED;
 }
 
 .layout {
-    background: #5f6675;
-    margin: 0px 20px;
-    border-radius: 20px;
-    padding: 60px;
+    background: #EBECED;
+    margin: 0px 0px;
+    border-radius: 00px;
+    padding: 20px;
 }
 
 .card {
-    background: #96c0ce;
-    width: 400px;
-    height: 50px;
-    border-radius: 50px;
+    background: #A2AAB0;
+    max-width: 500px;
+    max-height: 120px;
     font-size: 1.2rem;
+    vertical-align: center;
+    text-align: center;
+    white-space: normal;
+}
+
+.textTitle {
+    font-size: calc(25px + 1.5vw);
+    color: #3E3E3B;
+}
+
+.textSubTitle {
+    font-size: calc(15px + 1.5vw);
+    color: #3E3E3B;
 }

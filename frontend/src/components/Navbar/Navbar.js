@@ -1,37 +1,55 @@
-import React, { Component } from 'react';
-import { MenuItems } from "./MenuItems";
-import './Navbar.css';
+import { Menu } from 'antd';
+import {  HomeOutlined, AppstoreOutlined, ProfileOutlined } from '@ant-design/icons';
+import React, { useState, useRef, useEffect } from 'react';
+import "./Navbar.css"
+import history from "./../../history"
 
-class Navbar extends Component {
-    state = { clicked: false }
+const { SubMenu } = Menu;
 
-    handleClick = () => {
-        this.setState({ clicked: !this.state.clicked })
-    }
+function Navbar() {
+    const [current, setCurrent] = useState('mail');
 
-    render() {
-        return(
-            <nav className="NavbarItems">
-                <h1 className="navbar-logo">
-                    Gym Worm
-                </h1>
-                <div className='menu-icon' onClick={this.handleClick}>
-                    <i className={this.state.clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
-                </div>
-                <ul className={this.state.clicked ? 'nav-menu active' : 'nav-menu'}>
-                    {MenuItems.map((item, index) => {
-                        return(
-                            <li key={index}>
-                                <a className={item.cName} href={item.url}>
-                                    {item.title}
-                                </a>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </nav>
-        )
-    }
+    const handleClick = e => {
+        setCurrent({ current: e.key });
+    }; 
+
+    return (
+      <Menu className="navbarItems" selectedKeys={[current]} mode="horizontal" >
+        <Menu.Item 
+            className="textNavbar"
+            key="home" 
+            icon={<HomeOutlined />} 
+            onClick={() => { 
+                history.push("/Home") 
+                window.location.reload(); 
+            }}
+        >
+          Home
+        </Menu.Item>
+        <Menu.Item 
+            className="textNavbar"
+            key="bookings" 
+            icon={<AppstoreOutlined />} 
+            onClick={() => { 
+                history.push("/Bookings") 
+                window.location.reload(); 
+            }}
+        >
+          Bookings
+        </Menu.Item>
+        <Menu.Item 
+            className="textNavbar"
+            key="profile" 
+            icon={<ProfileOutlined />} 
+            onClick={() => { 
+                history.push("/Profile") 
+                window.location.reload(); 
+            }}
+        >
+          Profile
+        </Menu.Item>
+      </Menu>
+    );
 }
 
 export default Navbar;
