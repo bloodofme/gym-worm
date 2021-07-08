@@ -67,6 +67,25 @@ require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 require('./routes/slot.routes')(app);
 
+// Auto Daily Slot Creation
+const { autoSlots } = require("./middlewares");
+const cron = require('node-cron');
+
+cron.schedule("0 0 * * *", function () {
+  console.log("Scheduler Running");
+
+  // setting today's date
+  let date = new Date();
+
+  // setting tomorrow's date
+  let createDate = new Date(date);
+  createDate.setHours(56, 0, 0, 0);
+  console.log(createDate);
+
+  // sending generate slot request
+  autoSlots.generateSlots({date: createDate});
+});
+
 // Error handling, disable for now
 /*app.use(function (err, req, res, next) {
   console.error(err.stack)

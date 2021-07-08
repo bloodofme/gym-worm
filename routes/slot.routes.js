@@ -22,4 +22,10 @@ module.exports = function (app) {
     app.put("/api/slot/cancelledBooking", controller.cancelledBooking); 
 
     app.post("/api/slot/retrieveSlot", controller.retrieveSlot);
+
+    app.post("/api/slot/createSlotSetting", controller.createSlotSetting);
+
+    app.put("/api/slot/updateSlotSetting", controller.updateSlotSetting);
+
+    app.get("/api/slot/getSlotSetting", controller.getSlotSetting);
 };

@@ -80,7 +80,6 @@ class SlotService {
                 return booking.data;
             })
     }
-
     
     async retrieveSlot(bookingID) {
         return await axios
@@ -91,7 +90,6 @@ class SlotService {
                 return response.data;
             });
     }
-    
 }
 
 export default new SlotService();
