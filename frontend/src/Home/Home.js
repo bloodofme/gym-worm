@@ -5,6 +5,7 @@ import './Home.css';
 import Navbar from '../components/Navbar/Navbar';
 import Credits from './Credits/Credits';
 import AuthService from "../services/auth.service";
+import UserService from "../services/user.service";
 import history from "../history";
 import axios from "axios";
 
@@ -13,8 +14,6 @@ const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:
 document.body.style = 'background: #74828F;';
 
 function Home() {
-    //const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
-
     const arrSlots = [];
     const [slots, setSlots] = useState([])
 
@@ -22,20 +21,15 @@ function Home() {
 
     if (currentUser) {
         AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+        UserService.getAdminBoard();
     }
 
-    useEffect(() => {
-        /*sleep(3000).then(() => {
-            if (AuthService.getCurrentUser() === null) {
-                history.push("/");
-                window.location.reload(false);
-            }
-        });*/
+    /*useEffect(() => {
         if (AuthService.getCurrentUser() === null) {
             history.push("/");
             window.location.reload(false);
         }
-    }, [])
+    }, [])*/
 
     useEffect(() => {
         const temp = []

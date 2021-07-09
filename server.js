@@ -71,15 +71,18 @@ require('./routes/slot.routes')(app);
 const { autoSlots } = require("./middlewares");
 const cron = require('node-cron');
 
-cron.schedule("0 0 * * *", function () {
-  console.log("Scheduler Running");
+cron.schedule("*/1 * * * *", function () {
+  console.log("Scheduler Running every minute");
 
   // setting today's date
   let date = new Date();
+  console.log("Time now is ");
+  console.log(date);
 
   // setting tomorrow's date
   let createDate = new Date(date);
-  createDate.setHours(56, 0, 0, 0);
+  createDate.setHours(104, 0, 0, 0);
+  console.log("Time we want is ");
   console.log(createDate);
 
   // sending generate slot request

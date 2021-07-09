@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 //import "bootstrap/dist/css/bootstrap.min.css";
 
 import AuthService from "./services/auth.service";
@@ -21,15 +21,30 @@ class Routes extends Component {
         return (
             <BrowserRouter history={history}>
                 <Switch>
-                    <Route path="/" exact component={Login} />
-                    <Route path="/Home" component={AuthService.getCurrentUser() === null ? Login : Home} />
-                    <Route path="/Bookings" component={AuthService.getCurrentUser() === null ? Login : Bookings} />
-                    <Route path="/Profile" component={AuthService.getCurrentUser() === null ? Login : Profile} />
-                    <Route path="/Notifications" component={AuthService.getCurrentUser() === null ? Login : Notifications} />
-                    <Route path="/Information" component={AuthService.getCurrentUser() === null ? Login : Information} />
-                    <Route path="/Admin" component={AuthService.getCurrentUser() === null ? Login : Admin} />
-                    <Route path="/Signup" component={Signup} />
-                    <Route path="/MakeBookings" component={AuthService.getCurrentUser() === null ? Login : MakeBookings} />
+                <Route exact path="/" >
+                        {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <Login />}
+                    </Route>
+                    <Route path="/Home" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Home />}
+                    </Route>
+                    <Route path="/Bookings" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Bookings />}
+                    </Route>
+                    <Route path="/Profile" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Profile />}
+                    </Route>
+                    <Route path="/Notifications" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Notifications />}
+                    </Route>
+                    <Route path="/Information" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Information />}
+                    </Route>
+                    <Route path="/Admin" >
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : localStorage.getItem('access') !== "Admin" ? <Redirect to="/Home" /> : <Admin />}
+                    </Route>
+                    <Route path="/Signup" >
+                        {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <Signup />}
+                    </Route>
                 </Switch>
             </BrowserRouter>
         )

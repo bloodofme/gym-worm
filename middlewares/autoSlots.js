@@ -7,6 +7,7 @@ const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:
 
 generateSlots = (req, res) => {
     console.log("generateSlots Process Start");
+
     SlotSetting.findOne({
         _id: "60e5d754014b442d5c4b137a"
     }).exec((err, slotSettings) => {
@@ -22,17 +23,15 @@ generateSlots = (req, res) => {
 
         if (slotSettings) {
             console.log("Slot Settings retrieved");
-            /*console.log(slotSettings);
             console.log("start time : " + startTime);
             console.log("end time : " + endTime);
-            console.log("capacity : " + capacity);*/
+            console.log("capacity : " + capacity);
         }
 
         console.log("Request date is : ");
         console.log(slotDate);
 
         // checking if slots already exist
-
         Slot.find({
             date: req.date
         })
@@ -40,8 +39,6 @@ generateSlots = (req, res) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
-
-                //console.log(slots);
 
                 // if no slots are found for that day, create slots using Slot Settings
                 if (slots.length === 0) {
@@ -51,17 +48,12 @@ generateSlots = (req, res) => {
                         console.log("current i is " + i);
 
                         axios.post(API_URL + 'createSlot', { date: slotDate, startTime: i, capacity: capacity })
-                            .then(() => { console.log("Slots created") }
+                            .then((res) => { console.log("Slots Created") }
                                 , (err) => { console.log(err) });
                     }
-                }
-
-                // if slots are found, nothing needs to be done
-                if (slots.length !== 0) {
+                } else { // if slots are found, nothing needs to be done
                     console.log("Slots for " + slotDate + " already exist.");
                 }
-
-                //console.log(slots);
             });
     });
 };

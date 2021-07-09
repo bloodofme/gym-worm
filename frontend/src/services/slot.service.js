@@ -90,6 +90,27 @@ class SlotService {
                 return response.data;
             });
     }
+
+    async getSlotSettings() {
+        return await axios
+        .get(API_URL + "getSlotSetting", {})
+        .then(response => {
+            return response.data;
+        })
+    }
+
+    async updateSlotSetting(startTime, endTime, capacity) {
+        console.log(startTime + " " + endTime + " " + capacity);
+        return await axios
+            .put(API_URL + "updateSlotSetting", {
+                startTime,
+                endTime,
+                capacity,
+            })
+            .then(response => {
+                return response.data;
+            });
+    }
 }
 
 export default new SlotService();

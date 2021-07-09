@@ -7,11 +7,11 @@ import AuthService from "../../services/auth.service";
 
 function Information() {
     const [currentUser] = useState(AuthService.getCurrentUser());
-    console.log(currentUser.firstName);
     const [firstName, setFirstName] = useState(currentUser.firstName);
     const [lastName, setLastName] = useState(currentUser.lastName);
     const [email, setEmail] = useState(currentUser.email);
     const [contactNo, setContactNo] = useState(currentUser.contactNo);
+    const [accessStatus] = useState(localStorage.getItem('access'));
 
     const originalInfo = {
         firstName: currentUser.firstName,
@@ -57,7 +57,7 @@ function Information() {
                 error => {
                     alert("Unable to Update");
                     console.log("Unable to update " + error);
-                    window.location.reload();
+                    window.location.reload(false);
                 }
             );
     }
@@ -66,7 +66,7 @@ function Information() {
         <div style={{ background: "74828F", alignItems: "center" }}>
             <Row type="flex" justify="center" style={{ padding: 20 }}>
                 <Space direction="vertical" size={'large'} align='center'>
-                    <Avatar style={{ alignItems: 'center'}}
+                    <Avatar style={{ alignItems: 'center' }}
                         src={<Image src="https://i.chzbgr.com/full/9355435008/h67614A96/dish" />}
                         size={150}
                     />
@@ -139,17 +139,21 @@ function Information() {
                     >
                         Log Out
                     </Button>
-                    <Button
-                        type="primary"
-                        shape="round"
-                        style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
-                        onClick={() => {
-                            history.push('/Admin');
-                            window.location.reload(false);
-                        }}
-                    >
-                        Admin page
-                    </Button>
+
+                    {accessStatus === "Admin" &&
+                        <Button
+                            type="primary"
+                            shape="round"
+                            style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
+                            onClick={() => {
+                                history.push('/Admin');
+                                window.location.reload();
+                            }}
+                        >
+                            Admin Page
+                        </Button>
+                    }
+
                 </Space>
             </Row>
         </div>

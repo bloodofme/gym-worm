@@ -12,6 +12,7 @@ class AuthService {
       .then(response => {
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
+          localStorage.setItem("access", "User");
         }
 
         return response.data;
@@ -20,6 +21,7 @@ class AuthService {
 
   logout() {
     localStorage.removeItem("user");
+    localStorage.removeItem("access");
   }
 
   async updateInfo(firstName, lastName, email, contactNo) {
