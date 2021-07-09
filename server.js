@@ -81,7 +81,7 @@ cron.schedule("*/1 * * * *", function () {
 
   // setting tomorrow's date
   let createDate = new Date(date);
-  createDate.setHours(104, 0, 0, 0);
+  createDate.setHours(120, 0, 0, 0);
   console.log("Time we want is ");
   console.log(createDate);
 
