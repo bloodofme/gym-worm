@@ -23,12 +23,10 @@ generateSlots = (req, res) => {
 
         if (slotSettings) {
             console.log("Slot Settings retrieved");
-            console.log("start time : " + startTime);
-            console.log("end time : " + endTime);
-            console.log("capacity : " + capacity);
+            console.log("start time : " + startTime + " end time : " + endTime + " capacity : " + capacity);
         }
 
-        console.log("Request date is : ");
+        console.log("Slot Generation Request Date : ");
         console.log(slotDate);
 
         // checking if slots already exist

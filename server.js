@@ -70,9 +70,8 @@ require('./routes/slot.routes')(app);
 // Auto Daily Slot Creation
 const { autoSlots } = require("./middlewares");
 const cron = require('node-cron');
-
-cron.schedule("*/1 * * * *", function () {
-  console.log("Scheduler Running every minute");
+cron.schedule("0 0 * * *", function () {
+  console.log("Scheduler Running Daily");
 
   // setting today's date
   let date = new Date();
@@ -81,7 +80,7 @@ cron.schedule("*/1 * * * *", function () {
 
   // setting tomorrow's date
   let createDate = new Date(date);
-  createDate.setHours(120, 0, 0, 0);
+  createDate.setHours(72, 0, 0, 0);
   console.log("Time we want is ");
   console.log(createDate);
 
