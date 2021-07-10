@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Image, Input, Tooltip, Row, Space, Button } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import './Information.css';
@@ -6,7 +6,7 @@ import history from "../../history";
 import AuthService from "../../services/auth.service";
 
 function Information() {
-    const [currentUser] = useState(AuthService.getCurrentUser());
+    const [currentUser, setCurrentUser] = useState("");
     const [firstName, setFirstName] = useState(currentUser.firstName);
     const [lastName, setLastName] = useState(currentUser.lastName);
     const [email, setEmail] = useState(currentUser.email);
@@ -14,11 +14,30 @@ function Information() {
     const [accessStatus] = useState(localStorage.getItem('access'));
 
     const originalInfo = {
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        email: currentUser.email,
-        contactNo: currentUser.contactNo
+        firstName,
+        lastName,
+        email,
+        contactNo
     }
+
+    useEffect(() => {
+        async function getUser() {
+            let response = await AuthService.getCurrentUser();
+            //console.log("User is : ");
+            //console.log(response);
+
+            setCurrentUser(response);
+            setFirstName(response.firstName);
+            setLastName(response.lastName);
+            setEmail(response.email);
+            setContactNo(response.contactNo);
+            originalInfo.firstName = response.firstName;
+            originalInfo.lastName = response.lastName;
+            originalInfo.email = response.email;
+            originalInfo.contactNo = response.contactNo;
+        }
+        getUser()
+    }, []);
 
     const onChangeFirstName = (e) => {
         setFirstName(e.target.value);
@@ -44,12 +63,14 @@ function Information() {
             contactNo: contactNo === undefined ? originalInfo.contactNo : contactNo
         }
 
+        console.log("New User details are : ");
         console.log(user);
 
         AuthService.updateInfo(user.firstName, user.lastName, user.email, user.contactNo)
             .then(
                 (newUser) => {
-                    alert("Updated");
+                    //alert("Updated");
+                    console.log(newUser);
                     AuthService.updateCurrentUser(newUser.email, currentUser.password);
                     console.log("Successfully Updated");
                     window.location.reload();
@@ -57,7 +78,7 @@ function Information() {
                 error => {
                     alert("Unable to Update");
                     console.log("Unable to update " + error);
-                    window.location.reload(false);
+                    window.location.reload();
                 }
             );
     }

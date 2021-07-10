@@ -132,6 +132,7 @@ exports.update = (req, res) => {
     email: req.body.email
   })
     .exec((err, user) => {
+      console.log("user update request");
       if (err) {
         res.status(500).send({ message: err });
         return;

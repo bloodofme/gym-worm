@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://gym-worm.herokuapp.com/api/auth/" || "http://localhost:5000/api/auth/";
+const API_URL = "http://localhost:5000/api/auth/" || "https://gym-worm.herokuapp.com/api/auth/";
 
 class AuthService {
   async login(email, password) {
@@ -88,7 +88,7 @@ class AuthService {
           localStorage.setItem("user", JSON.stringify(response.data));
         }
 
-        return response.data;
+        //return response.data;
       });
   }
 
