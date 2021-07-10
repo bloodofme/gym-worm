@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://gym-worm.herokuapp.com/api/auth/" || "http://localhost:5000/api/auth/";
+//const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
+
 
 class AuthService {
   async login(email, password) {
@@ -24,17 +26,25 @@ class AuthService {
     localStorage.removeItem("access");
   }
 
-  async updateInfo(firstName, lastName, email, contactNo) {
+  async updateInfo(firstName, lastName, email, contactNo, roles) {
     return await axios
       .put(API_URL + 'update', {
         firstName,
         lastName,
         email,
-        contactNo
+        contactNo,
+        roles
       })
-      .then(response => {
+      .then((response) => {
+        if (response.data.accessToken) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+        }
         return response.data;
-      })
+      },
+        (error) => {
+          return error.response.data;
+        }
+      )
   }
 
   async updateBooking(email, bookingID) {
@@ -77,8 +87,8 @@ class AuthService {
     return JSON.parse(localStorage.getItem('user'));;
   }
 
-  updateCurrentUser(email, password) {
-    return axios
+  async updateCurrentUser(email, password) {
+    return await axios
       .post(API_URL + "updateSignin", {
         email,
         password

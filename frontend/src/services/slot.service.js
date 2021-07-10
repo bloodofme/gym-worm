@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+
 
 class SlotService {
     async createSlot(date, startTime, capacity) {
