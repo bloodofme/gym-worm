@@ -16,7 +16,7 @@ class UserService {
   getAdminBoard() {
     return axios.get(API_URL + 'admin', { headers: authHeader() })
       .then((res) => {
-        console.log(res);
+        //console.log(res);
         localStorage.setItem("access", "Admin");
       },
       (err) => {

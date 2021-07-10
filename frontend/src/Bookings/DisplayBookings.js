@@ -8,7 +8,7 @@ function DisplayBookings(props) {
     const [container, setContainer] = useState(null);
 
     const Time = (time) => {
-        return time <= 12 ? `${time}am` : `${time - 12}pm`
+        return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
     }
 
     const BookingsCard = (slots) => {

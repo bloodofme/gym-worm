@@ -16,7 +16,6 @@ class Profile extends Component {
         super(props);
 
         this.state = {
-            //currentUser: AuthService.getCurrentUser(),
             clicked: true
         };
     }
@@ -28,12 +27,6 @@ class Profile extends Component {
     }
 
     render() {
-        //const { currentUser } = this.state;
-        //if (!currentUser) {
-        //    history.push('/');
-        //    //window.location.reload();
-        //}
-
         return (
             <div style={{background:'#EBECED'}}>
                 <Navbar/>

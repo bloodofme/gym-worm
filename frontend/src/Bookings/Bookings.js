@@ -9,11 +9,13 @@ import SlotService from "../services/slot.service";
 import axios from "axios";
 import Makebookings from "./MakeBookings"
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+
 const { Header, Content } = Layout;
 
 function Bookings() {
-    history.push('/Bookings');
+    //history.push('/Bookings');
 
     const [slots, setSlots] = useState([])
     const currentUser = AuthService.getCurrentUser()
@@ -48,7 +50,7 @@ function Bookings() {
         }
 
         const Time = (time) => {
-            return time <= 12 ? `${time}am` : `${time - 12}pm`
+            return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
         }
 
         return (
@@ -71,16 +73,16 @@ function Bookings() {
 
     useEffect(() => {
         const temp = []
-        console.log(currentUser.bookings)
         currentUser.bookings.forEach(slot => {
+            //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                const posts = res.data.slot;
-                temp.push([posts, slot])
-                if (temp.length === currentUser.bookings.length) {
+
+                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                    const posts = res.data.slot;
+                    temp.push([posts, slot])
                     setSlots(temp)
                 }
-                console.log(temp)
             })()
         })
     })
@@ -89,11 +91,11 @@ function Bookings() {
         <div style={{ background: "#ebeced", alignItems: "center" }}>
             <Navbar />
             <Header className='bookingsHeader' >
-                    <h1 className="textHome">Bookings</h1>
+                <h1 className="textHome">Bookings</h1>
             </Header>
             <Content>
                 <Layout className="layout">
-                    <Card style={{padding: "50px"}}>    
+                    <Card style={{ padding: "50px" }}>
                         <Row justify="center" direction="vertical">
                             <Space
                                 style={{ background: "74828F", alignItems: "center" }}
@@ -102,19 +104,19 @@ function Bookings() {
                                 align='center'
                             >
                                 <text className="booking">Current Bookings</text>
-                                    <Space
-                                        style={{ background: "74828F", alignItems: "center", padding: "30px" }}
-                                        direction="vertical" size={'small'}
-                                        align='center'
-                                    >
-                                        {
-                                            slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))
-                                        }
-                                        {
-                                            slots.length === 0 ? null : arrSlots.map(elements => <div> {elements} </div>)
-                                        }
+                                <Space
+                                    style={{ background: "74828F", alignItems: "center", padding: "30px" }}
+                                    direction="vertical" size={'small'}
+                                    align='center'
+                                >
+                                    {
+                                        slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))
+                                    }
+                                    {
+                                        slots.length === 0 ? null : arrSlots.map(elements => <div> {elements} </div>)
+                                    }
 
-                                    </Space>
+                                </Space>
                                 <Button
                                     className="bookingsButtons"
                                     type="primary"
@@ -127,8 +129,9 @@ function Bookings() {
                                                     id = element[1]
                                                 }
                                             })
-                                            AuthService.cancelBooking(currentUser.email, id)
-                                            SlotService.cancelledBooking(s._id, currentUser.id)
+                                            AuthService.cancelBooking(currentUser.email, id).then(() => {
+                                                SlotService.cancelledBooking(s._id, currentUser.id)
+                                            })
                                         })
                                         alert("Slot cancelled");
                                         window.location.reload();
@@ -139,8 +142,8 @@ function Bookings() {
                             </Space>
                         </Row>
                     </Card>
-                    <Card style={{padding: "50px"}}>
-                        <Makebookings/>
+                    <Card style={{ padding: "50px" }}>
+                        <Makebookings />
                     </Card>
                 </Layout>
             </Content>

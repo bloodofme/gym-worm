@@ -198,7 +198,7 @@ exports.retrieveSlot = (req, res) => {
   if (req) {
     console.log("retrieveSlot req exist");
   }
-  console.log(req.body.bookingID);
+  //console.log("Booking ID " + req.body.bookingID);
 
   Booking.find({
     _id: req.body.bookingID
@@ -208,7 +208,7 @@ exports.retrieveSlot = (req, res) => {
         return res.status(500).send({ message: req });
       }
 
-      console.log(booking);
+      //console.log(booking);
 
       Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
         if (err) {

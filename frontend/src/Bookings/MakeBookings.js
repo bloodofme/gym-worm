@@ -13,10 +13,12 @@ import AuthService from "../services/auth.service";
 import axios from "axios";
 
 function MakeBookings() {
-    history.push('/MakeBookings');
+    //history.push('/MakeBookings');
 
-    const currentUser = AuthService.getCurrentUser()
-    const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+    const currentUser = AuthService.getCurrentUser();
+    
+    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+    //const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
@@ -27,7 +29,7 @@ function MakeBookings() {
     const [container, setContainer] = useState(null);
     const [userSlots, setUserSlots] = useState([]);
     const arrSlots = []
-    var bookedSlots =[]
+    var bookedSlots = []
     const [slots, setSlots] = useState([])
 
     if (getLength() === 0) {
@@ -48,21 +50,21 @@ function MakeBookings() {
 
     useEffect(() => {
         const temp = []
-             currentUser.bookings.forEach(slot => {
-                 (async () => {
-                     const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                     const posts = res.data.slot;
-                     temp.push(posts)
-                     if (temp.length === currentUser.bookings.length) {
-                        setUserSlots(temp)
-                     }
-                     console.log(temp)
-                 })()
-             })
-         
-        }, []) 
+        currentUser.bookings.forEach(slot => {
+            (async () => {
+                //console.log("Booking ID is " + slot); // booking id
+                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
+                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                    const posts = res.data.slot;
+                    temp.push([posts, slot])
+                    setSlots(temp)
+                }
+            })()
+        })
 
-    console.log(userSlots);
+    }, [])
+
+    //console.log(userSlots);
 
     function onChangeDate(theDate, dateString) {
         date.current = JSON.parse(JSON.stringify(dateString));
@@ -84,7 +86,7 @@ function MakeBookings() {
                         if (s._id === us._id) {
                             test = false
                         }
-                    })  
+                    })
                     return test;
                 }));
                 console.log(slots)
@@ -110,9 +112,9 @@ function MakeBookings() {
     }
 
     function DisplayBookings(props) {
-        const isChecked = useRef([false, props.slot.date.slice(0,10), props.slot.startTime]);
+        const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
         const onChange = (e) => {
-            isChecked.current = [e.target.checked, props.slot.date.slice(0,10), props.slot.startTime];
+            isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
             console.log(isChecked);
             if (isChecked.current[0]) {
                 bookedSlots.push(props.slot)
@@ -123,30 +125,30 @@ function MakeBookings() {
             }
             console.log(bookedSlots)
         }
-    
+
         const Time = (time) => {
-            return time <= 12 ? `${time}am` : `${time - 12}pm`
+            return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
         }
-        
-        return(
+
+        return (
             <div>
                 <Card className='bookingStyle'>
                     <Row gutter={3}>
-                    <Col span={15} wrap="false">
-                        <text className='text'>{`Date: ${props.slot.date.slice(0,10)}`}</text>
-                        <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
-                        <text className='text'>{` \n Vacancy: ${props.slot.capacity}`}</text>
-                    </Col>
-                    <Col span={5}>
-                        <Checkbox className="ant-checkbox" onChange={onChange}/>
-                    </Col>
+                        <Col span={15} wrap="false">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text>
+                            <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
+                            <text className='text'>{` \n Vacancy: ${props.slot.capacity}`}</text>
+                        </Col>
+                        <Col span={5}>
+                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                        </Col>
                     </Row>
                 </Card>
-                    
+
             </div>
         );
     }
-    
+
 
 
     return (
@@ -159,8 +161,8 @@ function MakeBookings() {
                     align='center'
                 >
                     <text className="booking">Make Bookings</text>
-                    {                        
-                        slotsAvail ? slots.forEach(element => {arrSlots.push(<DisplayBookings slot={element}/>)}) : <Row/> 
+                    {
+                        slotsAvail ? slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
                         //<Display slots={element} user={currentUser}/>
                     }
                     <Space >
@@ -176,8 +178,8 @@ function MakeBookings() {
                             size={'small'}
                             align='center'
                         >
-                            { arrSlots.map(element => <div> {element} </div> ) }
-                        </Space>   
+                            {arrSlots.map(element => <div> {element} </div>)}
+                        </Space>
                     </Breadcrumb>
                     <Button
                         className="bookingsButtons"
@@ -186,19 +188,18 @@ function MakeBookings() {
                         disabled={bookingsLen()}
                         onClick={() => {
                             bookedSlots.forEach(elements => {
-                                SlotService.bookSlot(elements._id, currentUser.id, currentUser.email)
-                                SlotService.recordBooking(elements._id, currentUser.id);
+                                SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
+                                    SlotService.recordBooking(elements._id, currentUser.id)
+                                });
                                 console.log("Booking Successful, See you there!");
                                 console.log(elements);
                                 console.log(elements.date.substring(0, 10));
                                 SlotService.clearCurrentSlots(elements.date.substring(0, 10));
                             });
                             alert("Booking successful");
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+                            //AuthService.updateCurrentUser(currentUser.email, currentUser.password);
                             window.location.reload();
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload();
+
                         }}
                     >
                         Confirm Booking
@@ -210,25 +211,12 @@ function MakeBookings() {
                         disabled={bookingsLen()}
                         onClick={() => {
                             history.push("/Bookings")
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload(); 
+                            //AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+                            window.location.reload();
                         }}
                     >
                         Back
                     </Button>
-
-                    {/*hello u can ignore these below, im just testing the retrieving*/}
-{/*
-                    <Input style={{ borderRadius: 35, width: 500 }}
-                        value={"number of slots for this day is " + getLength()}
-                        prefix={<UserOutlined className="site-form-item-icon" />}
-                        suffix={
-                            <Tooltip title="Last Name">
-                                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                            </Tooltip>
-                        }
-                    />
-                    */}
                 </Space>
             </Row>
         </div>
