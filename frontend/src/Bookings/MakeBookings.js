@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Navbar from '../components/Navbar/Navbar';
 import { Button, Space, Row, DatePicker, Breadcrumb, Col, Card, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
 import './Bookings.css'
 import moment from 'moment';
 import history from './../history';
-import { Input, Tooltip } from 'antd';
-import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import SlotService from "../services/slot.service";
 import AuthService from "../services/auth.service";
 import axios from "axios";

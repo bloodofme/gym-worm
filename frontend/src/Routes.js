@@ -10,10 +10,6 @@ import Profile from "./Profile/Profile";
 import history from "./history";
 import Login from "./Login/Login";
 import Signup from "./Signup/Signup";
-import MakeBookings from "./Bookings/MakeBookings"
-import Notifications from "./Profile/Notif/Notif"
-import Info from "./Profile/Information/Information"
-import Information from "./Profile/Information/Information";
 import Admin from "./Admin/Admin";
 
 class Routes extends Component {
@@ -32,12 +28,6 @@ class Routes extends Component {
                     </Route>
                     <Route path="/Profile" >
                         {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Profile />}
-                    </Route>
-                    <Route path="/Notifications" >
-                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Notifications />}
-                    </Route>
-                    <Route path="/Information" >
-                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Information />}
                     </Route>
                     <Route path="/Admin" >
                         {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : localStorage.getItem('access') !== "Admin" ? <Redirect to="/Home" /> : <Admin />}
