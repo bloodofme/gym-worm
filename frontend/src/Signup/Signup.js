@@ -98,7 +98,7 @@ function Signup() {
         if (firstName === ''  || lastName === '' || email === '' || password === '' || contactNo === '') {
             setDisabled(true);
         } else {
-            if (password.length < 6 || confirmPassword !== password || contactNo.length !== 8) {
+            if (password.length < 6 || confirmPassword !== password || contactNo.length !== 8 || !(contactNo.charAt(0) === '8' || contactNo.charAt(0) === '9')) {
                 setDisabled(true);
             } else {
                 setDisabled(false);
@@ -223,7 +223,7 @@ function Signup() {
                         min: 8,
                         max: 8,
                         message: 'Your number should be 8 digits!'
-                    }
+                    },
                 ]}
                 style={{minWidth: 500}}
             >

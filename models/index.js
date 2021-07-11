@@ -9,6 +9,7 @@ db.user = require("./user.model");
 db.role = require("./role.model");
 db.slot = require("./slot.model");
 db.booking = require("./booking.model");
+db.slotSetting = require("./slotSettings.model");
 
 db.ROLES = ["user", "admin"];
 

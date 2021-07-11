@@ -5,16 +5,19 @@ import './Home.css';
 import Navbar from '../components/Navbar/Navbar';
 import Credits from './Credits/Credits';
 import AuthService from "../services/auth.service";
+import UserService from "../services/user.service";
 import history from "../history";
 import axios from "axios";
+import moment from 'moment';
 
 const { Header, Content } = Layout;
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+
+const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+
 document.body.style = 'background: #74828F;';
 
 function Home() {
-    //const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
-
     const arrSlots = [];
     const [slots, setSlots] = useState([])
 
@@ -22,35 +25,34 @@ function Home() {
 
     if (currentUser) {
         AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+        UserService.getAdminBoard();
     }
 
-    useEffect(() => {
-        /*sleep(3000).then(() => {
-            if (AuthService.getCurrentUser() === null) {
-                history.push("/");
-                window.location.reload(false);
-            }
-        });*/
+    /*useEffect(() => {
         if (AuthService.getCurrentUser() === null) {
             history.push("/");
             window.location.reload(false);
         }
-    }, [])
+    }, [])*/
 
     useEffect(() => {
         const temp = []
         currentUser.bookings.forEach(slot => {
+            //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                const posts = res.data.slot;
-                temp.push([posts, slot])
-                if (temp.length === currentUser.bookings.length) {
+
+                /*console.log("slot date is " + new Date(res.data.slot.date));
+                console.log("comparing time to " + new Date());
+                console.log(new Date(res.data.slot.date) >= new Date());*/
+                
+                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                    const posts = res.data.slot;
+                    temp.push([posts, slot])
                     setSlots(temp)
                 }
-                console.log(temp)
             })()
         })
-
     }, [])
 
     function DisplayBookings(props) {
@@ -92,13 +94,13 @@ function Home() {
         <div>
             <Navbar />
             <Layout>
-                <Header  className='theTitle' >
-                    <h1 className="textHome">Welcome to Gym-worm, {currentUser.firstName + " " + currentUser.lastName} </h1>
+                <Header className='theTitle' >
+                    <h1 className="textHome">Welcome to Gym-Worm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
                     <Layout className='layout'>
-                        <Card style={{whiteSpace: 'pre-line'}}>
-                        <Row align='center'>
+                        <Card style={{ whiteSpace: 'pre-line' }}>
+                            <Row align='center'>
                                 <Space direction="vertical" size={10} align='center'>
                                     <p1 className="textTitle">Bookings</p1>
                                     <Breadcrumb id="slots" >
@@ -117,8 +119,8 @@ function Home() {
                         <Card>
                             <Row align='center'>
                                 <Space style={{ background: "74828F", alignItems: "center" }}
-                                            direction="vertical" size={'small'}
-                                            align='center'>
+                                    direction="vertical" size={'small'}
+                                    align='center'>
                                     <p1 className="textTitle">Credits</p1>
                                     <Credits></Credits>
                                 </Space>

@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
+const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+
 
 class SlotService {
     async createSlot(date, startTime, capacity) {
@@ -80,7 +82,6 @@ class SlotService {
                 return booking.data;
             })
     }
-
     
     async retrieveSlot(bookingID) {
         return await axios
@@ -91,7 +92,27 @@ class SlotService {
                 return response.data;
             });
     }
-    
+
+    async getSlotSettings() {
+        return await axios
+        .get(API_URL + "getSlotSetting", {})
+        .then(response => {
+            return response.data;
+        })
+    }
+
+    async updateSlotSetting(startTime, endTime, capacity) {
+        console.log(startTime + " " + endTime + " " + capacity);
+        return await axios
+            .put(API_URL + "updateSlotSetting", {
+                startTime,
+                endTime,
+                capacity,
+            })
+            .then(response => {
+                return response.data;
+            });
+    }
 }
 
 export default new SlotService();

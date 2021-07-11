@@ -2,7 +2,9 @@ const db = require("../models");
 const User = db.user;
 const Slot = db.slot;
 const Booking = db.booking;
+const SlotSetting = db.slotSetting;
 
+// createSlot takes in Date, Starting time, Capacity and creates a slot
 exports.createSlot = (req, res) => {
   if (req) {
     console.log("createSlot req exist");
@@ -25,6 +27,7 @@ exports.createSlot = (req, res) => {
     .catch(err => res.status(500).json('Error: ' + err));
 }
 
+// createSlot takes in Slot ID, Date, Starting time, Capacity or Full Capacity and updates the slot if it exists
 exports.updateSlot = (req, res) => {
   if (req) {
     console.log("updateSlot req exist");
@@ -193,9 +196,9 @@ exports.cancelledBooking = (req, res) => {
 
 exports.retrieveSlot = (req, res) => {
   if (req) {
-   console.log("retrieveSlot req exist");
+    console.log("retrieveSlot req exist");
   }
-  console.log(req.body.bookingID);
+  //console.log("Booking ID " + req.body.bookingID);
 
   Booking.find({
     _id: req.body.bookingID
@@ -205,14 +208,78 @@ exports.retrieveSlot = (req, res) => {
         return res.status(500).send({ message: req });
       }
 
-      console.log(booking);
+      //console.log(booking);
 
       Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
-        return res.status(200).send({slot}); 
+        return res.status(200).send({ slot });
       });
     });
 };
+
+exports.createSlotSetting = (req, res) => {
+  if (req) {
+    console.log("createSlotSetting req exist");
+  }
+
+  const startTime = Number(req.body.startTime);
+  const endTime = Number(req.body.endTime);
+  const capacity = Number(req.body.capacity);
+  console.log("start time is " + startTime);
+  console.log("end time is " + endTime);
+
+  /*for (let i = startTime; i < endTime; i++) {
+    console.log("time is " + i);
+  }*/
+
+  const setting = new SlotSetting({
+    startTime,
+    endTime,
+    capacity,
+    fullCapacity
+  });
+
+  setting.save()
+    .then(() => res.status(200).send({ message: 'Slot Setting Created!' }))
+    .catch(err => res.status(500).json('Error: ' + err));
+}
+
+exports.updateSlotSetting = (req, res) => {
+  if (req) {
+    console.log("updateSlotSetting req exist");
+  }
+
+  SlotSetting.findById("60e5d754014b442d5c4b137a", (err, setting) => {
+    if (req.body.startTime !== undefined) {
+      setting.startTime = req.body.startTime
+    }
+    if (req.body.endTime !== undefined) {
+      setting.endTime = req.body.endTime
+    }
+    if (req.body.capacity !== undefined) {
+      setting.capacity = req.body.capacity
+    }
+
+    setting.save((err, updatedSetting) => {
+      if (err) {
+        return res.status(400).send({ message: err })
+      }
+      console.log("Slot Settings is successful updated");
+      return res.status(200).send(updatedSetting);
+    });
+  });
+}
+
+exports.getSlotSetting = (req, res) => {
+  if (req) {
+    console.log("getSlotSetting req exist");
+  }
+
+  SlotSetting.findById("60e5d754014b442d5c4b137a", (err, setting) => {
+    console.log(setting);
+    return res.status(200).send(setting);
+  });
+}

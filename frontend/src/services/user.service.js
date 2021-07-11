@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = "https://gym-worm.herokuapp.com/api/test/" || 'http://localhost:5000/api/test/';
+//const API_URL = "http://localhost:5000/api/test/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
 
 class UserService {
   getPublicContent() {
@@ -13,7 +14,15 @@ class UserService {
   }
 
   getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
+    return axios.get(API_URL + 'admin', { headers: authHeader() })
+      .then((res) => {
+        //console.log(res);
+        localStorage.setItem("access", "Admin");
+      },
+      (err) => {
+        console.log(err);
+        localStorage.setItem("access", "User");
+      });
   }
 }
 

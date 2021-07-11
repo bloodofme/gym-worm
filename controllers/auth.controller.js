@@ -132,7 +132,9 @@ exports.update = (req, res) => {
     email: req.body.email
   })
     .exec((err, user) => {
+      console.log("user update request");
       if (err) {
+        console.log(err);
         res.status(500).send({ message: err });
         return;
       }
@@ -152,9 +154,13 @@ exports.update = (req, res) => {
         user.contactNotification = req.body.contactNotification
       }
       if (req.body.contactNo !== undefined) {
-        if (req.body.contactNo.length !== 8) {
+        if (!(req.body.contactNo.length === 8)) {
           return res.status(401).send({
-            message: "New Contact Number is Invalid!"
+            message: "New Contact Number is Invalid! Should be 8 digits."
+          });
+        } else if (!(req.body.contactNo.charAt(0) === '8' || req.body.contactNo.charAt(0) === '9')) {
+          return res.status(401).send({
+            message: "New Contact Number is Invalid! Should start with 8 or 9."
           });
         }
         user.contactNo = req.body.contactNo
@@ -187,14 +193,33 @@ exports.update = (req, res) => {
       if (req.body.telegramHandle !== undefined) {
         user.telegramHandle = req.body.telegramHandle
       }
-      if (req.body.roles !== undefined) {
-        user.banStartDate = req.body.roles
-      }
+
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 14400 // 4 hours
+      });
+
       user.save((err, newUser) => {
         if (err) {
           return res.status(400).send({ message: err })
         }
-        return res.send(newUser);
+        return res.status(200).send({
+          id: newUser._id,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          password: newUser.password,
+          creditScore: newUser.creditScore,
+          roles: req.body.roles,
+          contactNotification: newUser.contactNotification,
+          emailNotification: newUser.emailNotification,
+          telegramNotification: newUser.telegramNotification,
+          contactNo: newUser.contactNo,
+          banStatus: newUser.banStatus,
+          banDuration: newUser.banDuration,
+          banStartDate: newUser.banStartDate,
+          accessToken: token,
+          bookings: newUser.bookings
+        });
       });
     });
 };
@@ -265,8 +290,8 @@ exports.cancelBooking = (req, res) => {
         return;
       }
 
-      if (req.body.bookingID  !== undefined) {
-        user.bookings.pull({_id: req.body.bookingID});
+      if (req.body.bookingID !== undefined) {
+        user.bookings.pull({ _id: req.body.bookingID });
       }
 
       user.save((err, newUser) => {
