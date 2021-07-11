@@ -1,0 +1,22 @@
+.signupTitle {
+    background: #ECEBED;
+    height: 100px;
+    text-align: center;
+    font-size: 2rem;
+    padding: 0rem 0rem;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.textSignup {
+    font-size: calc(7px + 3vw);
+    color: #3E3E3B;
+    position: absolute;
+    text-align: center;
+    top: 250px;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}

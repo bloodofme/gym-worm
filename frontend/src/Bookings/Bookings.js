@@ -93,7 +93,7 @@ function Bookings() {
         <div style={{ background: "#ebeced", alignItems: "center" }}>
             <Navbar />
             <Header className='bookingsHeader' >
-                <h1 className="textHome">Bookings</h1>
+                <h1 className="textHome" >Bookings</h1>
             </Header>
             <Content>
                 <Layout className="layout">

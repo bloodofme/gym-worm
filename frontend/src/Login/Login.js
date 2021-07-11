@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Checkbox, Row } from 'antd';
+import { Form, Input, Button, Row, Layout, Card} from 'antd';
 import 'antd/dist/antd.css';
 import './Login.css';
 import history from './../history';
 import AuthService from "../services/auth.service";
 
 document.body.style = 'background: #74828F;';
+
+const { Header, Content } = Layout;
 
 const layout = {
     labelCol: {
@@ -98,81 +100,84 @@ function Login() {
     });
 
     return (
-        <div style={{ display: 'flex' }}>
-            <Row className="pos" type="flex" justify="center" align="center" verticalAlign="middle" >
-                <h1 className="welcome">Welcome</h1>
-                <Form
-                    {...layout}
-                    name="basic"
-                    justify="center"
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                >
+        <div>
+            <Layout className="layout">
+                <Header className="welcome">
+                    <h1 className="textLogin" align="center">Welcome to GymWorm</h1>
+                </Header>
+                <Content style={{ background: "#ECEBED" }}>
+                    <Row className="pos" type="flex" justify="vertical" align="center" verticalAlign="middle" >
+                        <Card style={{padding: "50px"}}>
+                            <Form
+                                {...layout}
+                                name="basic"
+                                justify="center"
+                                initialValues={{
+                                    remember: true,
+                                }}
+                                onFinish={onFinish}
+                                onFinishFailed={onFinishFailed}
+                            >
 
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email!',
-                            },
-                            {
-                                type: "email",
-                                message: "The input is not valid E-mail!"
-                            }
-                        ]}
-                        style={{ minWidth: 500 }}
-                    >
-                        <Input type="text" onChange={onChangeEmail} value={email} />
-                    </Form.Item>
+                                <Form.Item
+                                    label="Email"
+                                    name="email"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input your email!',
+                                        },
+                                        {
+                                            type: "email",
+                                            message: "The input is not valid E-mail!"
+                                        }
+                                    ]}
+                                    className="fieldSize"
+                                >
+                                    <Input type="text" onChange={onChangeEmail} value={email} />
+                                </Form.Item>
 
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                            {
-                                min: 6,
-                                message: 'Your password should be more than 6 characters!'
-                            }
-                        ]}
-                        style={{ minWidth: 500 }}
-                    >
-                        <Input.Password type="text" onChange={onChangePassword} value={password} />
-                    </Form.Item>
+                                <Form.Item
+                                    label="Password"
+                                    name="password"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input your password!',
+                                        },
+                                        {
+                                            min: 6,
+                                            message: 'Your password should be more than 6 characters!'
+                                        }
+                                    ]}
+                                    className="fieldSize"
+                                >
+                                    <Input.Password type="text" onChange={onChangePassword} value={password} />
+                                </Form.Item>
+                                <Form.Item {...tailLayout}>
+                                    <Button type="primary"
+                                        htmlType="submit"
+                                        disabled={disabled}
+                                        onClick={() => {
+                                            onSubmit()
+                                        }}>
+                                        Log in
+                                    </Button>
+                                </Form.Item>
 
-                    <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-
-                    <Form.Item {...tailLayout}>
-                        <Button type="primary"
-                            htmlType="submit"
-                            disabled={disabled}
-                            onClick={() => {
-                                onSubmit()
-                            }}>
-                            Log in
-                </Button>
-                    </Form.Item>
-
-                    <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit" onClick={() => {
-                            history.push('/Signup')
-                            window.location.reload(false);
-                        }}>
-                            Sign Up
-                </Button>
-                    </Form.Item>
-                </Form>
-            </Row>
+                                <Form.Item {...tailLayout}>
+                                    <Button type="primary" htmlType="submit" onClick={() => {
+                                        history.push('/Signup')
+                                        window.location.reload(false);
+                                    }}>
+                                        Sign Up
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Card>
+                    </Row>
+                </Content>
+            </Layout>
         </div>
     )
 }
