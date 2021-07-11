@@ -5,7 +5,6 @@ import 'antd/dist/antd.css';
 import './Bookings.css'
 import moment from 'moment';
 import history from './../history';
-//import 'react-calendar-heatmap/dist/styles.css';
 import { Input, Tooltip } from 'antd';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import SlotService from "../services/slot.service";
@@ -13,8 +12,6 @@ import AuthService from "../services/auth.service";
 import axios from "axios";
 
 function MakeBookings() {
-    history.push('/MakeBookings');
-
     const currentUser = AuthService.getCurrentUser()
     const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
 
@@ -161,7 +158,6 @@ function MakeBookings() {
                     <text className="booking">Make Bookings</text>
                     {                        
                         slotsAvail ? slots.forEach(element => {arrSlots.push(<DisplayBookings slot={element}/>)}) : <Row/> 
-                        //<Display slots={element} user={currentUser}/>
                     }
                     <Space >
                         <DatePicker
@@ -195,9 +191,7 @@ function MakeBookings() {
                             });
                             alert("Booking successful");
                             AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload();
-                            AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+                            history.push("/Bookings");
                             window.location.reload();
                         }}
                     >
@@ -216,7 +210,14 @@ function MakeBookings() {
                     >
                         Back
                     </Button>
-
+                    <Button 
+                        visi
+                        onClick={() => {
+                            console.log(bookedSlots)
+                        }}
+                    >
+                        test
+                    </Button>
                     {/*hello u can ignore these below, im just testing the retrieving*/}
 {/*
                     <Input style={{ borderRadius: 35, width: 500 }}

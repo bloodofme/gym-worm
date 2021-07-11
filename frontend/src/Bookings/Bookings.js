@@ -13,8 +13,6 @@ const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:
 const { Header, Content } = Layout;
 
 function Bookings() {
-    history.push('/Bookings');
-
     const [slots, setSlots] = useState([])
     const currentUser = AuthService.getCurrentUser()
 
@@ -83,7 +81,9 @@ function Bookings() {
                 console.log(temp)
             })()
         })
-    })
+    }, [])
+
+    console.log(slots)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
@@ -131,6 +131,7 @@ function Bookings() {
                                             SlotService.cancelledBooking(s._id, currentUser.id)
                                         })
                                         alert("Slot cancelled");
+                                        history.push("/Home")
                                         window.location.reload();
                                     }}
                                 >
