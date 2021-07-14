@@ -33,8 +33,8 @@ function MakeBookings() {
             () => {
                 console.log("finding slots for " + todayDate);
                 setSlots(SlotService.getCurrentSlots(todayDate));
-                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
-
+                slots.push(SlotService.getCurrentSlots(todayDate));
+                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
             },
             error => {
                 console.log("cant find slot " + todayDate + " " + error);
@@ -44,7 +44,7 @@ function MakeBookings() {
         );
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         const temp = []
         currentUser.bookings.forEach(slot => {
             (async () => {
@@ -58,7 +58,7 @@ function MakeBookings() {
             })()
         })
 
-    }, [])
+    }, [])*/
 
     //console.log(userSlots);
 
@@ -70,12 +70,15 @@ function MakeBookings() {
             currentDate: date.current,
         }
 
-        console.log("date is " + checkDate);
-        console.log("slots are " + slots);
+        /*
+        console.log("check date is ");
+        console.log(checkDate);
+        console.log("slots are ");
+        console.log(slots);*/
 
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
-                console.log("finding slots for " + date.current);
+                console.log("Finding slots for " + date.current);
                 setSlots(SlotService.getCurrentSlots(checkDate.currentDate).filter(s => {
                     var test = true;
                     userSlots.forEach(us => {
@@ -85,13 +88,15 @@ function MakeBookings() {
                     })
                     return test;
                 }));
-                console.log(slots)
+                console.log(slots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
             },
             error => {
                 console.log("cant find slot for " + date.current + " " + error);
                 alert("No slots that day");
-                setSlotAvail(false)
+                setSlotAvail(false);
+                window.location.reload(false);
+                //onChangeDate(null, todayDate);
             }
         );
     }
@@ -119,7 +124,7 @@ function MakeBookings() {
                     bookedSlots = bookedSlots.filter(element => element !== props.slot)
                 }
             }
-            console.log(bookedSlots)
+            console.log(bookedSlots);
         }
 
         const Time = (time) => {
@@ -187,8 +192,8 @@ function MakeBookings() {
                                     SlotService.recordBooking(elements._id, currentUser.id)
                                 });
                                 console.log("Booking Successful, See you there!");
-                                console.log(elements);
-                                console.log(elements.date.substring(0, 10));
+                                //console.log(elements);
+                                //console.log(elements.date.substring(0, 10));
                                 SlotService.clearCurrentSlots(elements.date.substring(0, 10));
                             });
                             alert("Booking successful");

@@ -2,6 +2,7 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Booking = db.booking;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -290,15 +291,38 @@ exports.cancelBooking = (req, res) => {
         return;
       }
 
-      if (req.body.bookingID !== undefined) {
-        user.bookings.pull({ _id: req.body.bookingID });
-      }
+      console.log("user id is " + user.id);
+      console.log("slot id is " + req.body.slotID);
 
+      Booking.findOne({
+        user: user._id,
+        slot: req.body.slotID
+      })
+        .exec((err, booking) => {
+          if (booking) {
+            console.log("found");
+            console.log(booking._id);
+            console.log(user.bookings);
+            user.bookings.pull({ _id: booking._id });
+            console.log(user.bookings);
+            
+            user.save((err, newUser) => {
+              if (err) {
+                return res.status(400).send({ message: err })
+              }
+              return res.status(200).send({ message: "Booking is removed for user" });
+            });
+          }
+        });
+
+      /*console.log("311");
+      console.log(user.bookings);
       user.save((err, newUser) => {
         if (err) {
           return res.status(400).send({ message: err })
         }
-        return res.status(200).send(newUser);
-      });
+        return res.status(200).send({ message: "Booking is removed for user" });
+      });*/
+      //return res.status(400).send({ message: "No update made"});
     });
 };

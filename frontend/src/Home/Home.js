@@ -38,7 +38,7 @@ function Home() {
     useEffect(() => {
         const temp = []
         currentUser.bookings.forEach(slot => {
-            //console.log("Booking ID is " + slot); // booking id
+            console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
 
@@ -46,6 +46,7 @@ function Home() {
                 console.log("comparing time to " + new Date());
                 console.log(new Date(res.data.slot.date) >= new Date());*/
                 
+                // Only show upcoming booked slots, hide past slots
                 if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
                     const posts = res.data.slot;
                     temp.push([posts, slot])

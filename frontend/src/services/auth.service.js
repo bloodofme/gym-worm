@@ -58,11 +58,11 @@ class AuthService {
       })
   }
 
-  cancelBooking(email, bookingID) {
+  cancelBooking(email, slotID) {
     return axios
       .put(API_URL + 'cancelBooking', {
         email,
-        bookingID
+        slotID
       })
       .then(response => {
         return response.data;

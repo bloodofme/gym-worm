@@ -196,7 +196,7 @@ exports.cancelledBooking = (req, res) => {
 
 exports.retrieveSlot = (req, res) => {
   if (req) {
-    console.log("retrieveSlot req exist");
+    console.log("retrieveSlot req exist " + req.body.bookingID);
   }
   //console.log("Booking ID " + req.body.bookingID);
 

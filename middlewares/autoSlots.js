@@ -6,7 +6,7 @@ const axios = require("axios");
 const API_URL = "https://gym-worm.herokuapp.com/api/slot/" || "http://localhost:5000/api/slot/";
 
 generateSlots = (req, res) => {
-    console.log("generateSlots Process Start");
+    //console.log("generateSlots Process Start");
 
     SlotSetting.findOne({
         _id: "60e5d754014b442d5c4b137a"
@@ -21,12 +21,12 @@ generateSlots = (req, res) => {
         const endTime = slotSettings.endTime;
         const capacity = slotSettings.capacity;
 
-        if (slotSettings) {
+        /*if (slotSettings) {
             console.log("Slot Settings retrieved");
             console.log("start time : " + startTime + " end time : " + endTime + " capacity : " + capacity);
-        }
+        }*/
 
-        console.log("Slot Generation Request Date : ");
+        //console.log("Slot Generation Request Date : ");
         console.log(slotDate);
 
         // checking if slots already exist
@@ -43,10 +43,10 @@ generateSlots = (req, res) => {
                     console.log("Slots not found.");
 
                     for (let i = startTime; i < endTime; i++) {
-                        console.log("current i is " + i);
+                        //console.log("current i is " + i);
 
                         axios.post(API_URL + 'createSlot', { date: slotDate, startTime: i, capacity: capacity })
-                            .then((res) => { console.log("Slots Created") }
+                            .then((res) => { console.log("Slot Created") }
                                 , (err) => { console.log(err) });
                     }
                 } else { // if slots are found, nothing needs to be done

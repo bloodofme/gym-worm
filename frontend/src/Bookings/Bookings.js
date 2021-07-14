@@ -36,6 +36,7 @@ function Bookings() {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
 
         const onChange = (e) => {
+            console.log("Selected slot is " + props.slot._id);
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
             console.log(isChecked);
             if (isChecked.current[0]) {
@@ -77,17 +78,14 @@ function Bookings() {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-
                 if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
                     const posts = res.data.slot;
                     temp.push([posts, slot])
-                    setSlots(temp)
+                    setSlots(temp);
                 }
             })()
-        })
+        });
     }, [])
-
-    console.log(slots)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
@@ -124,7 +122,7 @@ function Bookings() {
                                     type="primary"
                                     shape="round"
                                     onClick={() => {
-                                        cancelSlots.forEach(s => {
+                                        /*cancelSlots.forEach(s => {
                                             var id;
                                             slots.forEach(element => {
                                                 if (s._id === element[0]._id) {
@@ -137,7 +135,22 @@ function Bookings() {
                                         })
                                         alert("Slot cancelled");
                                         history.push("/Home")
-                                        window.location.reload();
+                                        window.location.reload();*/
+                                        let x = 0;
+                                        cancelSlots.forEach(slot => {
+                                            x++;
+                                            console.log(slot._id);
+                                            console.log(currentUser.bookings);
+                                            AuthService.cancelBooking(currentUser.email, slot._id).then(() => {
+                                                SlotService.cancelledBooking(slot._id, currentUser.id).then(() => {
+                                                    console.log(slot._id);
+                                                    if (x === cancelSlots.length) {
+                                                        AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+                                                        window.location.reload();
+                                                    }
+                                                });
+                                            });
+                                        });
                                     }}
                                 >
                                     Cancel Bookings
