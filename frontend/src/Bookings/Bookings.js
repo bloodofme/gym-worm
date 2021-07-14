@@ -9,8 +9,8 @@ import SlotService from "../services/slot.service";
 import axios from "axios";
 import Makebookings from "./MakeBookings"
 
-const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
 const { Header, Content } = Layout;
 
