@@ -1,0 +1,12 @@
+.theTitleAdmin {
+    background: #74828F;
+    text-align: center;
+    font-size: 2rem;
+    padding: 1rem 1rem;
+    height: 450px;
+    color: white;
+    background-image: url('./../image/settingsphoto.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}

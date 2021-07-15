@@ -155,7 +155,8 @@ function Information() {
                         Log Out
                     </Button>
 
-                    {accessStatus === "Admin" &&
+                    {
+                        accessStatus === "Admin" &&
                         <Button
                             type="primary"
                             shape="round"
