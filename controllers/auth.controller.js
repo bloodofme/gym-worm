@@ -2,6 +2,7 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Booking = db.booking;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -290,15 +291,52 @@ exports.cancelBooking = (req, res) => {
         return;
       }
 
-      if (req.body.bookingID !== undefined) {
-        user.bookings.pull({ _id: req.body.bookingID });
-      }
+      console.log("cancelBooking user id is " + user.id);
+      console.log("cancelBooking slot id is " + req.body.slotID);
 
+      Booking.findOne({
+        "user": user._id, "slot": req.body.slotID, "valid": true
+      })
+        .exec((err, booking) => {
+          if (err) {
+            return res.status(400).send({message : err});
+          }
+
+          if (booking) {
+            console.log("found");
+            console.log(booking._id);
+            console.log(booking.valid);
+            console.log("before");
+            console.log(user.bookings);
+            user.bookings.pull({ _id: booking._id });
+            booking.valid = false;
+            console.log("after");
+            console.log(user.bookings);
+            console.log(booking.valid);
+            booking.save((err, newBooking) => {
+                if (err) {
+                  return res.status(400).send({ message: err })
+                }
+                console.log(newBooking);
+            });
+
+            user.save((err, newUser) => {
+              if (err) {
+                return res.status(400).send({ message: err })
+              }
+              return res.status(200).send({ message: "Booking is removed for user" });
+            });
+          }
+        });
+
+      /*console.log("311");
+      console.log(user.bookings);
       user.save((err, newUser) => {
         if (err) {
           return res.status(400).send({ message: err })
         }
-        return res.status(200).send(newUser);
-      });
+        return res.status(200).send({ message: "Booking is removed for user" });
+      });*/
+      //return res.status(400).send({ message: "No update made"});
     });
 };

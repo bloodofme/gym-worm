@@ -58,9 +58,17 @@ class SlotService {
             userID,
             userEmail
         })
-            .then(updatedSlot => {
-                return updatedSlot.data;
-            })
+            .then((response) => {
+                console.log("response from bookslot");
+                console.log(response.data);
+                return response.data;
+            },
+                (error) => {
+                    console.log("error from bookslot");
+                    console.log(error);
+                    return error.response.data;
+                }
+            )
     }
 
     async recordBooking(slotID, userID) {
@@ -82,7 +90,7 @@ class SlotService {
                 return booking.data;
             })
     }
-    
+
     async retrieveSlot(bookingID) {
         return await axios
             .get(API_URL + "retrieveSlot", {
@@ -95,10 +103,10 @@ class SlotService {
 
     async getSlotSettings() {
         return await axios
-        .get(API_URL + "getSlotSetting", {})
-        .then(response => {
-            return response.data;
-        })
+            .get(API_URL + "getSlotSetting", {})
+            .then(response => {
+                return response.data;
+            })
     }
 
     async updateSlotSetting(startTime, endTime, capacity) {

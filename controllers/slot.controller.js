@@ -80,7 +80,7 @@ exports.fetchSlots = (req, res) => {
         return res.status(404).send({ message: "Slots not found." });
       }
 
-      console.log(slots);
+      //console.log(slots);
 
       return res.status(200).send({
         getSlots: slots
@@ -97,8 +97,7 @@ exports.bookSlot = (req, res) => {
   console.log("user id " + req.body.userID + " user email " + req.body.userEmail);
   Slot.findOne({ _id: req.body.slotID }, (err, slot) => {
     if (err) {
-      res.status(500).send({ message: err });
-      return;
+      return res.status(500).send({ message: err });
     }
 
     slot.userList.push(req.body.userID);
@@ -196,7 +195,7 @@ exports.cancelledBooking = (req, res) => {
 
 exports.retrieveSlot = (req, res) => {
   if (req) {
-    console.log("retrieveSlot req exist");
+    console.log("retrieveSlot req exist " + req.body.bookingID);
   }
   //console.log("Booking ID " + req.body.bookingID);
 

@@ -24,6 +24,7 @@ class AuthService {
   logout() {
     localStorage.removeItem("user");
     localStorage.removeItem("access");
+    localStorage.clear();
   }
 
   async updateInfo(firstName, lastName, email, contactNo, roles) {
@@ -58,11 +59,11 @@ class AuthService {
       })
   }
 
-  cancelBooking(email, bookingID) {
-    return axios
+  async cancelBooking(email, slotID) {
+    return await axios
       .put(API_URL + 'cancelBooking', {
         email,
-        bookingID
+        slotID
       })
       .then(response => {
         return response.data;

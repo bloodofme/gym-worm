@@ -30,6 +30,7 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
   initial();
+  checkSlots();
 })
   .catch(err => {
     console.error("Connection Error", err);
@@ -69,23 +70,38 @@ require('./routes/slot.routes')(app);
 
 // Auto Daily Slot Creation
 const { autoSlots } = require("./middlewares");
+
+function checkSlots() {
+  console.log("Slot Generation Request Dates : ");
+  
+  // Checking today's date
+  let date = new Date();
+  let nowDate = new Date(date);
+  nowDate.setHours(8, 0, 0, 0);
+  //console.log("Time now is ");
+  //console.log(nowDate);
+  autoSlots.generateSlots({ date: nowDate });
+
+  // Checking tomorrow's date
+  let nextDate = new Date(date);
+  nextDate.setHours(32, 0, 0, 0);
+  //console.log("Time tomorrow is ");
+  //console.log(nextDate);
+  autoSlots.generateSlots({ date: nextDate });
+
+  // Checking next day's date
+  let nextDayDate = new Date(date);
+  nextDayDate.setHours(56, 0, 0, 0);
+  //console.log("Time next day is ");
+  //console.log(nextDayDate);
+  autoSlots.generateSlots({ date: nextDayDate });
+}
+
+// Auto Daily Slot Creation
 const cron = require('node-cron');
 cron.schedule("0 0 * * *", function () {
-  console.log("Scheduler Running Daily");
-
-  // setting today's date
-  let date = new Date();
-  console.log("Time now is ");
-  console.log(date);
-
-  // setting tomorrow's date
-  let createDate = new Date(date);
-  createDate.setHours(72, 0, 0, 0);
-  console.log("Time we want is ");
-  console.log(createDate);
-
-  // sending generate slot request
-  autoSlots.generateSlots({date: createDate});
+  console.log("Daily Scheduled Running");
+  checkSlots();
 });
 
 // Error handling, disable for now
