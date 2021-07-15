@@ -12,14 +12,27 @@ function MakeBookings() {
     //history.push('/MakeBookings');
 
     const currentUser = AuthService.getCurrentUser();
-    
-    //const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+
+    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+    //const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
     const today = moment();
-    const todayDate = JSON.stringify(new Date()).substring(1, 11);
+
+    let aDate = new Date();
+    let bDate = new Date(aDate);
+
+    if (aDate.getHours() < 8) {
+        console.log("change");
+        bDate.setHours(8, 0, 0, 0);
+    } else {
+        console.log("no change");
+    }
+    console.log(aDate.toJSON());
+    console.log(bDate.toJSON());
+    const todayDate = JSON.stringify(new Date(bDate)).substring(1, 11);
+    console.log(todayDate);
 
     const [slotsAvail, setSlotAvail] = useState(false)
     const [container, setContainer] = useState(null);
@@ -29,6 +42,7 @@ function MakeBookings() {
     const [slots, setSlots] = useState([])
 
     if (getLength() === 0) {
+        console.log(todayDate);
         SlotService.fetchSlots(todayDate).then(
             () => {
                 console.log("finding slots for " + todayDate);
@@ -162,8 +176,8 @@ function MakeBookings() {
                     align='center'
                 >
                     <text className="booking">Make Bookings</text>
-                    {                        
-                        slotsAvail ? slots.forEach(element => {arrSlots.push(<DisplayBookings slot={element}/>)}) : <Row/> 
+                    {
+                        slotsAvail ? slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
                     }
                     <Space >
                         <DatePicker
@@ -187,19 +201,28 @@ function MakeBookings() {
                         shape="round"
                         disabled={bookingsLen()}
                         onClick={() => {
-                            bookedSlots.forEach(elements => {
-                                SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
-                                    SlotService.recordBooking(elements._id, currentUser.id)
+                            try {
+                                bookedSlots.forEach(elements => {
+                                    SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
+                                        SlotService.recordBooking(elements._id, currentUser.id).then(() => {
+                                            console.log("Booking Successful, See you there!");
+                                            //console.log(elements);
+                                            //console.log(elements.date.substring(0, 10));
+                                            SlotService.clearCurrentSlots(elements.date.substring(0, 10));
+                                        })
+                                    });
+                                    console.log("bookslots foreach one done");
                                 });
-                                console.log("Booking Successful, See you there!");
-                                //console.log(elements);
-                                //console.log(elements.date.substring(0, 10));
-                                SlotService.clearCurrentSlots(elements.date.substring(0, 10));
-                            });
-                            alert("Booking successful");
-                            //AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload();
-
+                                console.log("bookslots foreach done");
+                            } catch (e) {
+                                console.log("bookslots error caught");
+                                console.error(e);
+                            } finally {
+                                //alert("Booking successful");
+                                console.log("bookslots finally");
+                                AuthService.updateCurrentUser(currentUser.email, currentUser.password);
+                                window.location.reload(false);
+                            }
                         }}
                     >
                         Confirm Booking

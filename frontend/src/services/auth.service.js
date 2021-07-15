@@ -1,7 +1,7 @@
 import axios from "axios";
 
-//const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
+const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
+//const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
 
 
 class AuthService {
@@ -24,6 +24,7 @@ class AuthService {
   logout() {
     localStorage.removeItem("user");
     localStorage.removeItem("access");
+    localStorage.clear();
   }
 
   async updateInfo(firstName, lastName, email, contactNo, roles) {
@@ -58,8 +59,8 @@ class AuthService {
       })
   }
 
-  cancelBooking(email, slotID) {
-    return axios
+  async cancelBooking(email, slotID) {
+    return await axios
       .put(API_URL + 'cancelBooking', {
         email,
         slotID

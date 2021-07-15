@@ -9,8 +9,8 @@ import SlotService from "../services/slot.service";
 import axios from "axios";
 import Makebookings from "./MakeBookings"
 
-//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
 const { Header, Content } = Layout;
 
@@ -141,6 +141,7 @@ function Bookings() {
                                             x++;
                                             console.log(slot._id);
                                             console.log(currentUser.bookings);
+
                                             AuthService.cancelBooking(currentUser.email, slot._id).then(() => {
                                                 SlotService.cancelledBooking(slot._id, currentUser.id).then(() => {
                                                     console.log(slot._id);
@@ -148,8 +149,9 @@ function Bookings() {
                                                         AuthService.updateCurrentUser(currentUser.email, currentUser.password);
                                                         window.location.reload();
                                                     }
-                                                });
-                                            });
+                                                })
+                                            })
+
                                         });
                                     }}
                                 >
@@ -163,7 +165,7 @@ function Bookings() {
                     </Card>
                 </Layout>
             </Content>
-        </div>
+        </div >
     )
 }
 

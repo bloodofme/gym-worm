@@ -80,7 +80,7 @@ exports.fetchSlots = (req, res) => {
         return res.status(404).send({ message: "Slots not found." });
       }
 
-      console.log(slots);
+      //console.log(slots);
 
       return res.status(200).send({
         getSlots: slots
@@ -99,6 +99,12 @@ exports.bookSlot = (req, res) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
+    }
+
+    console.log("length is " + slot.userList.length);
+    for (let i = 0; i <slot.userList.length; i++) {
+      console.log(req.body.userID);
+      console.log(slot.userList[i]);
     }
 
     slot.userList.push(req.body.userID);

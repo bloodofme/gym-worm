@@ -295,8 +295,7 @@ exports.cancelBooking = (req, res) => {
       console.log("slot id is " + req.body.slotID);
 
       Booking.findOne({
-        user: user._id,
-        slot: req.body.slotID
+        "user": user._id, "slot": req.body.slotID
       })
         .exec((err, booking) => {
           if (booking) {
