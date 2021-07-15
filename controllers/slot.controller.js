@@ -97,14 +97,7 @@ exports.bookSlot = (req, res) => {
   console.log("user id " + req.body.userID + " user email " + req.body.userEmail);
   Slot.findOne({ _id: req.body.slotID }, (err, slot) => {
     if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    console.log("length is " + slot.userList.length);
-    for (let i = 0; i <slot.userList.length; i++) {
-      console.log(req.body.userID);
-      console.log(slot.userList[i]);
+      return res.status(500).send({ message: err });
     }
 
     slot.userList.push(req.body.userID);

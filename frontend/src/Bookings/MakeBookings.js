@@ -201,32 +201,20 @@ function MakeBookings() {
                         shape="round"
                         disabled={bookingsLen()}
                         onClick={() => {
-                            try {
-                                bookedSlots.forEach(elements => {
-                                    SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
-                                        SlotService.recordBooking(elements._id, currentUser.id).then(() => {
-                                            console.log("Booking Successful, See you there!");
-                                            //console.log(elements);
-                                            //console.log(elements.date.substring(0, 10));
-                                            SlotService.clearCurrentSlots(elements.date.substring(0, 10));
-                                        })
-                                    });
-                                    console.log("bookslots foreach one done");
-                                });
-                                console.log("bookslots foreach done");
-                            } catch (e) {
-                                console.log("bookslots error caught");
-                                console.error(e);
-                            } finally {
-                                //alert("Booking successful");
-                                console.log("bookslots finally");
-                                AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                                window.location.reload(false);
-                            }
+                            bookedSlots.forEach(elements => {
+                                SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
+                                    SlotService.recordBooking(elements._id, currentUser.id).then(() => {
+                                        console.log("Booking Successful, See you there!");
+                                        SlotService.clearCurrentSlots(elements.date.substring(0, 10));
+                                        window.location.reload();
+                                    })
+                                })
+                            });
                         }}
                     >
                         Confirm Booking
                     </Button>
+                    {/*}
                     <Button
                         className="bookingsButtons"
                         type="primary"
@@ -240,6 +228,7 @@ function MakeBookings() {
                     >
                         Back
                     </Button>
+                    */}
                 </Space>
             </Row>
         </div>

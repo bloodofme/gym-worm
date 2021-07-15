@@ -291,20 +291,35 @@ exports.cancelBooking = (req, res) => {
         return;
       }
 
-      console.log("user id is " + user.id);
-      console.log("slot id is " + req.body.slotID);
+      console.log("cancelBooking user id is " + user.id);
+      console.log("cancelBooking slot id is " + req.body.slotID);
 
       Booking.findOne({
-        "user": user._id, "slot": req.body.slotID
+        "user": user._id, "slot": req.body.slotID, "valid": true
       })
         .exec((err, booking) => {
+          if (err) {
+            return res.status(400).send({message : err});
+          }
+
           if (booking) {
             console.log("found");
             console.log(booking._id);
+            console.log(booking.valid);
+            console.log("before");
             console.log(user.bookings);
             user.bookings.pull({ _id: booking._id });
+            booking.valid = false;
+            console.log("after");
             console.log(user.bookings);
-            
+            console.log(booking.valid);
+            booking.save((err, newBooking) => {
+                if (err) {
+                  return res.status(400).send({ message: err })
+                }
+                console.log(newBooking);
+            });
+
             user.save((err, newUser) => {
               if (err) {
                 return res.status(400).send({ message: err })
