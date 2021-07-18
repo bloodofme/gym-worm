@@ -26,4 +26,16 @@ module.exports = function (app) {
     app.post("/api/auth/updateSignin", controller.updateSignin);
 
     app.put("/api/auth/cancelBooking", controller.cancelBooking);
+
+    app.get("/api/auth/listEmailNotif", controller.listEmailNotif);
+
+    app.get("/api/auth/listAllCustomers", controller.listAllCustomers);
+
+    app.get("/api/auth/listSlotCustomers", controller.listSlotCustomers);
+
+    app.get("/api/auth/listOneCustomer", controller.listOneCustomer);
+
+    app.put("/api/auth/demeritUser", controller.demeritUser);
+
+    app.get("/api/auth/teleFetchSlot", controller.teleFetchSlot);
 };

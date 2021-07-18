@@ -3,6 +3,7 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 const Booking = db.booking;
+const Slot = db.slot;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -17,7 +18,8 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8),
     creditScore: 100,
     contactNo: req.body.contactNo,
-    roles: req.body.roles
+    roles: req.body.roles,
+    telegramHandle: req.body.telegramHandle
   });
   user.save((err, user) => {
     if (err) {
@@ -118,6 +120,7 @@ exports.signin = (req, res) => {
         contactNotification: user.contactNotification,
         emailNotification: user.emailNotification,
         telegramNotification: user.telegramNotification,
+        telegramHandle: user.telegramHandle,
         contactNo: user.contactNo,
         banStatus: user.banStatus,
         banDuration: user.banDuration,
@@ -214,6 +217,7 @@ exports.update = (req, res) => {
           contactNotification: newUser.contactNotification,
           emailNotification: newUser.emailNotification,
           telegramNotification: newUser.telegramNotification,
+          telegramHandle: newUser.telegramHandle,
           contactNo: newUser.contactNo,
           banStatus: newUser.banStatus,
           banDuration: newUser.banDuration,
@@ -271,6 +275,7 @@ exports.updateSignin = (req, res) => {
         contactNotification: user.contactNotification,
         emailNotification: user.emailNotification,
         telegramNotification: user.telegramNotification,
+        telegramHandle: user.telegramHandle,
         contactNo: user.contactNo,
         banStatus: user.banStatus,
         banDuration: user.banDuration,
@@ -299,7 +304,7 @@ exports.cancelBooking = (req, res) => {
       })
         .exec((err, booking) => {
           if (err) {
-            return res.status(400).send({message : err});
+            return res.status(400).send({ message: err });
           }
 
           if (booking) {
@@ -314,10 +319,10 @@ exports.cancelBooking = (req, res) => {
             console.log(user.bookings);
             console.log(booking.valid);
             booking.save((err, newBooking) => {
-                if (err) {
-                  return res.status(400).send({ message: err })
-                }
-                console.log(newBooking);
+              if (err) {
+                return res.status(400).send({ message: err })
+              }
+              console.log(newBooking);
             });
 
             user.save((err, newUser) => {
@@ -340,3 +345,148 @@ exports.cancelBooking = (req, res) => {
       //return res.status(400).send({ message: "No update made"});
     });
 };
+
+exports.listEmailNotif = (req, res) => {
+  if (req) {
+    console.log("listEmailNotif req exist");
+  }
+
+  User.find({
+    roles: ["60b1c125bd27f021c95570eb"],
+    emailNotification: true
+  }, { firstName: 1, lastName: 1, email: 1 })
+    .exec((err, users) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+
+      return res.status(200).send({
+        mailingList: users
+      });
+    });
+};
+
+exports.listAllCustomers = (req, res) => {
+  if (req) {
+    console.log("listAllCustomers req exist");
+  }
+
+  User.find({
+    roles: ["60b1c125bd27f021c95570eb"],
+  }, { firstName: 1, lastName: 1, email: 1, contactNo: 1, banStatus: 1 })
+    .exec((err, users) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+
+      return res.status(200).send({
+        customerList: users
+      });
+    });
+};
+
+exports.listSlotCustomers = (req, res) => {
+  if (req) {
+    console.log("listAllCustomers req exist");
+  }
+
+  User.find({
+    _id: req.body.userID
+  }, { firstName: 1, lastName: 1, email: 1, banStatus: 1, banDuration: 1 })
+    .exec((err, users) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+
+      return res.status(200).send({
+        customerList: users
+      });
+    });
+};
+
+exports.listOneCustomer = (req, res) => {
+  if (req) {
+    console.log("listOneCustomer req exist");
+  }
+
+  User.findOne({
+    _id: req.body.userID
+  })
+    .exec((err, user) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+
+      return res.status(200).send({
+        user
+      });
+    });
+};
+
+// unfinished code
+exports.demeritUser = (req, res) => {
+  User.findOne({
+    _id: req.body.userID
+  })
+    .exec((err, user) => {
+      console.log("demeritUser req");
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      return res.status(200).send({ message: "nothing coded yet" })
+    });
+}
+
+exports.teleFetchSlot = (req, res) => {
+  if (req) {
+    console.log("teleFetchSlot req exist");
+  }
+
+  User.findOne({
+    telegramHandle: req.body.telegramHandle
+  })
+    .exec((err, user) => {
+
+      function callback() {
+        //console.log(bookings);
+        return res.status(200).send({
+          slots
+        });
+      }
+
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+
+      //console.log(user.bookings);
+
+      let slots = [];
+      //console.log(bookings);
+      let counter = 0;
+
+      user.bookings.forEach((b) => {
+        //console.log(b);
+        Booking.findOne({
+          _id: b,
+          valid: true
+        })
+          .exec((error, book) => {
+            //console.log(book);
+            Slot.findOne({
+              _id: book.slot
+            }, {_id: 1, date: 1, startTime: 1, capacity: 1})
+              .exec((err, slot) => {
+                console.log(slot);
+                slots.push(slot);
+                counter++;
+                if (counter === user.bookings.length) {
+                  callback();
+                }
+              })
+
+          })
+      });
+    });
+}
+

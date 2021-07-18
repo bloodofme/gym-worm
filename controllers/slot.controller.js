@@ -15,16 +15,30 @@ exports.createSlot = (req, res) => {
   const capacity = Number(req.body.capacity);
   const fullCapacity = Number(req.body.capacity);
 
-  const newSlot = new Slot({
-    date,
-    startTime,
-    capacity,
-    fullCapacity
-  });
+  Slot.find({
+    date: req.body.date,
+    startTime: req.body.startTime
+  })
+    .exec((err, slot) => {
+      console.log(slot);
+      console.log(slot.length);
+      if (slot.length !== 0) {
+        console.log(req.body.date + " for time " + req.body.startTime + " already created");
+        return res.status(403).json('Slot already exists');
+      } else {
+        console.log("Creating slot for " + req.body.date + " at " + req.body.startTime);
+        const newSlot = new Slot({
+          date,
+          startTime,
+          capacity,
+          fullCapacity
+        });
 
-  newSlot.save()
-    .then(() => res.send({ message: 'Slot Created!' }))
-    .catch(err => res.status(500).json('Error: ' + err));
+        newSlot.save()
+          .then(() => res.send({ message: 'Slot Created!' }))
+          .catch(err => res.status(500).json('Error: ' + err));
+      }
+    });
 }
 
 // createSlot takes in Slot ID, Date, Starting time, Capacity or Full Capacity and updates the slot if it exists
@@ -178,10 +192,7 @@ exports.cancelledBooking = (req, res) => {
     }
 
     slot.userList.pull({ _id: req.body.userID });
-
-
     slot.capacity++;
-
 
     slot.save((err, updatedSlot) => {
       if (err) {
@@ -200,22 +211,24 @@ exports.retrieveSlot = (req, res) => {
   //console.log("Booking ID " + req.body.bookingID);
 
   Booking.find({
-    _id: req.body.bookingID
+    _id: req.body.bookingID,
   })
     .exec((err, booking) => {
       if (err) {
         return res.status(500).send({ message: req });
       }
-
       //console.log(booking);
-
-      Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        return res.status(200).send({ slot });
-      });
+      if (booking.valid) {
+        Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          return res.status(200).send({ slot });
+        });
+      } else {
+        return res.status(404).send({ message: "No Valid Slot" });
+      }
     });
 };
 
