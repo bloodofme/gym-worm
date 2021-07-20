@@ -71,10 +71,27 @@ function MakeBookings() {
                 }
             })()
         })
-
     }, [])*/
 
-    //console.log(userSlots);
+    useEffect(() => {
+        const temp = []
+        currentUser.bookings.forEach(slot => {
+            //console.log("Booking ID is " + slot); // booking id
+            (async () => {
+                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
+                
+                    const posts = res.data.slot;
+                    temp.push(posts)
+                    if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                        if (currentUser.bookings.length === temp.length) {
+                            setUserSlots(temp);
+                        }
+                    }
+            })()
+        });
+    }, [])
+
+    console.log(userSlots);
 
     function onChangeDate(theDate, dateString) {
         date.current = JSON.parse(JSON.stringify(dateString));

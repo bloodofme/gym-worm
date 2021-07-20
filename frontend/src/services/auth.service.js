@@ -27,14 +27,15 @@ class AuthService {
     localStorage.clear();
   }
 
-  async updateInfo(firstName, lastName, email, contactNo, roles) {
+  async updateInfo(firstName, lastName, email, contactNo, roles, telegramHandle) {
     return await axios
       .put(API_URL + 'update', {
         firstName,
         lastName,
         email,
         contactNo,
-        roles
+        roles,
+        telegramHandle
       })
       .then((response) => {
         if (response.data.accessToken) {
@@ -70,14 +71,15 @@ class AuthService {
       })
   }
 
-  register(firstName, lastName, email, password, contactNo) {
+  register(firstName, lastName, email, password, contactNo, telegramHandle) {
     return axios
       .post(API_URL + "signup", {
         firstName,
         lastName,
         email,
         password,
-        contactNo
+        contactNo,
+        telegramHandle
       })
       .then(response => {
         return response.data;
@@ -132,6 +134,56 @@ class AuthService {
         telegramNotification
       })
       .then(response => {
+        return response.data;
+      })
+  }
+
+  listEmailNotif() {
+    return axios
+      .get(API_URL + 'listEmailNotif', {})
+      .then((response) => {
+        return response.data;
+      })
+  }
+
+  listAllCustomers() {
+    return axios
+      .get(API_URL + 'listAllCustomers', {})
+      .then((response) => {
+        return response.data;
+      })
+  }
+
+  listSlotCustomers() {
+    return axios
+      .get(API_URL + 'listSlotCustomers', {userID})
+      .then((response) => {
+        return response.data;
+      })
+  }
+
+  listOneCustomer(userID) {
+    return axios
+      .get(API_URL + 'listOneCustomer', {userID})
+      .then((response) => {
+        return response.data;
+      })
+  }
+
+  async demeritUser(userID) {
+    return await axios
+      .put(API_URL + 'demeritUser', {
+        userID
+      })
+      .then(response => {
+        return response.data;
+      })
+  }
+
+  async teleFetchSlot(telegramHandle) {
+    return await axios
+      .get(API_URL + 'teleFetchSlot', {telegramHandle})
+      .then((response) => {
         return response.data;
       })
   }

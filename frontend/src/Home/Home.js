@@ -45,12 +45,13 @@ function Home() {
                 /*console.log("slot date is " + new Date(res.data.slot.date));
                 console.log("comparing time to " + new Date());
                 console.log(new Date(res.data.slot.date) >= new Date());*/
-                
+                const posts = res.data.slot;
+                temp.push([posts, slot])
                 // Only show upcoming booked slots, hide past slots
                 if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
-                    const posts = res.data.slot;
-                    temp.push([posts, slot])
-                    setSlots(temp)
+                    if (currentUser.bookings.length === temp.length) {
+                        setSlots(temp)
+                    }
                 }
             })()
         })

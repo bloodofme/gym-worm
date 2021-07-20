@@ -78,14 +78,19 @@ function Bookings() {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                
                     const posts = res.data.slot;
                     temp.push([posts, slot])
-                    setSlots(temp);
-                }
+                    if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                        if (currentUser.bookings.length === temp.length) {
+                            setSlots(temp);
+                        }
+                    }
             })()
         });
     }, [])
+
+    console.log(slots)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
@@ -110,10 +115,14 @@ function Bookings() {
                                     align='center'
                                 >
                                     {
-                                        slots.length === 0 ? null : slots.forEach(element => arrSlots.push(<DisplayBookings slot={element[0]} />))
+                                        slots.length === 0 ? null : slots.forEach(element => 
+                                            {
+                                                arrSlots.push(<DisplayBookings slot={element[0]} />)
+                                                console.log(element)
+                                            })
                                     }
                                     {
-                                        slots.length === 0 ? null : arrSlots.map(elements => <div> {elements} </div>)
+                                        arrSlots.map(elements => <div> {elements} </div>)
                                     }
 
                                 </Space>
