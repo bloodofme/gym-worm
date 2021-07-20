@@ -15,16 +15,30 @@ exports.createSlot = (req, res) => {
   const capacity = Number(req.body.capacity);
   const fullCapacity = Number(req.body.capacity);
 
-  Slot.find({
+  Slot.findOne({
     date: req.body.date,
     startTime: req.body.startTime
   })
     .exec((err, slot) => {
-      console.log(slot);
-      console.log(slot.length);
-      if (slot.length !== 0) {
-        console.log(req.body.date + " for time " + req.body.startTime + " already created");
-        return res.status(403).json('Slot already exists');
+      if (slot) {
+        //console.log(slot);
+        //console.log(slot.length);
+        if (slot.length !== 0) {
+          console.log(req.body.date + " for time " + req.body.startTime + " already created");
+          return res.status(403).json('Slot already exists');
+        } else {
+          console.log("Creating slot for " + req.body.date + " at " + req.body.startTime);
+          const newSlot = new Slot({
+            date,
+            startTime,
+            capacity,
+            fullCapacity
+          });
+
+          newSlot.save()
+            .then(() => res.send({ message: 'Slot Created!' }))
+            .catch(err => res.status(500).json('Error: ' + err));
+        }
       } else {
         console.log("Creating slot for " + req.body.date + " at " + req.body.startTime);
         const newSlot = new Slot({
@@ -57,11 +71,21 @@ exports.updateSlot = (req, res) => {
       slot.startTime = req.body.startTime
     }
     if (req.body.capacity !== undefined) {
-      slot.capacity = req.body.capacity
+      if (req.body.capacity < 0) {
+        return res.status(400).send({ message: "New Capacity cannot be 0" });
+      } else {
+        slot.capacity = req.body.capacity
+      }
     }
+
     if (req.body.fullCapacity !== undefined) {
-      slot.fullCapacity = req.body.fullCapacity
+      if (req.body.fullCapacity < slot.capacity) {
+        return res.status(400).send({ message: "New Full Capacity cannot be lower than current booked capacity" });
+      } else {
+        slot.fullCapacity = req.body.fullCapacity
+      }
     }
+
     if (req.body.date !== undefined) {
       slot.date = Date.parse(req.body.date)
     }
@@ -114,10 +138,9 @@ exports.bookSlot = (req, res) => {
       return res.status(500).send({ message: err });
     }
 
-    slot.userList.push(req.body.userID);
-
     if (slot.capacity > 0) {
       slot.capacity--;
+      slot.userList.push(req.body.userID);
     } else { // add in wait list later on
       return res.status(400).send({ message: "Slot is already full" });
     }
@@ -163,9 +186,14 @@ exports.recordBooking = (req, res) => {
           return;
         }
 
+        console.log(user);
+
         if (booking.id !== undefined) {
           user.bookings.push({ _id: booking.id });
+          user.creditCounter++;
         }
+
+        console.log(user);
 
         user.save((err, newUser) => {
           if (err) {
@@ -269,7 +297,11 @@ exports.updateSlotSetting = (req, res) => {
       setting.startTime = req.body.startTime
     }
     if (req.body.endTime !== undefined) {
-      setting.endTime = req.body.endTime
+      if (req.body.endTime <= setting.startTime) {
+        return res.status(400).send({ message: "Endtime cannot be after Starttime" });
+      } else {
+        setting.endTime = req.body.endTime
+      }
     }
     if (req.body.capacity !== undefined) {
       setting.capacity = req.body.capacity

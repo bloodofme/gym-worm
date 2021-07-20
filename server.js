@@ -31,6 +31,7 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
   initial();
   checkSlots();
+  checkBan();
 })
   .catch(err => {
     console.error("Connection Error", err);
@@ -70,10 +71,11 @@ require('./routes/slot.routes')(app);
 
 // Auto Daily Slot Creation
 const { autoSlots } = require("./middlewares");
+const { checkBans } = require("./middlewares");
 
 function checkSlots() {
   console.log("Slot Generation Request Dates : ");
-  
+
   // Checking today's date
   let date = new Date();
   let nowDate = new Date(date);
@@ -102,7 +104,13 @@ const cron = require('node-cron');
 cron.schedule("0 0 * * *", function () {
   console.log("Daily Scheduled Running");
   checkSlots();
+  checkBan();
 });
+
+function checkBan() {
+  console.log("Check Bans Request");
+  checkBans.checkAll();
+}
 
 // Error handling, disable for now
 /*app.use(function (err, req, res, next) {

@@ -192,7 +192,7 @@ exports.update = (req, res) => {
         user.banDuration = req.body.banDuration
       }
       if (req.body.banStartDate !== undefined) {
-        user.banStartDate = req.body.banStartDate
+        user.banStartDate = Date.parse(req.body.banStartDate)
       }
       if (req.body.telegramHandle !== undefined) {
         user.telegramHandle = req.body.telegramHandle
@@ -332,6 +332,8 @@ exports.cancelBooking = (req, res) => {
               return res.status(200).send({ message: "Booking is removed for user" });
             });
           }
+
+          return res.status(404).send({ message: "Welp" });
         });
 
       /*console.log("311");
@@ -434,7 +436,37 @@ exports.demeritUser = (req, res) => {
         res.status(500).send({ message: err });
         return;
       }
-      return res.status(200).send({ message: "nothing coded yet" })
+
+      user.banCounter++;
+
+      let counter = 4 + user.creditCounter
+      //console.log("counter is " + counter + ", banCounter is " + user.banCounter);
+
+      let score = ((counter - user.banCounter) / counter) * 100;
+      //console.log("score is " + score);
+
+      console.log(parseFloat(score).toFixed(2));
+      user.creditScore = score;
+      const today = new Date();
+
+      if (score < 65) {
+        user.banStatus = true;
+        user.banStartDate = Date.parse(today);
+        user.creditScore = score;
+        user.banDuration = 14;
+      } else if (score < 75) {
+        user.banStatus = true;
+        user.banStartDate = Date.parse(today);
+        user.creditScore = score;
+        user.banDuration = 7;
+      }
+
+      user.save((err, newUser) => {
+        if (err) {
+          return res.status(400).send({ message: err })
+        }
+        return res.status(200).send(newUser);
+      })
     });
 }
 
@@ -475,7 +507,7 @@ exports.teleFetchSlot = (req, res) => {
             //console.log(book);
             Slot.findOne({
               _id: book.slot
-            }, {_id: 1, date: 1, startTime: 1, capacity: 1})
+            }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
               .exec((err, slot) => {
                 console.log(slot);
                 slots.push(slot);
