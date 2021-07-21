@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
+const axios = require('axios');
 
 // Setting up MongoDB Atlas Port
 require('dotenv').config();
@@ -37,6 +38,28 @@ connection.once('open', () => {
     console.error("Connection Error", err);
     process.exit();
   });
+
+// Opening Connection to GymWorm_bot
+const TOKEN = process.env.TOKEN;
+const SERVER_URL = process.env.SERVER_URL;
+
+const TELEGRAM_API= `https://api.telegram.org/bot${TOKEN}`;
+const URI= `/webhook/${TOKEN}`;
+const WEBHOOK_URL = SERVER_URL + URI;
+console.log(WEBHOOK_URL); // test
+console.log(TELEGRAM_API);
+
+// for Initializing connection to GymWorm_bot
+const botInit = async () => {
+  const result = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
+  console.log(result.data);
+}
+
+app.post(URI, async (req, res) => {
+   console.log(req.body);
+
+   return res.send();
+})
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
@@ -131,6 +154,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Initialize Server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
+  await botInit();
 });
