@@ -56,8 +56,15 @@ const botInit = async () => {
 }
 
 app.post(URI, async (req, res) => {
-   console.log(req.body);
+   //console.log(req.body);
+   const chatID = req.body.message.chat.id;
+   const teleID = req.body.message.chat.username;
 
+   await axios.post(`${TELEGRAM_API}/sendMessage`, {
+     chat_id: chatID,
+     text:"Your Username is " + teleID
+   });
+   
    return res.send();
 })
 
