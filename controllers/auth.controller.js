@@ -425,7 +425,6 @@ exports.listOneCustomer = (req, res) => {
     });
 };
 
-// unfinished code
 exports.demeritUser = (req, res) => {
   User.findOne({
     _id: req.body.userID
@@ -472,13 +471,19 @@ exports.demeritUser = (req, res) => {
 
 exports.teleFetchSlot = (req, res) => {
   if (req) {
-    console.log("teleFetchSlot req exist");
+    console.log("teleFetchSlot req for " + req.body.telegramHandle);
   }
 
   User.findOne({
     telegramHandle: req.body.telegramHandle
   })
     .exec((err, user) => {
+      //console.log(user)
+      if (!user) {
+        return res.status(404).send({
+          message: "no user found"
+        })
+      }
 
       function callback() {
         //console.log(bookings);
@@ -501,22 +506,32 @@ exports.teleFetchSlot = (req, res) => {
         //console.log(b);
         Booking.findOne({
           _id: b,
-          valid: true
         })
           .exec((error, book) => {
-            //console.log(book);
-            Slot.findOne({
-              _id: book.slot
-            }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
-              .exec((err, slot) => {
-                console.log(slot);
-                slots.push(slot);
-                counter++;
-                if (counter === user.bookings.length) {
-                  callback();
-                }
-              })
-
+            if (book.valid) {
+              //console.log(book);
+              Slot.findOne({
+                _id: book.slot
+              }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
+                .exec((err, slot) => {
+                  //console.log(slot);
+                  let today = new Date();
+                  today.setHours(8,0,0,0);
+                  //console.log(today);
+                  if (new Date(slot.date).getTime() >= today.getTime()) {
+                    slots.push(slot);
+                  }
+                  counter++;
+                  if (counter === user.bookings.length) {
+                    callback();
+                  }
+                })
+            } else {
+              counter++;
+                  if (counter === user.bookings.length) {
+                    callback();
+                  }
+            }
           })
       });
     });

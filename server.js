@@ -42,30 +42,28 @@ connection.once('open', () => {
 // Opening Connection to GymWorm_bot
 const TOKEN = process.env.TOKEN;
 const SERVER_URL = process.env.SERVER_URL;
-
-const TELEGRAM_API= `https://api.telegram.org/bot${TOKEN}`;
-const URI= `/webhook/${TOKEN}`;
+const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
+const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
-console.log(WEBHOOK_URL); // test
-console.log(TELEGRAM_API);
+const { botRequest } = require("./middlewares");
+
+//console.log(WEBHOOK_URL); // test
+//console.log(TELEGRAM_API);
 
 // for Initializing connection to GymWorm_bot
 const botInit = async () => {
   const result = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
-  console.log(result.data);
+  //console.log(result.data);
 }
 
+// GymWorm_bot functions
 app.post(URI, async (req, res) => {
-   //console.log(req.body);
-   const chatID = req.body.message.chat.id;
-   const teleID = req.body.message.chat.username;
+  //console.log(req.body);
+  const chatID = req.body.message.chat.id;
+  const teleID = req.body.message.chat.username;
 
-   await axios.post(`${TELEGRAM_API}/sendMessage`, {
-     chat_id: chatID,
-     text:"Your Username is " + teleID
-   });
-   
-   return res.send();
+  await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
+  return res.send();
 })
 
 function initial() {
