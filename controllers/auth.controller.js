@@ -486,7 +486,7 @@ exports.teleFetchSlot = (req, res) => {
       }
 
       function callback() {
-        console.log(slots);
+        //console.log(slots);
         slots.sort(function(a,b){return a.startTime - b.startTime});
         //console.log(bookings);
         return res.status(200).send({

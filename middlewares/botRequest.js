@@ -85,7 +85,7 @@ teleRequest = (req, res) => {
                         chat_id: req.chatID,
                         text: output
                     })
-                    console.log("Sent to Telegram for " + req.telegramHandle);
+                    console.log("Sent booking details on Telegram to " + req.telegramHandle);
                 } else {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,

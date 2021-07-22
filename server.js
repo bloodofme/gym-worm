@@ -58,10 +58,10 @@ const botInit = async () => {
 
 // GymWorm_bot functions
 app.post(URI, async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
-  console.log(req.body.message.text);
+  //console.log(req.body.message.text);
 
   if (req.body.message.text === '/fetch') {
     console.log("Command Match")
@@ -117,21 +117,21 @@ function checkSlots() {
   // Checking today's date
   let date = new Date();
   let nowDate = new Date(date);
-  nowDate.setHours(8, 0, 0, 0);
+  nowDate.setHours(0, 0, 0, 0);
   console.log("Time now is ");
   console.log(nowDate);
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
   let nextDate = new Date(date);
-  nextDate.setHours(32, 0, 0, 0);
+  nextDate.setHours(24, 0, 0, 0);
   console.log("Time tomorrow is ");
   console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
   let nextDayDate = new Date(date);
-  nextDayDate.setHours(56, 0, 0, 0);
+  nextDayDate.setHours(48, 0, 0, 0);
   console.log("Time next day is ");
   console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
