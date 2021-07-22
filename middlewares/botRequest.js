@@ -1,6 +1,7 @@
 const db = require("../models");
 const Slot = db.slot;
 const User = db.user;
+const Booking = db.booking;
 const axios = require("axios");
 const TOKEN = process.env.TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
