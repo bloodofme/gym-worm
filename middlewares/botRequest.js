@@ -66,12 +66,20 @@ teleRequest = (req, res) => {
                 //console.log(bookings);
                 let output = '';
                 if (slots.length !== 0) {
+                    slots.sort(function(a,b){return a.startTime - b.startTime});
+
                     slots.forEach((s) => {
                         //console.log("s date is");
                         //console.log(s.date);
                         //console.log(s.date.toUTCString());
                         //console.log(s.date.toUTCString().substring(0,16));
-                        output = output + "Your Slot on " + s.date.toUTCString().substring(0,16) + " is at " + s.startTime + "\n";
+                        if (s.startTime > 12) {
+                            output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + (s.startTime - 12) + "pm." + "\n";
+                        } else if (s.startTime === 12) {
+                            output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "pm" + "\n";
+                        } else {
+                            output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "am" + "\n";
+                        }
                     })
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
