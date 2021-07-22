@@ -61,8 +61,14 @@ app.post(URI, async (req, res) => {
   console.log(req.body);
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
-
-  await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
+  console.log(req.body.text);
+  
+  if (req.body.text === /\/bookmark/) {
+    console.log("matched")
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
+  } else {
+    console.log("no match");
+  }
   return res.send();
 })
 
