@@ -10,7 +10,7 @@ const API_URL = /*https://gym-worm.herokuapp.com/api/auth/ || */"http://localhos
 
 teleRequest = (req, res) => {
     console.log("teleRequest Start");
-    console.log(req)
+    //console.log(req)
 
     if (req) {
         console.log("teleFetchSlot req for " + req.telegramHandle);
@@ -27,9 +27,9 @@ teleRequest = (req, res) => {
             let slots = [];
             let counter = 0;
             let today = new Date();
-            console.log("Today date is " + today);
+            //console.log("Today date is " + today);
             today.setHours(0, 0, 0, 0);
-            console.log("Today date adjusted is " + today);
+            //console.log("Today date adjusted is " + today);
 
             user.bookings.forEach((b) => {
                 //console.log(b);
@@ -43,8 +43,8 @@ teleRequest = (req, res) => {
                                 _id: book.slot
                             }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
                                 .exec((err, slot) => {
-                                    console.log(slot);
-                                    console.log(today);
+                                    //console.log(slot);
+                                    //console.log(today);
                                     if (new Date(slot.date).getTime() >= today.getTime()) {
                                         slots.push(slot);
                                     }
@@ -67,14 +67,14 @@ teleRequest = (req, res) => {
                 let output = '';
                 if (slots.length !== 0) {
                     slots.forEach((s) => {
-                        console.log("s date is");
-                        console.log(s.date);
-                        console.log(s.date.toUTCString());
-                        console.log(s.date.toUTCString().substring(0,16));
+                        //console.log("s date is");
+                        //console.log(s.date);
+                        //console.log(s.date.toUTCString());
+                        //console.log(s.date.toUTCString().substring(0,16));
                         output = output + "Your Slot on " + s.date.toUTCString().substring(0,16) + " is at " + s.startTime + "\n";
                     })
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
-                        chat_id: chatID,
+                        chat_id: req.chatID,
                         text: output
                     })
                     console.log("Sent to Telegram for " + req.telegramHandle);
