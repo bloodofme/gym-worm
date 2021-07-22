@@ -27,7 +27,9 @@ teleRequest = (req, res) => {
             let slots = [];
             let counter = 0;
             let today = new Date();
+            console.log("Today date is " + today);
             today.setHours(0, 0, 0, 0);
+            console.log("Today date adjusted is " + today);
 
             user.bookings.forEach((b) => {
                 //console.log(b);
@@ -60,7 +62,6 @@ teleRequest = (req, res) => {
                     })
             });
 
-
             function callback() {
                 //console.log(bookings);
                 let output = '';
@@ -68,9 +69,9 @@ teleRequest = (req, res) => {
                     slots.forEach((s) => {
                         console.log("s date is");
                         console.log(s.date);
-                        console.log(s.date.toString());
-                        console.log(s.date.toString().subString(1, 11));
-                        output = output + "Your Slot on " + s.date.toString().subString(1, 11) + " is at " + s.startTime + "\n";
+                        console.log(s.date.toUTCString());
+                        console.log(s.date.toUTCString().substring(0,16));
+                        output = output + "Your Slot on " + s.date.toUTCString().substring(0,16) + " is at " + s.startTime + "\n";
                     })
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: chatID,

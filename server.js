@@ -62,19 +62,16 @@ app.post(URI, async (req, res) => {
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
   console.log(req.body.message.text);
-  
-  if (req.body.message.text === /\/fetch/) {
-    console.log("match 1")
-    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
-  } else if (req.body.message.text === '/fetch') {
-    console.log("match 2")
+
+  if (req.body.message.text === '/fetch') {
+    console.log("Command Match")
     await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
   } else {
-    console.log("no match");
+    console.log("Command No Match");
     axios.post(`${TELEGRAM_API}/sendMessage`, {
       chat_id: chatID,
-      text: "Hello " + req.body.message.chat.first_name + ", Please use the /fetch command"
-  })
+      text: "Hello " + req.body.message.chat.first_name + ", Please use the /fetch command."
+    })
   }
   return res.send();
 })
