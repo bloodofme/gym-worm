@@ -26,7 +26,9 @@ teleRequest = (req, res) => {
 
             let slots = [];
             let counter = 0;
-
+            let today = new Date();
+                  today.setHours(8,0,0,0);
+                  
             user.bookings.forEach((b) => {
                 //console.log(b);
                 Booking.findOne({
