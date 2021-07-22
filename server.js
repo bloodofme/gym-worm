@@ -58,7 +58,7 @@ const botInit = async () => {
 
 // GymWorm_bot functions
 app.post(URI, async (req, res) => {
-  //console.log(req.body);
+  console.log(req.body);
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
 

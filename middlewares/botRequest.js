@@ -27,7 +27,7 @@ teleRequest = (req, res) => {
             let slots = [];
             let counter = 0;
             let today = new Date();
-                  today.setHours(8,0,0,0);
+            today.setHours(0, 0, 0, 0);
 
             user.bookings.forEach((b) => {
                 //console.log(b);
@@ -41,7 +41,8 @@ teleRequest = (req, res) => {
                                 _id: book.slot
                             }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
                                 .exec((err, slot) => {
-                                    //console.log(slot);
+                                    console.log(slot);
+                                    console.log(today);
                                     if (new Date(slot.date).getTime() >= today.getTime()) {
                                         slots.push(slot);
                                     }
