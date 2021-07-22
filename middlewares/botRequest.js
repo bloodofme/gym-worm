@@ -10,10 +10,10 @@ const API_URL = /*https://gym-worm.herokuapp.com/api/auth/ || */"http://localhos
 
 teleRequest = (req, res) => {
     console.log("teleRequest Start");
+    console.log(req)
 
     if (req) {
         console.log("teleFetchSlot req for " + req.telegramHandle);
-        //console.log(req);
     }
 
     User.findOne({
@@ -28,7 +28,7 @@ teleRequest = (req, res) => {
             let counter = 0;
             let today = new Date();
                   today.setHours(8,0,0,0);
-                  
+
             user.bookings.forEach((b) => {
                 //console.log(b);
                 Booking.findOne({
@@ -74,7 +74,7 @@ teleRequest = (req, res) => {
                     console.log("Sent to Telegram for " + req.telegramHandle);
                 } else {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
-                        chat_id: chatID,
+                        chat_id: req.chatID,
                         text: "You have no upcoming bookings"
                     })
                     console.log("No Slots found for " + req.telegramHandle);

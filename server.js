@@ -108,22 +108,22 @@ function checkSlots() {
   let date = new Date();
   let nowDate = new Date(date);
   nowDate.setHours(8, 0, 0, 0);
-  //console.log("Time now is ");
-  //console.log(nowDate);
+  console.log("Time now is ");
+  console.log(nowDate);
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
   let nextDate = new Date(date);
   nextDate.setHours(32, 0, 0, 0);
-  //console.log("Time tomorrow is ");
-  //console.log(nextDate);
+  console.log("Time tomorrow is ");
+  console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
   let nextDayDate = new Date(date);
   nextDayDate.setHours(56, 0, 0, 0);
-  //console.log("Time next day is ");
-  //console.log(nextDayDate);
+  console.log("Time next day is ");
+  console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
 }
 
