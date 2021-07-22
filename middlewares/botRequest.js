@@ -66,7 +66,11 @@ teleRequest = (req, res) => {
                 let output = '';
                 if (slots.length !== 0) {
                     slots.forEach((s) => {
-                        output = output + "Your Slot on " + s.date.subString(1, 11) + " is at " + s.startTime + "\n";
+                        console.log("s date is");
+                        console.log(s.date);
+                        console.log(s.date.toString());
+                        console.log(s.date.toString().subString(1, 11));
+                        output = output + "Your Slot on " + s.date.toString().subString(1, 11) + " is at " + s.startTime + "\n";
                     })
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: chatID,
