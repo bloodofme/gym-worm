@@ -19,7 +19,7 @@ teleRequest = (req, res) => {
     //console.log("Today date is " + today);
     today.setHours(0, 0, 0, 0);
     //console.log("Today date adjusted is " + today);
-    console.log(today.toISOString());
+    //console.log(today.toISOString());
 
     if (req.task === "bookings") { // Check user's upcoming bookings
         User.findOne({
@@ -123,11 +123,15 @@ teleRequest = (req, res) => {
                     //console.log(s)
                     counter++;
                     if (s.capacity > 0 && s.fullCapacity > 0) {
-                        //console.log("Slot start time is " + s.startTime);
-                        //console.log("Now hour is " + later.getHours());
-                        let timeDiff = s.startTime >= later.getHours();
-                        //console.log("Slot is after Now is " + timeDiff)
-                        if (timeDiff) {
+                        if (s.date.getTime() === today.getTime()) {
+                            //console.log("Slot start time is " + s.startTime);
+                            //console.log("Now hour is " + later.getHours());
+                            let timeDiff = s.startTime >= later.getHours();
+                            //console.log("Slot is after Now is " + timeDiff)
+                            if (timeDiff) {
+                                validSlots.push(s);
+                            }
+                        } else {
                             validSlots.push(s);
                         }
                     }
@@ -147,11 +151,11 @@ teleRequest = (req, res) => {
 
                         validSlots.forEach((s) => {
                             if (s.startTime > 12) {
-                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + (s.startTime - 12) + "pm." + "\n";
+                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + (s.startTime - 12) + "pm." + "\n";
                             } else if (s.startTime === 12) {
-                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "pm" + "\n";
+                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "pm" + "\n";
                             } else {
-                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am" + "\n";
+                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am" + "\n";
                             }
                         })
 
