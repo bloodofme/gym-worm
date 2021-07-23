@@ -96,8 +96,8 @@ teleRequest = (req, res) => {
             });
     } else if (req.task === "fetch") {
         Slot.find({
-            date: { $gt: today.toISOString() }
-        })
+            date: { $gte: today.toISOString() }
+        }, { capacity: 1, fullCapacity: 1, date: 1, startTime: 1 })
             .exec((err, slots) => {
 
                 if (err) {
@@ -113,13 +113,13 @@ teleRequest = (req, res) => {
                 console.log("Later is " + later);
 
                 slots.forEach(s => {
-                    console.log(s)
+                    //console.log(s)
                     counter++;
                     if (s.capacity > 0 && s.fullCapacity > 0) {
-                        console.log("Slot start time is " + s.startTime);
-                        console.log("Now hour is " + later.getHours());
+                        //console.log("Slot start time is " + s.startTime);
+                        //console.log("Now hour is " + later.getHours());
                         let timeDiff = s.startTime >= later.getHours();
-                        console.log("Slot is after Now is " + timeDiff)
+                        //console.log("Slot is after Now is " + timeDiff)
                         if (timeDiff) {
                             validSlots.push(s);
                         }
@@ -131,6 +131,13 @@ teleRequest = (req, res) => {
 
                 function fetchCallback() {
                     console.log("callback for bookings");
+                    //console.log(validSlots);
+                    let output = '';
+
+                    validSlots.sort(function (a, b) {
+                        return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
+                    });
+
                     console.log(validSlots);
                 }
             })
