@@ -116,7 +116,7 @@ require('./routes/slot.routes')(app);
 const { autoSlots } = require("./middlewares");
 const { checkBans } = require("./middlewares");
 
-const deployTo = "local" // change between "local" or "heroku"
+const deployTo = "heroku" // change between "local" or "heroku"
 
 function checkSlots() { // Make sure to change for 
   console.log("Slot Generation Request Dates : ");

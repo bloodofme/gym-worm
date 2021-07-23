@@ -12,8 +12,8 @@ import moment from 'moment';
 
 const { Header, Content } = Layout;
 
-const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
 document.body.style = 'background: #74828F;';
 
@@ -45,8 +45,8 @@ function Home() {
 
                 const posts = res.data.slot;
                 let today = new Date();
-                today.setHours(8, 0, 0, 0); // for local
-                //today.setHours(8,0,0,0); // for heroku
+                //today.setHours(8, 0, 0, 0); // for local
+                today.setHours(0,0,0,0); // for heroku
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {

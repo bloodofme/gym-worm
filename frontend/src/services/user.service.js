@@ -1,8 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = "http://localhost:5000/api/test/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
+//const API_URL = "http://localhost:5000/api/test/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
 
 class UserService {
   getPublicContent() {

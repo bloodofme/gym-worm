@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
+//const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
+const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
 
 
 class AuthService {

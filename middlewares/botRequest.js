@@ -6,7 +6,7 @@ const axios = require("axios");
 const TOKEN = process.env.TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-const API_URL = /*https://gym-worm.herokuapp.com/api/auth/ || */"http://localhost:5000/api/auth/";
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
 
 teleRequest = (req, res) => {
     //console.log(req)
