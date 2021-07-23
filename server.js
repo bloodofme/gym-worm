@@ -127,7 +127,7 @@ function checkSlots() { // Make sure to change for
   if (deployTo === "local") {
     nowDate.setHours(8, 0, 0, 0); // use this for local testing
   } else {
-    nowDate.setHours(0, 0, 0, 0); // use this for deploying to heroku
+    nowDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
   }
   //console.log("Time now is ");
   //console.log(nowDate);
@@ -138,7 +138,7 @@ function checkSlots() { // Make sure to change for
   if (deployTo === "local") {
     nextDate.setHours(32, 0, 0, 0); // use this for local testing
   } else {
-    nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
+    nextDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
   }
   //console.log("Time tomorrow is ");
   //console.log(nextDate);
@@ -149,7 +149,7 @@ function checkSlots() { // Make sure to change for
   if (deployTo === "local") {
     nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
   } else {
-    nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
+    nextDayDate.setHours(72, 0, 0, 0); // use this for deploying to heroku
   }
   //console.log("Time next day is ");
   //console.log(nextDayDate);
