@@ -620,17 +620,6 @@ function Admin() {
                                     </Space>
                                 </Row>
                             </Card>
-
-                            <Button
-                                className="bookingsButtons"
-                                type="primary"
-                                shape="round"
-                                onClick={() => {
-                                    
-                                }}
-                            >
-                                Apply Demerit
-                            </Button>
                         </Space>
                     </Row>
                 </Card>

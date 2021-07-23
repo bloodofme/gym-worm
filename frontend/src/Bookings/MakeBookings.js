@@ -110,15 +110,7 @@ function MakeBookings() {
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + date.current);
-                setSlots(SlotService.getCurrentSlots(checkDate.currentDate).filter(s => {
-                    var test = true;
-                    userSlots.forEach(us => {
-                        if (s._id === us._id) {
-                            test = false
-                        }
-                    })
-                    return test;
-                }));
+                setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
                 console.log(slots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
             },
@@ -194,7 +186,17 @@ function MakeBookings() {
                 >
                     <text className="booking">Make Bookings</text>
                     {
-                        slotsAvail ? slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
+                        slotsAvail ? slots
+                            .filter(s => {
+                                var test = true;
+                                userSlots.forEach(us => {
+                                    if (s._id === us._id) {
+                                        test = false
+                                    }
+                                })
+                                return test;
+                            })
+                            .forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
                     }
                     <Space >
                         <DatePicker
