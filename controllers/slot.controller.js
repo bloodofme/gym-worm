@@ -22,6 +22,7 @@ exports.createSlot = (req, res) => {
     .exec((err, slot) => {
       console.log(slot);
       console.log(slot.length);
+
       if (slot.length !== 0) {
         console.log(req.body.date + " for time " + req.body.startTime + " already created");
         return res.status(403).json('Slot already exists');
@@ -37,7 +38,7 @@ exports.createSlot = (req, res) => {
         newSlot.save()
           .then(() => res.send({ message: 'Slot Created!' }))
           .catch(err => res.status(500).json('Error: ' + err));
-      }
+      } 
     });
 }
 

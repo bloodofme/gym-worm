@@ -154,9 +154,9 @@ class AuthService {
       })
   }
 
-  listSlotCustomers() {
+  listSlotCustomers(userID) {
     return axios
-      .get(API_URL + 'listSlotCustomers', {userID})
+      .post(API_URL + 'listSlotCustomers', {userID})
       .then((response) => {
         return response.data;
       })

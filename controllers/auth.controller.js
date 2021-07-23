@@ -387,19 +387,22 @@ exports.listAllCustomers = (req, res) => {
 
 exports.listSlotCustomers = (req, res) => {
   if (req) {
+    console.log(req.body.userID)
     console.log("listAllCustomers req exist");
+    console.log(req.body)
   }
 
-  User.find({
+  User.findOne({
     _id: req.body.userID
   }, { firstName: 1, lastName: 1, email: 1, banStatus: 1, banDuration: 1 })
     .exec((err, users) => {
+      console.log(users)
       if (err) {
         return res.status(500).send({ message: err });
-      }
+      } 
 
       return res.status(200).send({
-        customerList: users
+        users
       });
     });
 };

@@ -31,7 +31,7 @@ module.exports = function (app) {
 
     app.get("/api/auth/listAllCustomers", controller.listAllCustomers);
 
-    app.get("/api/auth/listSlotCustomers", controller.listSlotCustomers);
+    app.post("/api/auth/listSlotCustomers", controller.listSlotCustomers);
 
     app.get("/api/auth/listOneCustomer", controller.listOneCustomer);
 

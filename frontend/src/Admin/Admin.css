@@ -10,3 +10,11 @@
     background-size: cover;
     background-repeat: no-repeat;
 }
+
+.customerNotifStyle {
+    background: #CBC5C1;
+    width: calc(180px + 7.5vw);
+    min-height: 100px;
+    border-radius: 0px;
+    font-size: calc(9.1px + 0.5vw);
+}

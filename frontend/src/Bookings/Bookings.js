@@ -81,6 +81,8 @@ function Bookings() {
                 
                     const posts = res.data.slot;
                     temp.push([posts, slot])
+                    console.log(posts)
+
                     if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
                         if (currentUser.bookings.length === temp.length) {
                             setSlots(temp);
@@ -90,7 +92,7 @@ function Bookings() {
         });
     }, [])
 
-    console.log(slots)
+    console.log(currentUser.bookings)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
@@ -115,7 +117,7 @@ function Bookings() {
                                     align='center'
                                 >
                                     {
-                                        slots.length === 0 ? null : slots.forEach(element => 
+                                        slots.forEach(element => 
                                             {
                                                 arrSlots.push(<DisplayBookings slot={element[0]} />)
                                                 console.log(element)
