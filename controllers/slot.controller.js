@@ -236,7 +236,6 @@ exports.retrieveSlot = (req, res) => {
   if (req) {
     console.log("retrieveSlot req exist " + req.body.bookingID);
   }
-  //console.log("Booking ID " + req.body.bookingID);
 
   Booking.find({
     _id: req.body.bookingID,
@@ -245,17 +244,21 @@ exports.retrieveSlot = (req, res) => {
       if (err) {
         return res.status(500).send({ message: req });
       }
-      //console.log(booking);
-      if (booking.valid) {
-        Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          return res.status(200).send({ slot });
-        });
+
+      if (booking.length === 0) {
+        return res.status(400).send({ message: "Invalid Booking ID" });
       } else {
-        return res.status(404).send({ message: "No Valid Slot" });
+        if (booking[0].valid) {
+          Slot.findOne({ _id: booking[0].slot }, (err, slot) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+            return res.status(200).send({ slot });
+          });
+        } else {
+          return res.status(404).send({ message: "No Valid Slot" });
+        }
       }
     });
 };

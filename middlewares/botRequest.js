@@ -153,9 +153,9 @@ teleRequest = (req, res) => {
                             if (s.startTime > 12) {
                                 output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + (s.startTime - 12) + "pm." + "\n";
                             } else if (s.startTime === 12) {
-                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "pm" + "\n";
+                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "pm." + "\n";
                             } else {
-                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am" + "\n";
+                                output = output + "There's " + s.capacity + " spaces available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am." + "\n";
                             }
                         })
 

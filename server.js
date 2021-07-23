@@ -68,7 +68,7 @@ app.post(URI, async (req, res) => {
     await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "bookings" });
   } else if (req.body.message.text === '/fetch') {
     console.log("Fetch Slots Command Match")
-    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "fetch"});
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "fetch" });
   } else {
     console.log("Command Not Matched");
     axios.post(`${TELEGRAM_API}/sendMessage`, {
@@ -116,29 +116,43 @@ require('./routes/slot.routes')(app);
 const { autoSlots } = require("./middlewares");
 const { checkBans } = require("./middlewares");
 
-function checkSlots() {
+const deployTo = "local" // change between "local" or "heroku"
+
+function checkSlots() { // Make sure to change for 
   console.log("Slot Generation Request Dates : ");
 
   // Checking today's date
   let date = new Date();
   let nowDate = new Date(date);
-  nowDate.setHours(0, 0, 0, 0);
-  console.log("Time now is ");
-  console.log(nowDate);
+  if (deployTo === "local") {
+    nowDate.setHours(8, 0, 0, 0); // use this for local testing
+  } else {
+    nowDate.setHours(0, 0, 0, 0); // use this for deploying to heroku
+  }
+  //console.log("Time now is ");
+  //console.log(nowDate);
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
   let nextDate = new Date(date);
-  nextDate.setHours(24, 0, 0, 0);
-  console.log("Time tomorrow is ");
-  console.log(nextDate);
+  if (deployTo === "local") {
+    nextDate.setHours(32, 0, 0, 0); // use this for local testing
+  } else {
+    nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
+  }
+  //console.log("Time tomorrow is ");
+  //console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
   let nextDayDate = new Date(date);
-  nextDayDate.setHours(48, 0, 0, 0);
-  console.log("Time next day is ");
-  console.log(nextDayDate);
+  if (deployTo === "local") {
+    nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
+  } else {
+    nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
+  }
+  //console.log("Time next day is ");
+  //console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
 }
 
