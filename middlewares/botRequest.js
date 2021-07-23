@@ -18,7 +18,7 @@ teleRequest = (req, res) => {
 
     let today = new Date();
     console.log("Today date is " + today);
-    today.setHours(48, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
     console.log("Today date adjusted is " + today);
     console.log(today.toISOString());
 
@@ -33,10 +33,6 @@ teleRequest = (req, res) => {
 
                 let slots = [];
                 let counter = 0;
-                let today = new Date();
-                //console.log("Today date is " + today);
-                today.setHours(0, 0, 0, 0);
-                //console.log("Today date adjusted is " + today);
 
                 user.bookings.forEach((b) => {
                     //console.log(b);
@@ -107,7 +103,7 @@ teleRequest = (req, res) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
-                //console.log(slots);
+                console.log(slots);
                 let counter = 0;
                 let validSlots = [];
 
@@ -121,8 +117,8 @@ teleRequest = (req, res) => {
                     counter++;
                     if (s.capacity > 0 && s.fullCapacity > 0) {
                         console.log("Slot start time is " + s.startTime);
-                        console.log("Now hour is " + now.getHours());
-                        let timeDiff = s.startTime >= now.getHours();
+                        console.log("Now hour is " + later.getHours());
+                        let timeDiff = s.startTime >= later.getHours();
                         console.log("Slot is after Now is " + timeDiff)
                         if (timeDiff) {
                             validSlots.push(s);
