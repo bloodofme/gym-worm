@@ -123,6 +123,9 @@ function checkSlots() { // Make sure to change for
 
   // Checking today's date
   let date = new Date();
+  console.log("Now the time is " + date);
+  console.log("The hour is " + date.getHours());
+
   let nowDate = new Date(date);
   if (deployTo === "local") {
     nowDate.setHours(8, 0, 0, 0); // use this for local testing
