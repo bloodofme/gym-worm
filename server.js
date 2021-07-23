@@ -63,18 +63,23 @@ app.post(URI, async (req, res) => {
   const teleID = req.body.message.chat.username;
   //console.log(req.body.message.text);
 
-  if (req.body.message.text === '/fetch') {
-    console.log("Command Match")
-    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID });
+  if (req.body.message.text === '/bookings') {
+    console.log("Fetch Bookings Command Match")
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "bookings" });
+  } else if (req.body.message.text === '/fetch') {
+    console.log("Fetch Slots Command Match")
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "fetch"});
   } else {
     console.log("Command No Match");
     axios.post(`${TELEGRAM_API}/sendMessage`, {
       chat_id: chatID,
-      text: "Hello " + req.body.message.chat.first_name + ", Please use the /fetch command."
+      text: "Hello " + req.body.message.chat.first_name + ", Please use the /bookings command to see your upcoming bookings or /fetch command to see all available slots upcoming."
     })
   }
   return res.send();
 })
+
+//botRequest.teleRequest({ chatID: 1234, telegramHandle: "0000", task: "fetch"});
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
