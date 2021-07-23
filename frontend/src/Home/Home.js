@@ -36,26 +36,36 @@ function Home() {
     }, [])*/
 
     useEffect(() => {
-        const temp = []
-        currentUser.bookings.forEach(slot => {
-            console.log("Booking ID is " + slot); // booking id
+        const temp = [];
+        let counter = 0;
+        currentUser.bookings.forEach(booking => {
+            //console.log("Booking ID is " + slot); // booking id
             (async () => {
-                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
+                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
-                /*console.log("slot date is " + new Date(res.data.slot.date));
-                console.log("comparing time to " + new Date());
-                console.log(new Date(res.data.slot.date) >= new Date());*/
                 const posts = res.data.slot;
-                temp.push([posts, slot])
-                // Only show upcoming booked slots, hide past slots
-                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
-                    if (currentUser.bookings.length === temp.length) {
-                        setSlots(temp)
-                    }
+                let today = new Date();
+                today.setHours(8, 0, 0, 0); // for local
+                //today.setHours(8,0,0,0); // for heroku
+                counter++;
+
+                if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
+                    temp.push([posts, booking]);
+                }
+                
+                if (counter === currentUser.bookings.length) {
+                    //console.log(temp);
+                    temp.sort(function (a, b) {
+                        return a[0].date - b[0].date || a[0].startTime - b[0].startTime;
+                    });
+                    setSlots(temp);
                 }
             })()
-        })
+        });
     }, [])
+
+    //do not remove this!!!
+    console.log(slots);
 
     function DisplayBookings(props) {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
@@ -83,7 +93,7 @@ function Home() {
                     <Row gutter={10}>
                         <Col wrap="false">
                             <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1>
-                            <p1 className='textCard'>{` \n Time: ${Time(props.slot.startTime)}`}</p1>
+                            <p1 className='textCard'>{`\n Time: ${Time(props.slot.startTime)}`}</p1>
                         </Col>
                     </Row>
                 </Card>

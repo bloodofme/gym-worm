@@ -24,7 +24,7 @@
 }
 
 .textCard {
-    font-size: calc(15px + 0.5vw);
+    font-size: calc(12px + 0.5vw);
     color: #EBECED;
 }
 
@@ -37,8 +37,7 @@
 
 .card {
     background: #A2AAB0;
-    max-width: 500px;
-    max-height: 120px;
+    width: calc(120px + 7.5vw);
     font-size: 1.2rem;
     vertical-align: center;
     text-align: center;

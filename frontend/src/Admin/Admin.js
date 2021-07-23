@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Select, Card, Row, Col, Checkbox, Menu, Dropdown } from 'antd';
+import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Select, Card, Row, Col, Checkbox, Menu, Dropdown, Collapse, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import './Admin.css';
 import Navbar from '../components/Navbar/Navbar';
@@ -28,6 +28,7 @@ Admin page functions
 
 const { Header, Content } = Layout;
 const { Option } = Select;
+const { Panel } = Collapse;
 const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
 //const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
 
@@ -49,6 +50,52 @@ function Admin() {
     const timeFormat = "HH"
 
     const [typeView, setTypeView] = useState('time')
+
+    //view slots
+    const [slotsV, setSlotsV] = useState([])
+    const arrSlotsV = [];
+    const dateUpdateV = useRef(moment().format(dateFormat).toString());
+
+    function onChangeUpdateDateV(theDate, dateString) {
+        dateUpdateV.current = JSON.parse(JSON.stringify(dateString));
+        console.log("date is " + dateUpdateV.current.toString());
+
+        const checkDate = {
+            currentDate: dateUpdateV.current,
+        }
+
+        SlotService.fetchSlots(checkDate.currentDate).then(
+            () => {
+                console.log("Finding slots for " + dateUpdateV.current);
+                setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
+            },
+            error => {
+                console.log("cant find slot for " + dateUpdateV.current + " " + error);
+                alert("No slots that day");
+                //window.location.reload(false);
+            }
+        );
+    }
+
+    function DisplayBookingsV(props) {
+        const Time = (time) => {
+            return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
+        }
+
+        return (
+            <div>
+                <Card className='bookingStyle'>
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text><br/>
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text>
+                        </Col>
+                    </Row>
+                </Card>
+            </div>
+        );
+    }
 
     //Update Auto Slots
     const [startTime, setStartTime] = useState(slotSettings.startTime);
@@ -192,18 +239,15 @@ function Admin() {
         return (
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={3}>
-                        <Col span={15} wrap="false">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text>
-                            <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
-                            <text className='text'>{` \n Vacancy: ${props.slot.capacity}`}</text>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br/>
                         </Col>
                     </Row>
                 </Card>
-
             </div>
         );
     }
@@ -329,9 +373,8 @@ function Admin() {
             console.log(username);
             return (
                 <Menu.Item key={`${count}`} >
-                        <Checkbox onChange={(e) => onChange(e, username)} style={{marginRight: '8px'}}>
-                            {`${username.firstName} ${username.lastName}`}
-                        </Checkbox> 
+                        <Checkbox onChange={(e) => onChange(e, username)} style={{marginRight: '40px'}}/>
+                        <text>{`${username.firstName} ${username.lastName}`}</text>
                 </Menu.Item>
             )
         }
@@ -409,6 +452,78 @@ function Admin() {
         );
     }
 
+    //All Customers (AC)
+    const [usersAC, setUsersAC] = useState([])
+    const arrUsersAC = [];
+
+    useEffect(() => {
+        (async () => {
+            const res = await axios.get(API_URL + 'listAllCustomers', {})
+            setUsersAC(res.data.customerList)
+        })()
+    }, [])
+
+    function DisplayBookingsC(props) {
+        return (
+            <div>
+                <Card className='customerNotifStyle'>
+                    <Row gutter={3}>
+                        <Col span={20} wrap="false">
+                            <text className='text'>{`Name: ${props.user.firstName} ${props.user.lastName}  \n`}</text>
+                            <text className='text'>{`ID: ${props.user._id}  \n`}</text>
+                            <text className='text'>{`Email: ${props.user.email} \n `}</text>
+                            <text className='text'>{`Contact: ${props.user.contactNo} \n `}</text>
+                            <text className='text'>{`Ban Status: ${props.user.banStatus} \n `}</text>
+                        </Col>
+                    </Row>
+                </Card>
+            </div>
+        );
+    }
+
+    //One Customer (OC)
+    const [usersOC, setUsersOC] = useState([])
+    const [visibleOC, setVisibleOC] = useState(false)
+    const [selectedUserOC, setSelectedUserOC] = useState([])
+    const arrUsersOC = []
+    var count = 0;
+
+    useEffect(() => {
+        (async () => {
+            const res = await axios.get(API_URL + 'listAllCustomers', {})
+            setUsersOC(res.data.customerList)
+        })()
+    }, [])
+
+    function handleButtonClickOC(e) {
+        message.info('Click on left button.');
+        console.log('click left button', e);
+    }
+    
+    function handleMenuClickOC(username) {
+        console.log('click', username);
+        setSelectedUserOC([username]);
+    }
+
+    const userNamesOC = (username, count) => {
+        return (
+            <Menu.Item key={`${count}`} onClick={() => handleMenuClickOC(username)}>
+                    <text>{`${username.firstName} ${username.lastName}`}</text>
+            </Menu.Item>
+        )
+    }
+
+    const userFrontendOC = (
+        <Menu>
+            {
+                usersOC.filter(user => user !== null).forEach(user => {
+                    arrUsersOC.push(userNamesOC(user, count++))
+                })
+            }
+            { arrUsersOC.map(user => <div> {user} </div>) }
+        </Menu>
+    );
+
     return (
         <div style={{ background: "74828F", alignItems: "center" }}>
             <Navbar />
@@ -421,15 +536,12 @@ function Admin() {
                     <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
                         <h1 style={{color:'#FFFFFF'}}>View Slots</h1>
                     </Header>
+                    
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
-                            <Space>
-                                <Select value={typeView} onChange={setTypeView}>
-                                    <Option value="time">Time</Option>
-                                    <Option value="date">Date</Option>
-                                </Select>
-                                <PickerWithTypeView type={typeView}/>
-                            </Space>
+                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateV}/>
+                                { slotsV.forEach(element => { arrSlotsV.push(<DisplayBookingsV slot={element} />) }) }
+                                { arrSlotsV.map(element => <div> {element} </div>) }
                         </Space>
                     </Row>
                 </Card>
@@ -501,22 +613,11 @@ function Admin() {
                     </Header>
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
+
                             <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateE}/>
 
-                            { slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) }
-                            { arrSlots.map(element => <div> {element} </div>) }
-
                             <Input style={{ borderRadius: 35, width: "50vw" }}
-                                placeholder={"Current Capacity: " + capacityUpdateE}
-                                suffix={
-                                    <Tooltip title="Capacity">
-                                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                                    </Tooltip>
-                                }
-                            />
-
-                            <Input style={{ borderRadius: 35, width: "50vw" }}
-                                placeholder={"Full Capcity"}
+                                placeholder={"Change Capcity"}
                                 onChange={onChangeCapacityUpdateE}
                                 suffix={
                                     <Tooltip title="full capacity">
@@ -524,6 +625,13 @@ function Admin() {
                                     </Tooltip>
                                 }
                             />
+
+                            <text style={{ borderRadius: 35, width: "50vw" }}>
+                                {"Current Capacity: " + capacityUpdateE}
+                            </text>
+
+                            { slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) }
+                            { arrSlots.map(element => <div> {element} </div>) }
 
                             <Button
                                 className="bookingsButtons"
@@ -607,19 +715,50 @@ function Admin() {
                     <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
                         <h1 style={{color:'#FFFFFF'}}>Customers</h1>
                     </Header>
+
                     
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
+                        
                         <Space direction="vertical" size={'large'} align='center'>
 
                             <Card style={{whiteSpace: 'pre-line'}}>
                                 <Row type="flex" justify="center" style={{ padding: 20 }}>
                                     <Space direction="vertical" size={'large'} align='center'>
-                                    <h1 style={{color:'black'}}>Email Notifications Turned On</h1>
-                                    { usersEN.forEach(element => { arrUsersEN.push(<DisplayBookingsEN user={element} />) }) }
-                                    { arrUsersEN.map(element => <div> {element} </div>) }
+                                        <Dropdown.Button overlay={userFrontendOC}>   
+                                            Users
+                                        </Dropdown.Button>
+
+                                        { selectedUserOC.map(element => <DisplayBookingsC user={element} />) } 
                                     </Space>
                                 </Row>
                             </Card>
+
+                            <Collapse defaultActiveKey={['1']}>
+                                <Panel  style={{color:'black'}}  header="All Customers" key="1">      
+                                    <Card style={{whiteSpace: 'pre-line'}}>
+                                        <Row type="flex" justify="center" style={{ padding: 20 }}>
+                                            <Space direction="vertical" size={'large'} align='center'>
+                                            { usersAC.forEach(element => { arrUsersAC.push(<DisplayBookingsC user={element} />) }) }
+                                            { arrUsersAC.map(element => <div> {element} </div>) }
+                                            </Space>
+                                        </Row>
+                                    </Card>
+                                </Panel>
+                            </Collapse>     
+
+                            <Collapse defaultActiveKey={['1']}>
+                                <Panel header="Email Notifications" key="2">      
+                                    <Card style={{whiteSpace: 'pre-line'}}>
+                                        <Row type="flex" justify="center" style={{ padding: 20 }}>
+                                            <Space direction="vertical" size={'large'} align='center'>
+                                                { usersEN.forEach(element => { arrUsersEN.push(<DisplayBookingsEN user={element} />) }) }
+                                                { arrUsersEN.map(element => <div> {element} </div>) }
+                                            </Space>
+                                        </Row>
+                                    </Card>
+                                </Panel>
+                            </Collapse>  
+
                         </Space>
                     </Row>
                 </Card>

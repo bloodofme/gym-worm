@@ -57,37 +57,44 @@ function Bookings() {
         return (
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={10}>
-                        <Col span={15} style={{ padding: '8px 0' }} wrap="false">
-                            <p className='text'>{`Date: ${props.slot.date.slice(0, 10)} Time: ${Time(props.slot.startTime)}`}</p>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
                         </Col>
                     </Row>
                 </Card>
-
             </div>
         );
     }
 
 
     useEffect(() => {
-        const temp = []
-        currentUser.bookings.forEach(slot => {
+        const temp = [];
+        let counter = 0;
+        currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
-                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                
-                    const posts = res.data.slot;
-                    temp.push([posts, slot])
-                    console.log(posts)
+                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
-                    if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
-                        if (currentUser.bookings.length === temp.length) {
-                            setSlots(temp);
-                        }
-                    }
+                const posts = res.data.slot;
+                let today = new Date();
+                today.setHours(8, 0, 0, 0); // for local
+                //today.setHours(8,0,0,0); // for heroku
+                counter++;
+
+                if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
+                    temp.push([posts, booking]);
+                }
+                
+                if (counter === currentUser.bookings.length) {
+                    //console.log(temp);
+                    temp.sort(function (a, b) {
+                        return a[0].date - b[0].date || a[0].startTime - b[0].startTime;
+                    });
+                    setSlots(temp);
+                }
             })()
         });
     }, [])

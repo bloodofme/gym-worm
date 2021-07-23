@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Space, Row, DatePicker, Breadcrumb, Col, Card, Checkbox } from 'antd';
+import { Button, Space, Row, DatePicker, Breadcrumb, Col, Card, Checkbox, Tabs } from 'antd';
 import 'antd/dist/antd.css';
 import './Bookings.css'
 import moment from 'moment';
@@ -8,6 +8,7 @@ import SlotService from "../services/slot.service";
 import AuthService from "../services/auth.service";
 import axios from "axios";
 
+const { TabPane } = Tabs;
 function MakeBookings() {
     //history.push('/MakeBookings');
 
@@ -19,6 +20,10 @@ function MakeBookings() {
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
     const today = moment();
+    const tdy = moment().format(dateFormat)
+    const tmr = moment().add(1,'days').format(dateFormat)
+    const dayAfter = moment().add(2, 'days').format(dateFormat)
+
 
     let aDate = new Date();
     let bDate = new Date(aDate);
@@ -29,6 +34,7 @@ function MakeBookings() {
     } else {
         console.log("no change");
     }
+
     console.log(aDate.toJSON());
     console.log(bDate.toJSON());
     const todayDate = JSON.stringify(new Date(bDate)).substring(1, 11);
@@ -93,7 +99,7 @@ function MakeBookings() {
 
     console.log(userSlots);
 
-    function onChangeDate(theDate, dateString) {
+    function onChangeDate(dateString) {
         date.current = JSON.parse(JSON.stringify(dateString));
         console.log("date is " + date.current.toString());
 
@@ -157,14 +163,12 @@ function MakeBookings() {
         return (
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={3}>
-                        <Col span={15} wrap="false">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text>
-                            <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
-                            <text className='text'>{` \n Vacancy: ${props.slot.capacity}`}</text>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br/>
                         </Col>
                     </Row>
                 </Card>
@@ -184,7 +188,6 @@ function MakeBookings() {
                     size={'large'}
                     align='center'
                 >
-                    <text className="booking">Make Bookings</text>
                     {
                         slotsAvail ? slots
                             .filter(s => {
@@ -198,22 +201,50 @@ function MakeBookings() {
                             })
                             .forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
                     }
-                    <Space >
-                        <DatePicker
-                            defaultValue={today}
-                            onChange={onChangeDate}
-                        />
-                    </Space>
-                    <Breadcrumb target={() => container}>
-                        <Space
-                            style={{ background: "74828F", alignItems: "center" }}
-                            direction="vertical"
-                            size={'small'}
-                            align='center'
-                        >
-                            {arrSlots.map(element => <div> {element} </div>)}
-                        </Space>
-                    </Breadcrumb>
+
+                    <text className="booking">Make Bookings</text>
+
+                    <Tabs defaultActiveKey="1" centered onChange={onChangeDate}>
+                        <TabPane tab={`${tdy}`} key={`${tdy}`} centered>
+                            <Row justify="center" direction="vertical">
+                                <Space
+                                    style={{ background: "74828F", alignItems: "center"}}
+                                    direction="vertical"
+                                    size={'small'}
+                                    align='center'
+                                >
+                                    {arrSlots.map(element => <div> {element} </div>)}
+                                </Space>
+                            </Row>
+                        </TabPane>
+
+                        <TabPane tab={`${tmr}`} key={`${tmr}`}>
+                            <Row justify="center" direction="vertical">
+                                <Space
+                                    style={{ background: "74828F", alignItems: "center"}}
+                                    direction="vertical"
+                                    size={'small'}
+                                    align='center'
+                                >
+                                    {arrSlots.map(element => <div> {element} </div>)}
+                                </Space>
+                            </Row>
+                        </TabPane>
+
+                        <TabPane tab={`${dayAfter}`} key={`${dayAfter}`}>
+                            <Row justify="center" direction="vertical">
+                                <Space
+                                    style={{ background: "74828F", alignItems: "center"}}
+                                    direction="vertical"
+                                    size={'small'}
+                                    align='center'
+                                >
+                                    {arrSlots.map(element => <div> {element} </div>)}
+                                </Space>
+                            </Row>
+                        </TabPane>
+                    </Tabs>
+
                     <Button
                         className="bookingsButtons"
                         type="primary"
