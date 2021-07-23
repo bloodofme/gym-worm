@@ -107,7 +107,7 @@ teleRequest = (req, res) => {
                 let counter = 0;
                 let validSlots = [];
 
-                if (slot.length === 0) {
+                if (slots.length === 0) {
                     fetchCallback();
                 }
 
