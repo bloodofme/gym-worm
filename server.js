@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
+const axios = require('axios');
 
 // Setting up MongoDB Atlas Port
 require('dotenv').config();
@@ -31,11 +32,54 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
   initial();
   checkSlots();
+  checkBan();
 })
   .catch(err => {
     console.error("Connection Error", err);
     process.exit();
   });
+
+// Opening Connection to GymWorm_bot
+const TOKEN = process.env.TOKEN;
+const SERVER_URL = process.env.SERVER_URL;
+const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
+const URI = `/webhook/${TOKEN}`;
+const WEBHOOK_URL = SERVER_URL + URI;
+const { botRequest } = require("./middlewares");
+
+//console.log(WEBHOOK_URL); // test
+//console.log(TELEGRAM_API);
+
+// for Initializing connection to GymWorm_bot
+const botInit = async () => {
+  const result = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
+  //console.log(result.data);
+}
+
+// GymWorm_bot functions
+app.post(URI, async (req, res) => {
+  //console.log(req.body);
+  const chatID = req.body.message.chat.id;
+  const teleID = req.body.message.chat.username;
+  //console.log(req.body.message.text);
+
+  if (req.body.message.text === '/bookings') {
+    console.log("Fetch Bookings Command Match")
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "bookings" });
+  } else if (req.body.message.text === '/fetch') {
+    console.log("Fetch Slots Command Match")
+    await botRequest.teleRequest({ chatID: chatID, telegramHandle: teleID, task: "fetch" });
+  } else {
+    console.log("Command Not Matched");
+    axios.post(`${TELEGRAM_API}/sendMessage`, {
+      chat_id: chatID,
+      text: "Hello " + req.body.message.chat.first_name + ", Please use the /bookings command to see your upcoming bookings or /fetch command to see all upcoming slots available."
+    })
+  }
+  return res.send();
+})
+
+//botRequest.teleRequest({ chatID: 1234, telegramHandle: "0000", task: "fetch"});
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
@@ -70,28 +114,43 @@ require('./routes/slot.routes')(app);
 
 // Auto Daily Slot Creation
 const { autoSlots } = require("./middlewares");
+const { checkBans } = require("./middlewares");
 
-function checkSlots() {
+const deployTo = "local" // change between "local" or "heroku"
+
+function checkSlots() { // Make sure to change for 
   console.log("Slot Generation Request Dates : ");
-  
+
   // Checking today's date
   let date = new Date();
   let nowDate = new Date(date);
-  nowDate.setHours(8, 0, 0, 0);
+  if (deployTo === "local") {
+    nowDate.setHours(8, 0, 0, 0); // use this for local testing
+  } else {
+    nowDate.setHours(0, 0, 0, 0); // use this for deploying to heroku
+  }
   //console.log("Time now is ");
   //console.log(nowDate);
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
   let nextDate = new Date(date);
-  nextDate.setHours(32, 0, 0, 0);
+  if (deployTo === "local") {
+    nextDate.setHours(32, 0, 0, 0); // use this for local testing
+  } else {
+    nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
+  }
   //console.log("Time tomorrow is ");
   //console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
   let nextDayDate = new Date(date);
-  nextDayDate.setHours(56, 0, 0, 0);
+  if (deployTo === "local") {
+    nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
+  } else {
+    nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
+  }
   //console.log("Time next day is ");
   //console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
@@ -102,7 +161,13 @@ const cron = require('node-cron');
 cron.schedule("0 0 * * *", function () {
   console.log("Daily Scheduled Running");
   checkSlots();
+  checkBan();
 });
+
+function checkBan() {
+  console.log("Check Bans Request");
+  checkBans.checkAll();
+}
 
 // Error handling, disable for now
 /*app.use(function (err, req, res, next) {
@@ -123,6 +188,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Initialize Server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
+  await botInit();
 });
