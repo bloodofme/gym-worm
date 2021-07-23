@@ -73,7 +73,7 @@ app.post(URI, async (req, res) => {
     console.log("Command Not Matched");
     axios.post(`${TELEGRAM_API}/sendMessage`, {
       chat_id: chatID,
-      text: "Hello " + req.body.message.chat.first_name + ", Please use the /bookings command to see your upcoming bookings or /fetch command to see all available slots upcoming."
+      text: "Hello " + req.body.message.chat.first_name + ", Please use the /bookings command to see your upcoming bookings or /fetch command to see all upcoming slots available."
     })
   }
   return res.send();

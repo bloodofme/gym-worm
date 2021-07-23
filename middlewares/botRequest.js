@@ -17,11 +17,11 @@ teleRequest = (req, res) => {
 
     let today = new Date();
     //console.log("Today date is " + today);
-    today.setHours(72, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
     //console.log("Today date adjusted is " + today);
     console.log(today.toISOString());
 
-    if (req.task === "bookings") {
+    if (req.task === "bookings") { // Check user's upcoming bookings
         User.findOne({
             telegramHandle: req.telegramHandle
         })
@@ -74,11 +74,14 @@ teleRequest = (req, res) => {
                             if (s.startTime > 12) {
                                 output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + (s.startTime - 12) + "pm." + "\n";
                             } else if (s.startTime === 12) {
-                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "pm" + "\n";
+                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "pm." + "\n";
                             } else {
-                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "am" + "\n";
+                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "am." + "\n";
                             }
                         })
+
+                        output = output + "See you there!!!";
+
                         axios.post(`${TELEGRAM_API}/sendMessage`, {
                             chat_id: req.chatID,
                             text: output
@@ -87,13 +90,13 @@ teleRequest = (req, res) => {
                     } else {
                         axios.post(`${TELEGRAM_API}/sendMessage`, {
                             chat_id: req.chatID,
-                            text: "You have no upcoming bookings"
+                            text: "You have no upcoming bookings." + "\n" + "You can use the /fetch command to view all upcoming slots available."
                         })
                         console.log("No Slots found for " + req.telegramHandle);
                     }
                 }
             });
-    } else if (req.task === "fetch") {
+    } else if (req.task === "fetch") { // Check all available upcoming slots 
         Slot.find({
             date: { $gte: today.toISOString() }
         }, { capacity: 1, fullCapacity: 1, date: 1, startTime: 1 })
@@ -151,6 +154,9 @@ teleRequest = (req, res) => {
                                 output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am" + "\n";
                             }
                         })
+
+                        output = output + "Head to our website at http://gym-worm.herokuapp.com/ to book a slot now!";
+
                         axios.post(`${TELEGRAM_API}/sendMessage`, {
                             chat_id: req.chatID,
                             text: output
