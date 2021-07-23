@@ -103,8 +103,13 @@ teleRequest = (req, res) => {
                     return res.status(500).send({ message: err });
                 }
                 //console.log(slots);
+
                 let counter = 0;
                 let validSlots = [];
+
+                if (slot.length === 0) {
+                    fetchCallback();
+                }
 
                 let now = new Date();
                 //console.log("Now is " + now);
