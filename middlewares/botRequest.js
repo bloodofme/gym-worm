@@ -9,17 +9,16 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const API_URL = /*https://gym-worm.herokuapp.com/api/auth/ || */"http://localhost:5000/api/auth/";
 
 teleRequest = (req, res) => {
-    console.log("teleRequest Start");
     //console.log(req)
 
     if (req) {
-        console.log("teleFetchSlot req for " + req.telegramHandle);
+        console.log("teleRequest for " + req.telegramHandle);
     }
 
     let today = new Date();
-    console.log("Today date is " + today);
-    today.setHours(0, 0, 0, 0);
-    console.log("Today date adjusted is " + today);
+    //console.log("Today date is " + today);
+    today.setHours(72, 0, 0, 0);
+    //console.log("Today date adjusted is " + today);
     console.log(today.toISOString());
 
     if (req.task === "bookings") {
@@ -103,14 +102,14 @@ teleRequest = (req, res) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
-                console.log(slots);
+                //console.log(slots);
                 let counter = 0;
                 let validSlots = [];
 
                 let now = new Date();
-                console.log("Now is " + now);
+                //console.log("Now is " + now);
                 let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
-                console.log("Later is " + later);
+                //console.log("Later is " + later);
 
                 slots.forEach(s => {
                     //console.log(s)
@@ -130,15 +129,36 @@ teleRequest = (req, res) => {
                 })
 
                 function fetchCallback() {
-                    console.log("callback for bookings");
-                    //console.log(validSlots);
+                    //console.log("callback for bookings");
                     let output = '';
 
-                    validSlots.sort(function (a, b) {
-                        return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
-                    });
+                    if (validSlots.length !== 0) {
+                        validSlots.sort(function (a, b) {
+                            return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
+                        });
 
-                    console.log(validSlots);
+                        validSlots.forEach((s) => {
+                            if (s.startTime > 12) {
+                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + (s.startTime - 12) + "pm." + "\n";
+                            } else if (s.startTime === 12) {
+                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "pm" + "\n";
+                            } else {
+                                output = output + "There is a slot available on " + s.date.toUTCString().substring(0, 16) + " at " + s.startTime + "am" + "\n";
+                            }
+                        })
+                        axios.post(`${TELEGRAM_API}/sendMessage`, {
+                            chat_id: req.chatID,
+                            text: output
+                        })
+                        console.log("Sent available slot details on Telegram to " + req.telegramHandle);
+                    } else {
+                        axios.post(`${TELEGRAM_API}/sendMessage`, {
+                            chat_id: req.chatID,
+                            text: "There are no upcoming slots available"
+                        })
+                        console.log("No Available Slots found for " + req.telegramHandle);
+                    }
+                    //console.log(validSlots);
                 }
             })
     }
