@@ -6,7 +6,7 @@ const axios = require("axios");
 const TOKEN = process.env.TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-const API_URL = /*https://gym-worm.herokuapp.com/api/auth/ || */"http://localhost:5000/api/auth/";
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
 
 teleRequest = (req, res) => {
     //console.log(req)
@@ -16,9 +16,15 @@ teleRequest = (req, res) => {
     }
 
     let today = new Date();
-    //console.log("Today date is " + today);
-    today.setHours(0, 0, 0, 0);
-    //console.log("Today date adjusted is " + today);
+    console.log("Today date is " + today);
+
+    if (today.getHours() >= 16) {
+        today.setHours(24, 0, 0, 0);
+    } else {
+        today.setHours(0, 0, 0, 0);
+
+    }
+    console.log("Today date adjusted is " + today);
     //console.log(today.toISOString());
 
     if (req.task === "bookings") { // Check user's upcoming bookings

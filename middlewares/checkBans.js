@@ -2,7 +2,7 @@ const db = require("../models");
 const User = db.user;
 const axios = require("axios");
 
-const API_URL = /*"https://gym-worm.herokuapp.com/api/auth/" || */"http://localhost:5000/api/auth/";
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
 
 checkAll = (req, res) => {
     //console.log("received");

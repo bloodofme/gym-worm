@@ -14,8 +14,8 @@ function MakeBookings() {
 
     const currentUser = AuthService.getCurrentUser();
 
-    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-    //const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+    //const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
 
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
@@ -87,8 +87,10 @@ function MakeBookings() {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
                 
                     const posts = res.data.slot;
-                    temp.push(posts)
-                    if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
+                    temp.push(posts);
+
+                    //if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) { // for local testing
+                    if (new Date(res.data.slot.date) >= new Date().setHours(0, 0, 0, 0)) { // for heroku
                         if (currentUser.bookings.length === temp.length) {
                             setUserSlots(temp);
                         }

@@ -3,7 +3,7 @@ const Slot = db.slot;
 const SlotSetting = db.slotSetting;
 const axios = require("axios");
 
-const API_URL = /*"https://gym-worm.herokuapp.com/api/slot/" || */"http://localhost:5000/api/slot/";
+const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
 
 generateSlots = (req, res) => {
     //console.log("generateSlots Process Start");
