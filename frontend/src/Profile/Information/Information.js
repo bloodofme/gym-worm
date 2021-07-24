@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar, Image, Input, Tooltip, Row, Space, Button } from 'antd';
-import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined, MessageOutlined } from '@ant-design/icons';
 import './Information.css';
 import history from "../../history";
 import AuthService from "../../services/auth.service";
@@ -11,6 +11,7 @@ function Information() {
     const [lastName, setLastName] = useState(currentUser.lastName);
     const [email, setEmail] = useState(currentUser.email);
     const [contactNo, setContactNo] = useState(currentUser.contactNo);
+    const [telegramHandle, setTelegramHandle] = useState(currentUser.telegramHandle);
     const [accessStatus] = useState(localStorage.getItem('access'));
 
     useEffect(() => {
@@ -22,6 +23,7 @@ function Information() {
             setLastName(response.lastName);
             setEmail(response.email);
             setContactNo(response.contactNo);
+            setTelegramHandle(response.telegramHandle)
         }
         getUser()
     }, []);
@@ -37,13 +39,17 @@ function Information() {
     const onChangeContactNo = (e) => {
         setContactNo(e.target.value);
     }
+    const onChangeTelegramHandle = (e) => {
+        setTelegramHandle(e.target.value);
+    }
 
     const onUpdate = (e) => {
         const user = {
             firstName: firstName === undefined ? currentUser.firstName : firstName,
             lastName: lastName === undefined ? currentUser.lastName : lastName,
             email: email === undefined ? currentUser.email : email,
-            contactNo: contactNo === undefined ? currentUser.contactNo : contactNo
+            contactNo: contactNo === undefined ? currentUser.contactNo : contactNo,
+            telegramHandle: telegramHandle === undefined ? currentUser.telegramHandle : telegramHandle
         }
 
         /*console.log("Current User details are : ");
@@ -53,7 +59,7 @@ function Information() {
         console.log(user);
         console.log(user.contactNo);*/
 
-        AuthService.updateInfo(user.firstName, user.lastName, user.email, user.contactNo, currentUser.roles)
+        AuthService.updateInfo(user.firstName, user.lastName, user.email, user.contactNo, currentUser.roles, user.telegramHandle)
             .then(
                 (res) => {
                     if (res.message === "New Contact Number is Invalid! Should be 8 digits.") {
@@ -121,11 +127,22 @@ function Information() {
                     />
 
                     <Input style={{ borderRadius: 35, width: "50vw" }}
-                        placeholder={currentUser.contactNo}//{currentUser.contactNo.substring(0,4) + " " + currentUser.contactNo.substring(4,8)}
+                        placeholder={currentUser.contactNo}
                         onChange={onChangeContactNo}
                         prefix={<PhoneOutlined className="site-form-item-icon" />}
                         suffix={
                             <Tooltip title="Contact Number">
+                                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                            </Tooltip>
+                        }
+                    />
+
+                    <Input style={{ borderRadius: 35, width: "50vw" }}
+                        placeholder={currentUser.telegramHandle}
+                        onChange={onChangeTelegramHandle}
+                        prefix={<MessageOutlined className="site-form-item-icon" />}
+                        suffix={
+                            <Tooltip title="Telegram Handle">
                                 <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                             </Tooltip>
                         }

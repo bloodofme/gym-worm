@@ -32,6 +32,7 @@ function Signup() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [contactNo, setContactNo] = useState('');
+    const [telegramHandle, setTelegramHandle] = useState('');
     const [disabled, setDisabled] = useState(false);
 
     const onChangeFirstName = (e) => {
@@ -58,6 +59,10 @@ function Signup() {
         setContactNo(e.target.value);
     }
 
+    const onChangeTelegramHandle = (e) => {
+        setTelegramHandle(e.target.value);
+    }
+
     const onSubmit = (e) =>  {
         const user = {
             firstName: firstName,
@@ -65,12 +70,13 @@ function Signup() {
             email: email,
             password: confirmPassword,
             contactNo: contactNo,
+            telegramHandle: telegramHandle,
             roles: ["user"]
         }
 
         console.log(user);
 
-        AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.roles).then(
+        AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
                 alert("Registration Successful");
                 console.log(user.email + " has registered");
@@ -234,6 +240,19 @@ function Signup() {
                                 className="fieldSize"
                             >
                                 <Input type="text" onChange={onChangeContactNo} value={contactNo}/>
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Telegram Handle"
+                                name="telegramHandle"
+                                rules={[
+                                    {
+                                        required: false,
+                                    },
+                                ]}
+                                className="fieldSize"
+                            >
+                                <Input type="text" onChange={onChangeTelegramHandle} value={telegramHandle}/>
                             </Form.Item>
 
                             <Form.Item {...tailLayout}>
