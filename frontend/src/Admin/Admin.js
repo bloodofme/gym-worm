@@ -72,7 +72,7 @@ function Admin() {
                 temps.sort(function (a, b) {
                     return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
                 });
-                setSlotsV(temp);
+                setSlotsV(temps);
             },
             error => {
                 console.log("cant find slot for " + dateUpdateV.current + " " + error);
