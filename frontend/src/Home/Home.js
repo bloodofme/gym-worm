@@ -124,7 +124,7 @@ function Home() {
             <Navbar />
             <Layout>
                 <Header className='theTitle' >
-                    <h1 className="textHome">Welcome to Gym-Worm, {currentUser.firstName + " " + currentUser.lastName} </h1>
+                    <h1 className="textHome">Welcome to GymWorm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
                     <Layout className='layout'>

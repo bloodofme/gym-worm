@@ -23,10 +23,10 @@ class Credits extends Component {
                  <Card className='creditsStyle'>
                     <p className='amountCredits'>{currentUser.creditScore}%</p>
                     <p className='penaltiesText'>
-                        { currentUser.creditScore < 90 ? '2 Week Booking Ban from ' + new Date(currentUser.banStartDate) : "No Penalties Issued" }
+                        { currentUser.creditScore < 75 ? (currentUser.creditScore < 65 ? '2 weeks Booking Ban from ' + new Date(currentUser.banStartDate).toString().substring(0, 40) : '1 week Booking Ban from ' + new Date(currentUser.banStartDate).toString().substring(0, 40)) : "No Penalties Issued" }
                     </p>
                     <p className='penaltiesText'>
-                        { currentUser.creditScore < 90 ? <FrownOutlined className="faceIcon"/> : <SmileOutlined className="faceIcon"/> }
+                        { currentUser.creditScore < 75 ? <FrownOutlined className="faceIcon"/> : <SmileOutlined className="faceIcon"/> }
                     </p>
                 </Card>
             </div>

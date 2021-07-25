@@ -62,16 +62,14 @@ function Bookings() {
         return (
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={10}>
-                        <Col span={15} style={{ padding: '8px 0' }} wrap="false">
-                            <p className='text'>{`Date: ${props.slot.date.slice(0, 10)} Time: ${Time(props.slot.startTime)}`}</p>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
                         </Col>
                     </Row>
                 </Card>
-
             </div>
         );
     }
@@ -86,20 +84,9 @@ function Bookings() {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let date = new Date();
-                let today = new Date(date);
-                if (deployTo === "heroku") { // for heroku
-                    if (date.getHours() >= 16) {
-                        today.setHours(24, 0, 0, 0);
-                    } else {
-                        today.setHours(0, 0, 0, 0);
-                    }
-                } else {
-                    today.setHours(8, 0, 0, 0); // for local
-                }
-
+                let today = new Date();
                 //today.setHours(8, 0, 0, 0); // for local
-                //today.setHours(0,0,0,0); // for heroku
+                today.setHours(8,0,0,0); // for heroku
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
@@ -142,10 +129,11 @@ function Bookings() {
                                     align='center'
                                 >
                                     {
-                                        slots.forEach(element => {
-                                            arrSlots.push(<DisplayBookings slot={element[0]} />)
-                                            console.log(element)
-                                        })
+                                        slots.forEach(element => 
+                                            {
+                                                arrSlots.push(<DisplayBookings slot={element[0]} />)
+                                                console.log(element)
+                                            })
                                     }
                                     {
                                         arrSlots.map(elements => <div> {elements} </div>)
@@ -157,6 +145,20 @@ function Bookings() {
                                     type="primary"
                                     shape="round"
                                     onClick={() => {
+                                        /*cancelSlots.forEach(s => {
+                                            var id;
+                                            slots.forEach(element => {
+                                                if (s._id === element[0]._id) {
+                                                    id = element[1]
+                                                }
+                                            })
+                                            AuthService.cancelBooking(currentUser.email, id).then(() => {
+                                                SlotService.cancelledBooking(s._id, currentUser.id)
+                                            })
+                                        })
+                                        alert("Slot cancelled");
+                                        history.push("/Home")
+                                        window.location.reload();*/
                                         let x = 0;
                                         cancelSlots.forEach(slot => {
                                             x++;
