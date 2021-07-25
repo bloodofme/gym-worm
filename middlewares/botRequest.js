@@ -27,15 +27,14 @@ teleRequest = (req, res) => {
 
     if (req.task === "bookings") { // Check user's upcoming bookings
         User.findOne({
-            telegramHandle: req.telegramHandle,
-            telegramNotification: true
+            telegramHandle: req.telegramHandle
         })
             .exec((err, user) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
 
-                if (user.length === 0 || user === undefined) {
+                if (!user.telegramNotification) {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
                         text: "Your telegram handle is not linked to an existing GymWorm account, or you have Telegram Notifications disabled." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
