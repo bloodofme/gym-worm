@@ -78,10 +78,16 @@ function MakeBookings() {
                     }
                 })
 
-                console.log(validSlots);
-                setSlots(validSlots);
+                if (validSlots.length === 0) {
+                    console.log("Can't find slots for " + todayDate + " " + error);
+                    alert("No slots that day");
+                    setSlotAvail(false);
+                } else {
+                    console.log(validSlots);
+                    setSlots(validSlots);
+                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
+                }
                 //slots.push(validSlots);
-                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
             },
             error => {
                 console.log("Can't find slots for " + todayDate + " " + error);
@@ -159,11 +165,16 @@ function MakeBookings() {
                         validSlots.push(s);
                     }
                 })
-                console.log(validSlots);
 
-                setSlots(validSlots);
-                //console.log(slots);
-                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
+                if (validSlots.length === 0) {
+                    console.log("Can't find slots for " + date.current + " " + error);
+                    alert("No slots that day");
+                    setSlotAvail(false);
+                } else {
+                    console.log(validSlots);
+                    setSlots(validSlots);
+                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
+                }
             },
             error => {
                 console.log("Can't find slots for " + date.current + " " + error);
