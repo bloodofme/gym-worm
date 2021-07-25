@@ -54,24 +54,27 @@ function MakeBookings() {
                 console.log("Finding slots for " + todayDate);
                 //setSlots(SlotService.getCurrentSlots(todayDate));
                 //slots.push(SlotService.getCurrentSlots(todayDate));
-                const tempSlots = SlotService.getCurrentSlots(todayDate);
+                let tempSlots = SlotService.getCurrentSlots(todayDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
+                console.log(tempSlots);
 
                 tempSlots.forEach(s => {
-                    console.log(s);
-                    console.log(new Date(s.date).getDate());
-                    console.log(aToday.getDate());
-                    console.log(s.startTime);
-                    console.log(time.getHours());
-                    if (new Date(s.date).getDate() === aToday.getDate()) {
+                    //console.log(new Date(s.date).getDate());
+                    //console.log(time.getDate());
+                    //console.log(s.startTime);
+                    //console.log(time.getHours());
+                    if (new Date(s.date).getDate() === time.getDate()) {
                         if (s.startTime < time.getHours()) {
+                            console.log(s);
                             console.log("should not show");
+                            tempSlots.pull(s);
                         }
                     }
                 })
 
+                console.log(tempSlots);
                 setSlots(tempSlots);
                 slots.push(tempSlots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
@@ -129,23 +132,26 @@ function MakeBookings() {
             () => {
                 console.log("Finding slots for " + date.current);
                 //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
-                const tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
+                let tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
-                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
+                console.log(tempSlots);
 
                 tempSlots.forEach(s => {
-                    console.log(s);
-                    console.log(new Date(s.date).getDate());
-                    console.log(aToday.getDate());
-                    console.log(s.startTime);
-                    console.log(time.getHours());
-                    if (new Date(s.date).getDate() === aToday.getDate()) {
+                    //console.log(new Date(s.date).getDate());
+                    //console.log(time.getDate());
+                    //console.log(s.startTime);
+                    //console.log(time.getHours());
+                    if (new Date(s.date).getDate() === time.getDate()) {
                         if (s.startTime < time.getHours()) {
+                            console.log(s);
                             console.log("should not show");
+                            tempSlots.pull(s);
                         }
                     }
                 })
+                
+                console.log(tempSlots);
 
                 setSlots(tempSlots);
                 //console.log(slots);
