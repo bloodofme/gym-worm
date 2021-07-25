@@ -58,7 +58,7 @@ function MakeBookings() {
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                console.log(tempSlots);
+                //console.log(tempSlots);
                 let validSlots = [];
 
                 tempSlots.forEach(s => {
@@ -68,8 +68,8 @@ function MakeBookings() {
                     //console.log(time.getHours());
                     if (new Date(s.date).getDate() === time.getDate()) {
                         if (s.startTime < time.getHours()) {
-                            console.log(s);
-                            console.log("should not show");
+                            //console.log(s);
+                            //console.log("should not show");
                         } else {
                             validSlots.push(s);
                         }
@@ -80,10 +80,10 @@ function MakeBookings() {
 
                 if (validSlots.length === 0) {
                     console.log("Can't find slots for " + todayDate);
-                    alert("No slots that day");
+                    //alert("No slots that day");
                     setSlotAvail(false);
                 } else {
-                    console.log(validSlots);
+                    //console.log(validSlots);
                     setSlots(validSlots);
                     getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
                 }
@@ -146,7 +146,7 @@ function MakeBookings() {
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                console.log(tempSlots);
+                //console.log(tempSlots);
                 let validSlots = [];
 
                 tempSlots.forEach(s => {
@@ -156,8 +156,8 @@ function MakeBookings() {
                     //console.log(time.getHours());
                     if (new Date(s.date).getDate() === time.getDate()) {
                         if (s.startTime < time.getHours()) {
-                            console.log(s);
-                            console.log("should not show");
+                            //console.log(s);
+                            //console.log("should not show");
                         } else {
                             validSlots.push(s);
                         }
@@ -168,10 +168,10 @@ function MakeBookings() {
 
                 if (validSlots.length === 0) {
                     console.log("Can't find slots for " + date.current);
-                    alert("No slots that day");
+                    //alert("No slots that day");
                     setSlotAvail(false);
                 } else {
-                    console.log(validSlots);
+                    //console.log(validSlots);
                     setSlots(validSlots);
                     getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
                 }
@@ -245,7 +245,7 @@ function MakeBookings() {
                     align='center'
                 >
                     {
-                        currentUser.banstatus ? <Row /> : slotsAvail ? slots
+                        slotsAvail ? slots
                             .filter(s => {
                                 var test = true;
                                 userSlots.forEach(us => {
@@ -305,7 +305,7 @@ function MakeBookings() {
                         className="bookingsButtons"
                         type="primary"
                         shape="round"
-                        disabled={bookingsLen()}
+                        disabled={bookingsLen() || currentUser.banStatus}
                         onClick={() => {
                             bookedSlots.forEach(elements => {
                                 SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
