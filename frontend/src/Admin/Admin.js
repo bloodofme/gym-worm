@@ -68,11 +68,11 @@ function Admin() {
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + dateUpdateV.current);
-                let temps = SlotService.getCurrentSlots(checkDate.currentDate);
+                /*let temps = SlotService.getCurrentSlots(checkDate.currentDate);
                 temps.sort(function (a, b) {
                     return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
-                });
-                setSlotsV(temps);
+                });*/
+                setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
                 console.log("cant find slot for " + dateUpdateV.current + " " + error);
@@ -277,7 +277,7 @@ function Admin() {
     const onCreate = (e) => {
         SlotService.createSlot(dateCreate.current, timeCreate.current, capacityCreate)
             .then(() => {
-                alert("Slot Settings have been created");
+                alert("Slot has been created");
                 console.log("Successfully Created");
                 window.location.reload();
             },
@@ -308,7 +308,7 @@ function Admin() {
                 setSlotsD(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
-                console.log("cant find slot for " + dateUpdateD.current + " " + error);
+                console.log("Can't find slot for " + dateUpdateD.current + " " + error);
                 alert("No slots that day");
                 //window.location.reload(false);
             }
@@ -319,7 +319,7 @@ function Admin() {
         selectedUsersD.forEach(user => {
             AuthService.demeritUser(user._id)
                 .then(() => {
-                    alert("Demerit success");
+                    alert("Demerit Successful");
                     console.log("Successfully Updated");
                     window.location.reload();
                 },
