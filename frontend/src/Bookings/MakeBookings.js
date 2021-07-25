@@ -54,7 +54,7 @@ function MakeBookings() {
                 console.log("Finding slots for " + todayDate);
                 //setSlots(SlotService.getCurrentSlots(todayDate));
                 //slots.push(SlotService.getCurrentSlots(todayDate));
-                const tempSlots = await SlotService.getCurrentSlots(todayDate);
+                const tempSlots = SlotService.getCurrentSlots(todayDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
                 setSlots(tempSlots);
                 slots.push(tempSlots);
@@ -113,7 +113,7 @@ function MakeBookings() {
             () => {
                 console.log("Finding slots for " + date.current);
                 //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
-                const tempSlots = await SlotService.getCurrentSlots(checkDate.currentDate);
+                const tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
                 setSlots(tempSlots);
                 //console.log(slots);
