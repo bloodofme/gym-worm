@@ -11,12 +11,7 @@ import axios from "axios";
 const { TabPane } = Tabs;
 
 const deployTo = "heroku" // change between "local" or "heroku"
-let API_URL = "";
-if (deployTo === "heroku") { // for heroku
-    API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-} else {
-    API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-}
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 function MakeBookings() {
     //history.push('/MakeBookings');
@@ -42,10 +37,10 @@ function MakeBookings() {
         aToday.setHours(8, 0, 0, 0); // for local
     }
 
-    console.log(date.toJSON());
-    console.log(today.toJSON());
+    //console.log(date.toJSON());
+    //console.log(today.toJSON());
     const todayDate = JSON.stringify(new Date(aToday)).substring(1, 11);
-    console.log(todayDate);
+    //console.log(todayDate);
 
     const [slotsAvail, setSlotAvail] = useState(false)
     const [container, setContainer] = useState(null);
@@ -94,6 +89,7 @@ function MakeBookings() {
 
                 if (new Date(res.data.slot.date) >= today.getTime()) {
                     if (currentUser.bookings.length === temp.length) {
+                        temp.sort((first, second) => first.startTime - second.startTime);
                         setUserSlots(temp);
                     }
                 }
@@ -193,7 +189,7 @@ function MakeBookings() {
                     align='center'
                 >
                     {
-                        slotsAvail ? slots
+                        currentUser.banstatus ? <Row /> : slotsAvail ? slots
                             .filter(s => {
                                 var test = true;
                                 userSlots.forEach(us => {

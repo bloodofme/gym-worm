@@ -1,12 +1,7 @@
 import axios from "axios";
 
 const deployTo = "heroku" // change between "local" or "heroku"
-let API_URL = "";
-if (deployTo === "heroku") { // for heroku
-    API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
-} else {
-    API_URL = "http://localhost:5000/api/auth/"; // use for local testing
-}
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 class AuthService {
   async login(email, password) {

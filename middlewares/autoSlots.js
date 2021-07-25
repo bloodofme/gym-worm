@@ -4,12 +4,7 @@ const SlotSetting = db.slotSetting;
 const axios = require("axios");
 
 const deployTo = "heroku" // change between "local" or "heroku"
-let API_URL = "";
-if (deployTo === "heroku") { // for heroku
-    API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-} else {
-    API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-}
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 generateSlots = (req, res) => {
     //console.log("generateSlots Process Start");

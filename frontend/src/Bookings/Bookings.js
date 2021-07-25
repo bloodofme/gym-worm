@@ -151,20 +151,6 @@ function Bookings() {
                                     type="primary"
                                     shape="round"
                                     onClick={() => {
-                                        /*cancelSlots.forEach(s => {
-                                            var id;
-                                            slots.forEach(element => {
-                                                if (s._id === element[0]._id) {
-                                                    id = element[1]
-                                                }
-                                            })
-                                            AuthService.cancelBooking(currentUser.email, id).then(() => {
-                                                SlotService.cancelledBooking(s._id, currentUser.id)
-                                            })
-                                        })
-                                        alert("Slot cancelled");
-                                        history.push("/Home")
-                                        window.location.reload();*/
                                         let x = 0;
                                         cancelSlots.forEach(slot => {
                                             x++;

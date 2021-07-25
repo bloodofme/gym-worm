@@ -1,12 +1,7 @@
 import axios from "axios";
 
 const deployTo = "heroku" // change between "local" or "heroku"
-let API_URL = "";
-if (deployTo === "heroku") { // for heroku
-    API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-} else {
-    API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-}
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 class SlotService {
     async createSlot(date, startTime, capacity) {
