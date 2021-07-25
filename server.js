@@ -141,23 +141,25 @@ function checkSlots() { // Make sure to change for
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
-  let nextDate = new Date(date);
-  if (deployTo === "local") {
+  let nextDate = new Date(nowDate);
+  nextDayDate.setHours(24, 0, 0, 0);
+  /*if (deployTo === "local") {
     nextDate.setHours(32, 0, 0, 0); // use this for local testing
   } else {
     nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
-  }
+  }*/
   console.log("Time tomorrow is ");
   console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
-  let nextDayDate = new Date(date);
-  if (deployTo === "local") {
+  let nextDayDate = new Date(nowDate);
+  nextDayDate.setHours(48, 0, 0, 0);
+  /*if (deployTo === "local") {
     nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
   } else {
     nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
-  }
+  }*/
   console.log("Time next day is ");
   console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
