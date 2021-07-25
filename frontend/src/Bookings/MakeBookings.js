@@ -58,6 +58,10 @@ function MakeBookings() {
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now() + 8 * (60 * 60 * 1000));
+                console.log(tempSlots);
+                console.log(tempSlots[0].startTime);
+                console.log(time)
+                console.log(time.getHours());
 
                 tempSlots.forEach(s => {
                     if (s.startTime < time.getHours()) {
@@ -124,6 +128,20 @@ function MakeBookings() {
                 //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
                 const tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
+
+                let time = new Date(Date.now() + 8 * (60 * 60 * 1000));
+                console.log(tempSlots);
+                console.log(tempSlots[0].startTime);
+                console.log(time)
+                console.log(time.getHours());
+
+                tempSlots.forEach(s => {
+                    if (s.startTime < time.getHours()) {
+                        console.log(s);
+                        console.log("should not show");
+                    }
+                })
+                
                 setSlots(tempSlots);
                 //console.log(slots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)

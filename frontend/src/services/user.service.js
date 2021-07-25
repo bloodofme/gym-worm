@@ -20,7 +20,7 @@ class UserService {
         localStorage.setItem("access", "Admin");
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
         localStorage.setItem("access", "User");
       });
   }
