@@ -47,7 +47,7 @@ function MakeBookings() {
     var bookedSlots = []
     const [slots, setSlots] = useState([])
 
-    if (getLength() === 0) {
+    if (getLength() === 0) { // This is today's available slots
         //console.log(todayDate);
         SlotService.fetchSlots(todayDate).then(
             () => {
@@ -56,6 +56,15 @@ function MakeBookings() {
                 //slots.push(SlotService.getCurrentSlots(todayDate));
                 const tempSlots = SlotService.getCurrentSlots(todayDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
+
+                let time = new Date(Date.now() + 8 * (60 * 60 * 1000));
+
+                tempSlots.forEach(s => {
+                    if (s.startTime < time.getHours()) {
+                        console.log(s);
+                        console.log("should not show");
+                    }
+                })
                 setSlots(tempSlots);
                 slots.push(tempSlots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
@@ -101,7 +110,7 @@ function MakeBookings() {
 
     //console.log(userSlots);
 
-    function onChangeDate(dateString) {
+    function onChangeDate(dateString) { // This is other day's available slots
         date.current = JSON.parse(JSON.stringify(dateString));
         console.log("date is " + date.current.toString());
 
