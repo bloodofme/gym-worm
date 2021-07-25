@@ -2,11 +2,11 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 const deployTo = "heroku" // change between "local" or "heroku"
-
+let API_URL = "";
 if (deployTo === "heroku") { // for heroku
-    const API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
+    API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
 } else {
-    const API_URL = "http://localhost:5000/api/test/"; // use for local testing
+    API_URL = "http://localhost:5000/api/test/"; // use for local testing
 }
 
 class UserService {
