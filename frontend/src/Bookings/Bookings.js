@@ -9,10 +9,15 @@ import SlotService from "../services/slot.service";
 import axios from "axios";
 import Makebookings from "./MakeBookings"
 
-//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-
 const { Header, Content } = Layout;
+
+const deployTo = "heroku" // change between "local" or "heroku"
+
+if (deployTo === "heroku") { // for heroku
+    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+} else {
+    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+}
 
 function Bookings() {
     //history.push('/Bookings');
@@ -81,9 +86,20 @@ function Bookings() {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let today = new Date();
+                let date = new Date();
+                let today = new Date(date);
+                if (deployTo === "heroku") { // for heroku
+                    if (date.getHours() >= 16) {
+                        today.setHours(24, 0, 0, 0);
+                    } else {
+                        today.setHours(0, 0, 0, 0);
+                    }
+                } else {
+                    today.setHours(8, 0, 0, 0); // for local
+                }
+
                 //today.setHours(8, 0, 0, 0); // for local
-                today.setHours(0,0,0,0); // for heroku
+                //today.setHours(0,0,0,0); // for heroku
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {

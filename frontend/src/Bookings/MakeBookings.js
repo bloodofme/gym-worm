@@ -9,35 +9,42 @@ import AuthService from "../services/auth.service";
 import axios from "axios";
 
 const { TabPane } = Tabs;
+
+const deployTo = "heroku" // change between "local" or "heroku"
+
+if (deployTo === "heroku") { // for heroku
+    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+} else {
+    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+}
+
 function MakeBookings() {
     //history.push('/MakeBookings');
 
     const currentUser = AuthService.getCurrentUser();
 
-    //const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
     const today = moment();
     const tdy = moment().format(dateFormat)
-    const tmr = moment().add(1,'days').format(dateFormat)
+    const tmr = moment().add(1, 'days').format(dateFormat)
     const dayAfter = moment().add(2, 'days').format(dateFormat)
 
-
     let aDate = new Date();
-    let bDate = new Date(aDate);
-
-    if (aDate.getHours() < 8) {
-        console.log("change");
-        bDate.setHours(8, 0, 0, 0);
+    let aToday = new Date(aDate);
+    if (deployTo === "heroku") { // for heroku
+        if (aDate.getHours() >= 16) {
+            aToday.setHours(24, 0, 0, 0);
+        } else {
+            aToday.setHours(0, 0, 0, 0);
+        }
     } else {
-        console.log("no change");
+        aToday.setHours(8, 0, 0, 0); // for local
     }
 
-    console.log(aDate.toJSON());
-    console.log(bDate.toJSON());
-    const todayDate = JSON.stringify(new Date(bDate)).substring(1, 11);
+    console.log(date.toJSON());
+    console.log(today.toJSON());
+    const todayDate = JSON.stringify(new Date(aToday)).substring(1, 11);
     console.log(todayDate);
 
     const [slotsAvail, setSlotAvail] = useState(false)
@@ -64,37 +71,32 @@ function MakeBookings() {
         );
     }
 
-    /*useEffect(() => {
-        const temp = []
-        currentUser.bookings.forEach(slot => {
-            (async () => {
-                //console.log("Booking ID is " + slot); // booking id
-                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
-                    const posts = res.data.slot;
-                    temp.push([posts, slot])
-                    setSlots(temp)
-                }
-            })()
-        })
-    }, [])*/
-
     useEffect(() => {
         const temp = []
         currentUser.bookings.forEach(slot => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                
-                    const posts = res.data.slot;
-                    temp.push(posts);
 
-                    //if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) { // for local testing
-                    if (new Date(res.data.slot.date) >= new Date().setHours(0, 0, 0, 0)) { // for heroku
-                        if (currentUser.bookings.length === temp.length) {
-                            setUserSlots(temp);
-                        }
+                const posts = res.data.slot;
+                temp.push(posts);
+                let date = new Date();
+                let today = new Date(date);
+                if (deployTo === "heroku") { // for heroku
+                    if (date.getHours() >= 16) {
+                        today.setHours(24, 0, 0, 0);
+                    } else {
+                        today.setHours(0, 0, 0, 0);
                     }
+                } else {
+                    today.setHours(8, 0, 0, 0); // for local
+                }
+
+                if (new Date(res.data.slot.date) >= today.getTime()) {
+                    if (currentUser.bookings.length === temp.length) {
+                        setUserSlots(temp);
+                    }
+                }
             })()
         });
     }, [])
@@ -167,10 +169,10 @@ function MakeBookings() {
                 <Card className='bookingStyle'>
                     <Row>
                         <Col wrap="true">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br />
                             <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
-                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
-                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br/>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br />
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br />
                         </Col>
                     </Row>
                 </Card>
@@ -210,7 +212,7 @@ function MakeBookings() {
                         <TabPane tab={`${tdy}`} key={`${tdy}`} centered>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'
@@ -223,7 +225,7 @@ function MakeBookings() {
                         <TabPane tab={`${tmr}`} key={`${tmr}`}>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'
@@ -236,7 +238,7 @@ function MakeBookings() {
                         <TabPane tab={`${dayAfter}`} key={`${dayAfter}`}>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'

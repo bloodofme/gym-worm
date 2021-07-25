@@ -6,8 +6,6 @@ const axios = require("axios");
 const TOKEN = process.env.TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
-
 teleRequest = (req, res) => {
     //console.log(req)
 
@@ -22,8 +20,8 @@ teleRequest = (req, res) => {
         today.setHours(24, 0, 0, 0);
     } else {
         today.setHours(0, 0, 0, 0);
-
     }
+
     console.log("Today date adjusted is " + today);
     //console.log(today.toISOString());
 
@@ -51,9 +49,11 @@ teleRequest = (req, res) => {
                                     _id: book.slot
                                 }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
                                     .exec((err, slot) => {
-                                        //console.log(slot);
+                                        //console.log(slot.date);
                                         //console.log(today);
-                                        if (new Date(slot.date).getTime() >= today.getTime()) {
+                                        let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
+                                        //console.log(later);
+                                        if (new Date(slot.date).getTime() >= later.getTime()) {
                                             slots.push(slot);
                                         }
                                         counter++;

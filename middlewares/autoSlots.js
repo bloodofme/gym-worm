@@ -3,7 +3,13 @@ const Slot = db.slot;
 const SlotSetting = db.slotSetting;
 const axios = require("axios");
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
+const deployTo = "heroku" // change between "local" or "heroku"
+
+if (deployTo === "heroku") { // for heroku
+    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+} else {
+    const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
+}
 
 generateSlots = (req, res) => {
     //console.log("generateSlots Process Start");
@@ -21,13 +27,7 @@ generateSlots = (req, res) => {
         const endTime = slotSettings.endTime;
         const capacity = slotSettings.capacity;
 
-        /*if (slotSettings) {
-            console.log("Slot Settings retrieved");
-            console.log("start time : " + startTime + " end time : " + endTime + " capacity : " + capacity);
-        }*/
-
-        //console.log("Slot Generation Request Date : ");
-        //console.log(slotDate);
+        console.log("Slot Generation Request Date for " + slotDate);
 
         // checking if slots already exist
         Slot.find({

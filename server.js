@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+const deployTo = "heroku" // change between "local" or "heroku"
 
 app.use(cors({
   origin: "http://localhost:3000", // React Frontend  port,
@@ -116,21 +117,27 @@ require('./routes/slot.routes')(app);
 const { autoSlots } = require("./middlewares");
 const { checkBans } = require("./middlewares");
 
-const deployTo = "heroku" // change between "local" or "heroku"
-
 function checkSlots() { // Make sure to change for 
   console.log("Slot Generation Request Dates : ");
 
   // Checking today's date
   let date = new Date();
   let nowDate = new Date(date);
+  if (deployTo === "heroku") {
+    if (date.getHours() >= 16) {
+      nowDate.setHours(24, 0, 0, 0);
+    } else {
+      nowDate.setHours(0, 0, 0, 0);
+    }
+  }
+
   if (deployTo === "local") {
     nowDate.setHours(8, 0, 0, 0); // use this for local testing
   } else {
-    nowDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
+    nowDate.setHours(0, 0, 0, 0); // use this for deploying to heroku
   }
-  //console.log("Time now is ");
-  //console.log(nowDate);
+  console.log("Time now is ");
+  console.log(nowDate);
   autoSlots.generateSlots({ date: nowDate });
 
   // Checking tomorrow's date
@@ -138,10 +145,10 @@ function checkSlots() { // Make sure to change for
   if (deployTo === "local") {
     nextDate.setHours(32, 0, 0, 0); // use this for local testing
   } else {
-    nextDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
+    nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
   }
-  //console.log("Time tomorrow is ");
-  //console.log(nextDate);
+  console.log("Time tomorrow is ");
+  console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
 
   // Checking next day's date
@@ -149,10 +156,10 @@ function checkSlots() { // Make sure to change for
   if (deployTo === "local") {
     nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
   } else {
-    nextDayDate.setHours(72, 0, 0, 0); // use this for deploying to heroku
+    nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
   }
-  //console.log("Time next day is ");
-  //console.log(nextDayDate);
+  console.log("Time next day is ");
+  console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
 }
 
