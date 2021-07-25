@@ -77,7 +77,7 @@ function Home() {
     }, [])
 
     //do not remove this!!!
-    console.log(slots);
+    //console.log(slots);
 
     function DisplayBookings(props) {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
