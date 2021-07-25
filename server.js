@@ -142,7 +142,7 @@ function checkSlots() { // Make sure to change for
 
   // Checking tomorrow's date
   let nextDate = new Date(nowDate);
-  nextDayDate.setHours(24, 0, 0, 0);
+  nextDate.setHours(24, 0, 0, 0);
   /*if (deployTo === "local") {
     nextDate.setHours(32, 0, 0, 0); // use this for local testing
   } else {
