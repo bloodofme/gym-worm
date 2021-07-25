@@ -59,6 +59,7 @@ function MakeBookings() {
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
                 console.log(tempSlots);
+                let validSlots = [];
 
                 tempSlots.forEach(s => {
                     //console.log(new Date(s.date).getDate());
@@ -69,14 +70,17 @@ function MakeBookings() {
                         if (s.startTime < time.getHours()) {
                             console.log(s);
                             console.log("should not show");
-                            tempSlots.pull(s);
+                        } else {
+                            validSlots.push(s);
                         }
+                    } else {
+                        validSlots.push(s);
                     }
                 })
 
-                console.log(tempSlots);
-                setSlots(tempSlots);
-                slots.push(tempSlots);
+                console.log(validSlots);
+                setSlots(validSlots);
+                //slots.push(validSlots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
             },
             error => {
@@ -137,6 +141,7 @@ function MakeBookings() {
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
                 console.log(tempSlots);
+                let validSlots = [];
 
                 tempSlots.forEach(s => {
                     //console.log(new Date(s.date).getDate());
@@ -147,14 +152,16 @@ function MakeBookings() {
                         if (s.startTime < time.getHours()) {
                             console.log(s);
                             console.log("should not show");
-                            tempSlots.pull(s);
+                        } else {
+                            validSlots.push(s);
                         }
+                    } else {
+                        validSlots.push(s);
                     }
                 })
-                
-                console.log(tempSlots);
+                console.log(validSlots);
 
-                setSlots(tempSlots);
+                setSlots(validSlots);
                 //console.log(slots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
             },

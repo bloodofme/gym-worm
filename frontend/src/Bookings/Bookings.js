@@ -110,7 +110,7 @@ function Bookings() {
         });
     }, [])
 
-    console.log(currentUser.bookings)
+    //console.log(currentUser.bookings)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
