@@ -29,8 +29,9 @@ Admin page functions
 const { Header, Content } = Layout;
 const { Option } = Select;
 const { Panel } = Collapse;
-const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
+
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 function PickerWithTypeView({ type, onChange }) {
     if (type === 'time') return <TimePicker onChange={onChange} />;
@@ -67,7 +68,11 @@ function Admin() {
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + dateUpdateV.current);
-                setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
+                let temps = SlotService.getCurrentSlots(checkDate.currentDate);
+                temps.sort(function (a, b) {
+                    return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
+                });
+                setSlotsV(temp);
             },
             error => {
                 console.log("cant find slot for " + dateUpdateV.current + " " + error);
