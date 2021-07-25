@@ -135,6 +135,7 @@ function MakeBookings() {
                 let tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
+                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
                 console.log(tempSlots);
 
                 tempSlots.forEach(s => {
