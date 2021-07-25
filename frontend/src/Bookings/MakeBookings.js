@@ -79,7 +79,7 @@ function MakeBookings() {
                 })
 
                 if (validSlots.length === 0) {
-                    console.log("Can't find slots for " + todayDate + " " + error);
+                    console.log("Can't find slots for " + todayDate);
                     alert("No slots that day");
                     setSlotAvail(false);
                 } else {
@@ -167,7 +167,7 @@ function MakeBookings() {
                 })
 
                 if (validSlots.length === 0) {
-                    console.log("Can't find slots for " + date.current + " " + error);
+                    console.log("Can't find slots for " + date.current);
                     alert("No slots that day");
                     setSlotAvail(false);
                 } else {
