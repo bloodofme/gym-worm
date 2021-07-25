@@ -59,19 +59,19 @@ function MakeBookings() {
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
 
-                //console.log(tempSlots);
-                //console.log(tempSlots[0].startTime);
-                //console.log(time)
-                //console.log(time.getHours());
-
                 tempSlots.forEach(s => {
-                    if (new Date(s.date).getDate === aToday.getDate()) {
+                    console.log(s);
+                    console.log(new Date(s.date).getDate());
+                    console.log(aToday.getDate());
+                    console.log(s.startTime);
+                    console.log(time.getHours());
+                    if (new Date(s.date).getDate() === aToday.getDate()) {
                         if (s.startTime < time.getHours()) {
-                            console.log(s);
                             console.log("should not show");
                         }
                     }
                 })
+
                 setSlots(tempSlots);
                 slots.push(tempSlots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
@@ -135,9 +135,13 @@ function MakeBookings() {
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
 
                 tempSlots.forEach(s => {
-                    if (new Date(s.date).getDate === aToday.getDate()) {
+                    console.log(s);
+                    console.log(new Date(s.date).getDate());
+                    console.log(aToday.getDate());
+                    console.log(s.startTime);
+                    console.log(time.getHours());
+                    if (new Date(s.date).getDate() === aToday.getDate()) {
                         if (s.startTime < time.getHours()) {
-                            console.log(s);
                             console.log("should not show");
                         }
                     }

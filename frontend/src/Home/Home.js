@@ -28,13 +28,6 @@ function Home() {
         UserService.getAdminBoard();
     }
 
-    /*useEffect(() => {
-        if (AuthService.getCurrentUser() === null) {
-            history.push("/");
-            window.location.reload(false);
-        }
-    }, [])*/
-
     useEffect(() => {
         const temp = [];
         let counter = 0;
