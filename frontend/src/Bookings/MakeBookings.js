@@ -37,8 +37,6 @@ function MakeBookings() {
         aToday.setHours(8, 0, 0, 0); // for local
     }
 
-    //console.log(date.toJSON());
-    //console.log(today.toJSON());
     const todayDate = JSON.stringify(new Date(aToday)).substring(1, 11);
     //console.log(todayDate);
 
@@ -50,16 +48,20 @@ function MakeBookings() {
     const [slots, setSlots] = useState([])
 
     if (getLength() === 0) {
-        console.log(todayDate);
+        //console.log(todayDate);
         SlotService.fetchSlots(todayDate).then(
             () => {
-                console.log("finding slots for " + todayDate);
-                setSlots(SlotService.getCurrentSlots(todayDate));
-                slots.push(SlotService.getCurrentSlots(todayDate));
+                console.log("Finding slots for " + todayDate);
+                //setSlots(SlotService.getCurrentSlots(todayDate));
+                //slots.push(SlotService.getCurrentSlots(todayDate));
+                const tempSlots = await SlotService.getCurrentSlots(todayDate);
+                tempSlots.sort((first, second) => first.startTime - second.startTime);
+                setSlots(tempSlots);
+                slots.push(tempSlots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
             },
             error => {
-                console.log("cant find slot " + todayDate + " " + error);
+                console.log("Can't find slots for " + todayDate + " " + error);
                 alert("No slots that day");
                 setSlotAvail(false)
             }
@@ -97,7 +99,7 @@ function MakeBookings() {
         });
     }, [])
 
-    console.log(userSlots);
+    //console.log(userSlots);
 
     function onChangeDate(dateString) {
         date.current = JSON.parse(JSON.stringify(dateString));
@@ -107,21 +109,18 @@ function MakeBookings() {
             currentDate: date.current,
         }
 
-        /*
-        console.log("check date is ");
-        console.log(checkDate);
-        console.log("slots are ");
-        console.log(slots);*/
-
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + date.current);
-                setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
-                console.log(slots);
+                //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
+                const tempSlots = await SlotService.getCurrentSlots(checkDate.currentDate);
+                tempSlots.sort((first, second) => first.startTime - second.startTime);
+                setSlots(tempSlots);
+                //console.log(slots);
                 getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
             },
             error => {
-                console.log("cant find slot for " + date.current + " " + error);
+                console.log("Can't find slots for " + date.current + " " + error);
                 alert("No slots that day");
                 setSlotAvail(false);
                 window.location.reload(false);
@@ -264,21 +263,6 @@ function MakeBookings() {
                     >
                         Confirm Booking
                     </Button>
-                    {/*}
-                    <Button
-                        className="bookingsButtons"
-                        type="primary"
-                        shape="round"
-                        disabled={bookingsLen()}
-                        onClick={() => {
-                            history.push("/Bookings")
-                            //AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload();
-                        }}
-                    >
-                        Back
-                    </Button>
-                    */}
                 </Space>
             </Row>
         </div>
