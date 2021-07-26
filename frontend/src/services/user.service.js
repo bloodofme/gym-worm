@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import Deployment from "../DeploymentMethod"
 
-const deployTo = "heroku" // change between "local" or "heroku"
+const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/test/" : "http://localhost:5000/api/test/";
 
 class UserService {

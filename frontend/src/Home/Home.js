@@ -9,10 +9,11 @@ import UserService from "../services/user.service";
 import history from "../history";
 import axios from "axios";
 import moment from 'moment';
+import Deployment from "../DeploymentMethod"
 
 const { Header, Content } = Layout;
 
-const deployTo = "heroku" // change between "local" or "heroku"
+const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 document.body.style = 'background: #74828F;';

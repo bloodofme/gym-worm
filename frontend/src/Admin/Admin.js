@@ -9,6 +9,7 @@ import history from "../history";
 import moment from 'moment';
 import axios from "axios";
 import { FormProvider } from 'antd/lib/form/context';
+import Deployment from "../DeploymentMethod"
 
 /*
 Admin page functions
@@ -30,7 +31,7 @@ const { Header, Content } = Layout;
 const { Option } = Select;
 const { Panel } = Collapse;
 
-const deployTo = "heroku" // change between "local" or "heroku"
+const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 function PickerWithTypeView({ type, onChange }) {

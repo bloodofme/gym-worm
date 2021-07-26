@@ -1,6 +1,7 @@
 import axios from "axios";
+import Deployment from "../DeploymentMethod"
 
-const deployTo = "heroku" // change between "local" or "heroku"
+const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 class AuthService {
