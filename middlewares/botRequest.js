@@ -34,7 +34,7 @@ teleRequest = (req, res) => {
                     return res.status(500).send({ message: err });
                 }
 
-                if (!user.telegramNotification) {
+                if (user === undefined || !user.telegramNotification) {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
                         text: "Your telegram handle is not linked to an existing GymWorm account, or you have Telegram Notifications disabled." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
