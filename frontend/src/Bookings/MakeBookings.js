@@ -92,6 +92,7 @@ function MakeBookings() {
                     //if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) { // for local testing
                     if (new Date(res.data.slot.date) >= new Date().setHours(0, 0, 0, 0)) { // for heroku
                         if (currentUser.bookings.length === temp.length) {
+                            temp.sort((first, second) => first.startTime - second.startTime)
                             setUserSlots(temp);
                         }
                     }
@@ -191,7 +192,7 @@ function MakeBookings() {
                     align='center'
                 >
                     {
-                        slotsAvail ? slots
+                        currentUser.banstatus ? <Row /> : slotsAvail ? slots
                             .filter(s => {
                                 var test = true;
                                 userSlots.forEach(us => {
