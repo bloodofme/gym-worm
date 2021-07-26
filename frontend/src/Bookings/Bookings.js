@@ -9,10 +9,10 @@ import SlotService from "../services/slot.service";
 import axios from "axios";
 import Makebookings from "./MakeBookings"
 
-//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-
 const { Header, Content } = Layout;
+
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 function Bookings() {
     //history.push('/Bookings');
@@ -57,16 +57,14 @@ function Bookings() {
         return (
             <div>
                 <Card className='bookingStyle'>
-                    <Row gutter={10}>
-                        <Col span={15} style={{ padding: '8px 0' }} wrap="false">
-                            <p className='text'>{`Date: ${props.slot.date.slice(0, 10)} Time: ${Time(props.slot.startTime)}`}</p>
-                        </Col>
-                        <Col span={5}>
-                            <Checkbox className="ant-checkbox" onChange={onChange} />
+                    <Row>
+                        <Col wrap="true">
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
                         </Col>
                     </Row>
                 </Card>
-
             </div>
         );
     }
@@ -81,9 +79,20 @@ function Bookings() {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let today = new Date();
+                let date = new Date();
+                let today = new Date(date);
+                if (deployTo === "heroku") { // for heroku
+                    if (date.getHours() >= 16) {
+                        today.setHours(24, 0, 0, 0);
+                    } else {
+                        today.setHours(0, 0, 0, 0);
+                    }
+                } else {
+                    today.setHours(8, 0, 0, 0); // for local
+                }
+
                 //today.setHours(8, 0, 0, 0); // for local
-                today.setHours(0,0,0,0); // for heroku
+                //today.setHours(0,0,0,0); // for heroku
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
@@ -101,7 +110,7 @@ function Bookings() {
         });
     }, [])
 
-    console.log(currentUser.bookings)
+    //console.log(currentUser.bookings)
 
     return (
         <div style={{ background: "#ebeced", alignItems: "center" }}>
@@ -126,10 +135,11 @@ function Bookings() {
                                     align='center'
                                 >
                                     {
-                                        slots.forEach(element => {
-                                            arrSlots.push(<DisplayBookings slot={element[0]} />)
-                                            console.log(element)
-                                        })
+                                        slots.forEach(element => 
+                                            {
+                                                arrSlots.push(<DisplayBookings slot={element[0]} />)
+                                                console.log(element)
+                                            })
                                     }
                                     {
                                         arrSlots.map(elements => <div> {elements} </div>)

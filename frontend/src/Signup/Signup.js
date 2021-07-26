@@ -70,7 +70,7 @@ function Signup() {
             email: email,
             password: confirmPassword,
             contactNo: contactNo,
-            telegramHandle: telegramHandle,
+            telegramHandle: telegramHandle.charAt(0) === '@' ? telegramHandle.slice(1) : telegramHandle,
             roles: ["user"]
         }
 

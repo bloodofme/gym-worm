@@ -6,8 +6,6 @@ const axios = require("axios");
 const TOKEN = process.env.TOKEN;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/" /*|| "http://localhost:5000/api/slot/"*/;
-
 teleRequest = (req, res) => {
     //console.log(req)
 
@@ -22,8 +20,8 @@ teleRequest = (req, res) => {
         today.setHours(24, 0, 0, 0);
     } else {
         today.setHours(0, 0, 0, 0);
-
     }
+
     console.log("Today date adjusted is " + today);
     //console.log(today.toISOString());
 
@@ -36,69 +34,79 @@ teleRequest = (req, res) => {
                     return res.status(500).send({ message: err });
                 }
 
-                let slots = [];
-                let counter = 0;
-
-                user.bookings.forEach((b) => {
-                    //console.log(b);
-                    Booking.findOne({
-                        _id: b,
+                if (user === undefined || !user.telegramNotification) {
+                    axios.post(`${TELEGRAM_API}/sendMessage`, {
+                        chat_id: req.chatID,
+                        text: "Your telegram handle is not linked to an existing GymWorm account, or you have Telegram Notifications disabled." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
                     })
-                        .exec((error, book) => {
-                            if (book.valid) {
-                                //console.log(book);
-                                Slot.findOne({
-                                    _id: book.slot
-                                }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
-                                    .exec((err, slot) => {
-                                        //console.log(slot);
-                                        //console.log(today);
-                                        if (new Date(slot.date).getTime() >= today.getTime()) {
-                                            slots.push(slot);
-                                        }
-                                        counter++;
-                                        if (counter === user.bookings.length) {
-                                            bookingCallback();
-                                        }
-                                    })
-                            } else {
-                                counter++;
-                                if (counter === user.bookings.length) {
-                                    bookingCallback();
+                    console.log("No Link found for " + req.telegramHandle);
+                } else {
+                    let slots = [];
+                    let counter = 0;
+
+                    user.bookings.forEach((b) => {
+                        //console.log(b);
+                        Booking.findOne({
+                            _id: b,
+                        })
+                            .exec((error, book) => {
+                                if (book.valid) {
+                                    //console.log(book);
+                                    Slot.findOne({
+                                        _id: book.slot
+                                    }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
+                                        .exec((err, slot) => {
+                                            //console.log(slot.date);
+                                            //console.log(today);
+                                            let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
+                                            //console.log(later);
+                                            if (new Date(slot.date).getTime() >= later.getTime()) {
+                                                slots.push(slot);
+                                            }
+                                            counter++;
+                                            if (counter === user.bookings.length) {
+                                                bookingCallback();
+                                            }
+                                        })
+                                } else {
+                                    counter++;
+                                    if (counter === user.bookings.length) {
+                                        bookingCallback();
+                                    }
                                 }
-                            }
-                        })
-                });
+                            })
+                    });
 
-                function bookingCallback() {
-                    //console.log(bookings);
-                    let output = '';
-                    if (slots.length !== 0) {
-                        slots.sort(function (a, b) { return a.startTime - b.startTime });
+                    function bookingCallback() {
+                        //console.log(bookings);
+                        let output = '';
+                        if (slots.length !== 0) {
+                            slots.sort(function (a, b) { return a.startTime - b.startTime });
 
-                        slots.forEach((s) => {
-                            if (s.startTime > 12) {
-                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + (s.startTime - 12) + "pm." + "\n";
-                            } else if (s.startTime === 12) {
-                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "pm." + "\n";
-                            } else {
-                                output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "am." + "\n";
-                            }
-                        })
+                            slots.forEach((s) => {
+                                if (s.startTime > 12) {
+                                    output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + (s.startTime - 12) + "pm." + "\n";
+                                } else if (s.startTime === 12) {
+                                    output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "pm." + "\n";
+                                } else {
+                                    output = output + "Your Slot on " + s.date.toUTCString().substring(0, 16) + " is at " + s.startTime + "am." + "\n";
+                                }
+                            })
 
-                        output = output + "See you there!!!";
+                            output = output + "See you there!!!";
 
-                        axios.post(`${TELEGRAM_API}/sendMessage`, {
-                            chat_id: req.chatID,
-                            text: output
-                        })
-                        console.log("Sent booking details on Telegram to " + req.telegramHandle);
-                    } else {
-                        axios.post(`${TELEGRAM_API}/sendMessage`, {
-                            chat_id: req.chatID,
-                            text: "You have no upcoming bookings." + "\n" + "You can use the /fetch command to view all upcoming slots available."
-                        })
-                        console.log("No Slots found for " + req.telegramHandle);
+                            axios.post(`${TELEGRAM_API}/sendMessage`, {
+                                chat_id: req.chatID,
+                                text: output
+                            })
+                            console.log("Sent booking details on Telegram to " + req.telegramHandle);
+                        } else {
+                            axios.post(`${TELEGRAM_API}/sendMessage`, {
+                                chat_id: req.chatID,
+                                text: "You have no upcoming bookings." + "\n" + "You can use the /fetch command to view all upcoming slots available."
+                            })
+                            console.log("No Slots found for " + req.telegramHandle);
+                        }
                     }
                 }
             });

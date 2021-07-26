@@ -309,42 +309,31 @@ exports.cancelBooking = (req, res) => {
 
           if (booking) {
             console.log("found");
-            console.log(booking._id);
-            console.log(booking.valid);
-            console.log("before");
+            console.log("Booking " + booking._id + " validity is " + booking.valid);
+            console.log("user booking updated from");
             console.log(user.bookings);
             user.bookings.pull({ _id: booking._id });
             booking.valid = false;
-            console.log("after");
             console.log(user.bookings);
-            console.log(booking.valid);
             booking.save((err, newBooking) => {
               if (err) {
                 return res.status(400).send({ message: err })
               }
               console.log(newBooking);
+              console.log("Booking is updated as cancelled");
             });
 
             user.save((err, newUser) => {
               if (err) {
                 return res.status(400).send({ message: err })
               }
-              return res.status(200).send({ message: "Booking is removed for user" });
+              //return res.status(200).send({ message: "Booking is removed for user" });
+              console.log("Booking is removed for user");
             });
           }
 
-          return res.status(404).send({ message: "Welp" });
+          //return res.status(404).send({ message: "Welp" });
         });
-
-      /*console.log("311");
-      console.log(user.bookings);
-      user.save((err, newUser) => {
-        if (err) {
-          return res.status(400).send({ message: err })
-        }
-        return res.status(200).send({ message: "Booking is removed for user" });
-      });*/
-      //return res.status(400).send({ message: "No update made"});
     });
 };
 

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-//const API_URL = "http://localhost:5000/api/test/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/test/"; // use when deploying to heroku
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/test/" : "http://localhost:5000/api/test/";
 
 class UserService {
   getPublicContent() {
@@ -20,7 +20,7 @@ class UserService {
         localStorage.setItem("access", "Admin");
       },
       (err) => {
-        console.log(err);
+        //console.log(err);
         localStorage.setItem("access", "User");
       });
   }

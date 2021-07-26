@@ -49,7 +49,7 @@ function Information() {
             lastName: lastName === undefined ? currentUser.lastName : lastName,
             email: email === undefined ? currentUser.email : email,
             contactNo: contactNo === undefined ? currentUser.contactNo : contactNo,
-            telegramHandle: telegramHandle === undefined ? currentUser.telegramHandle : telegramHandle
+            telegramHandle: telegramHandle === undefined ? currentUser.telegramHandle : (telegramHandle.charAt(0) === '@' ? telegramHandle.slice(1) : telegramHandle)
         }
 
         /*console.log("Current User details are : ");

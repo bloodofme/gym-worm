@@ -9,36 +9,36 @@ import AuthService from "../services/auth.service";
 import axios from "axios";
 
 const { TabPane } = Tabs;
+
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
+
 function MakeBookings() {
     //history.push('/MakeBookings');
 
     const currentUser = AuthService.getCurrentUser();
 
-    //const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-    const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
-
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
     const today = moment();
     const tdy = moment().format(dateFormat)
-    const tmr = moment().add(1,'days').format(dateFormat)
+    const tmr = moment().add(1, 'days').format(dateFormat)
     const dayAfter = moment().add(2, 'days').format(dateFormat)
 
-
     let aDate = new Date();
-    let bDate = new Date(aDate);
-
-    if (aDate.getHours() < 8) {
-        console.log("change");
-        bDate.setHours(8, 0, 0, 0);
+    let aToday = new Date(aDate);
+    if (deployTo === "heroku") { // for heroku
+        if (aDate.getHours() >= 16) {
+            aToday.setHours(24, 0, 0, 0);
+        } else {
+            aToday.setHours(0, 0, 0, 0);
+        }
     } else {
-        console.log("no change");
+        aToday.setHours(8, 0, 0, 0); // for local
     }
 
-    console.log(aDate.toJSON());
-    console.log(bDate.toJSON());
-    const todayDate = JSON.stringify(new Date(bDate)).substring(1, 11);
-    console.log(todayDate);
+    const todayDate = JSON.stringify(new Date(aToday)).substring(1, 11);
+    //console.log(todayDate);
 
     const [slotsAvail, setSlotAvail] = useState(false)
     const [container, setContainer] = useState(null);
@@ -47,37 +47,55 @@ function MakeBookings() {
     var bookedSlots = []
     const [slots, setSlots] = useState([])
 
-    if (getLength() === 0) {
-        console.log(todayDate);
+    if (getLength() === 0) { // This is today's available slots
+        //console.log(todayDate);
         SlotService.fetchSlots(todayDate).then(
             () => {
-                console.log("finding slots for " + todayDate);
-                setSlots(SlotService.getCurrentSlots(todayDate));
-                slots.push(SlotService.getCurrentSlots(todayDate));
-                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
+                console.log("Finding slots for " + todayDate);
+                //setSlots(SlotService.getCurrentSlots(todayDate));
+                //slots.push(SlotService.getCurrentSlots(todayDate));
+                let tempSlots = SlotService.getCurrentSlots(todayDate);
+                tempSlots.sort((first, second) => first.startTime - second.startTime);
+
+                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
+                //console.log(tempSlots);
+                let validSlots = [];
+
+                tempSlots.forEach(s => {
+                    //console.log(new Date(s.date).getDate());
+                    //console.log(time.getDate());
+                    //console.log(s.startTime);
+                    //console.log(time.getHours());
+                    if (new Date(s.date).getDate() === time.getDate()) {
+                        if (s.startTime < time.getHours()) {
+                            //console.log(s);
+                            //console.log("should not show");
+                        } else {
+                            validSlots.push(s);
+                        }
+                    } else {
+                        validSlots.push(s);
+                    }
+                })
+
+                if (validSlots.length === 0) {
+                    console.log("Can't find slots for " + todayDate);
+                    //alert("No slots that day");
+                    setSlotAvail(false);
+                } else {
+                    //console.log(validSlots);
+                    setSlots(validSlots);
+                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
+                }
+                //slots.push(validSlots);
             },
             error => {
-                console.log("cant find slot " + todayDate + " " + error);
+                console.log("Can't find slots for " + todayDate + " " + error);
                 alert("No slots that day");
                 setSlotAvail(false)
             }
         );
     }
-
-    /*useEffect(() => {
-        const temp = []
-        currentUser.bookings.forEach(slot => {
-            (async () => {
-                //console.log("Booking ID is " + slot); // booking id
-                const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) {
-                    const posts = res.data.slot;
-                    temp.push([posts, slot])
-                    setSlots(temp)
-                }
-            })()
-        })
-    }, [])*/
 
     useEffect(() => {
         const temp = []
@@ -85,24 +103,34 @@ function MakeBookings() {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-                
-                    const posts = res.data.slot;
-                    temp.push(posts);
 
-                    //if (new Date(res.data.slot.date) >= new Date().setHours(-8, 0, 0, 0)) { // for local testing
-                    if (new Date(res.data.slot.date) >= new Date().setHours(0, 0, 0, 0)) { // for heroku
-                        if (currentUser.bookings.length === temp.length) {
-                            temp.sort((first, second) => first.startTime - second.startTime)
-                            setUserSlots(temp);
-                        }
+                const posts = res.data.slot;
+                temp.push(posts);
+                let date = new Date();
+                let today = new Date(date);
+                if (deployTo === "heroku") { // for heroku
+                    if (date.getHours() >= 16) {
+                        today.setHours(24, 0, 0, 0);
+                    } else {
+                        today.setHours(0, 0, 0, 0);
                     }
+                } else {
+                    today.setHours(8, 0, 0, 0); // for local
+                }
+
+                if (new Date(res.data.slot.date) >= today.getTime()) {
+                    if (currentUser.bookings.length === temp.length) {
+                        temp.sort((first, second) => first.startTime - second.startTime);
+                        setUserSlots(temp);
+                    }
+                }
             })()
         });
     }, [])
 
-    console.log(userSlots);
+    //console.log(userSlots);
 
-    function onChangeDate(dateString) {
+    function onChangeDate(dateString) { // This is other day's available slots
         date.current = JSON.parse(JSON.stringify(dateString));
         console.log("date is " + date.current.toString());
 
@@ -110,21 +138,46 @@ function MakeBookings() {
             currentDate: date.current,
         }
 
-        /*
-        console.log("check date is ");
-        console.log(checkDate);
-        console.log("slots are ");
-        console.log(slots);*/
-
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + date.current);
-                setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
-                console.log(slots);
-                getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
+                //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
+                let tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
+                tempSlots.sort((first, second) => first.startTime - second.startTime);
+
+                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
+                //console.log(tempSlots);
+                let validSlots = [];
+
+                tempSlots.forEach(s => {
+                    //console.log(new Date(s.date).getDate());
+                    //console.log(time.getDate());
+                    //console.log(s.startTime);
+                    //console.log(time.getHours());
+                    if (new Date(s.date).getDate() === time.getDate()) {
+                        if (s.startTime < time.getHours()) {
+                            //console.log(s);
+                            //console.log("should not show");
+                        } else {
+                            validSlots.push(s);
+                        }
+                    } else {
+                        validSlots.push(s);
+                    }
+                })
+
+                if (validSlots.length === 0) {
+                    console.log("Can't find slots for " + date.current);
+                    //alert("No slots that day");
+                    setSlotAvail(false);
+                } else {
+                    //console.log(validSlots);
+                    setSlots(validSlots);
+                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
+                }
             },
             error => {
-                console.log("cant find slot for " + date.current + " " + error);
+                console.log("Can't find slots for " + date.current + " " + error);
                 alert("No slots that day");
                 setSlotAvail(false);
                 window.location.reload(false);
@@ -168,10 +221,10 @@ function MakeBookings() {
                 <Card className='bookingStyle'>
                     <Row>
                         <Col wrap="true">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br />
                             <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
-                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
-                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br/>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br />
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br />
                         </Col>
                     </Row>
                 </Card>
@@ -211,7 +264,7 @@ function MakeBookings() {
                         <TabPane tab={`${tdy}`} key={`${tdy}`} centered>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'
@@ -224,7 +277,7 @@ function MakeBookings() {
                         <TabPane tab={`${tmr}`} key={`${tmr}`}>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'
@@ -237,7 +290,7 @@ function MakeBookings() {
                         <TabPane tab={`${dayAfter}`} key={`${dayAfter}`}>
                             <Row justify="center" direction="vertical">
                                 <Space
-                                    style={{ background: "74828F", alignItems: "center"}}
+                                    style={{ background: "74828F", alignItems: "center" }}
                                     direction="vertical"
                                     size={'small'}
                                     align='center'
@@ -252,7 +305,7 @@ function MakeBookings() {
                         className="bookingsButtons"
                         type="primary"
                         shape="round"
-                        disabled={bookingsLen()}
+                        disabled={bookingsLen() || currentUser.banStatus}
                         onClick={() => {
                             bookedSlots.forEach(elements => {
                                 SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
@@ -267,21 +320,6 @@ function MakeBookings() {
                     >
                         Confirm Booking
                     </Button>
-                    {/*}
-                    <Button
-                        className="bookingsButtons"
-                        type="primary"
-                        shape="round"
-                        disabled={bookingsLen()}
-                        onClick={() => {
-                            history.push("/Bookings")
-                            //AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-                            window.location.reload();
-                        }}
-                    >
-                        Back
-                    </Button>
-                    */}
                 </Space>
             </Row>
         </div>

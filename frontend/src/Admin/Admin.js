@@ -29,8 +29,9 @@ Admin page functions
 const { Header, Content } = Layout;
 const { Option } = Select;
 const { Panel } = Collapse;
-const API_URL = "http://localhost:5000/api/auth/"; // use for local testing
-//const API_URL = "https://gym-worm.herokuapp.com/api/auth/"; // use when deploying to heroku
+
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 function PickerWithTypeView({ type, onChange }) {
     if (type === 'time') return <TimePicker onChange={onChange} />;
@@ -67,6 +68,10 @@ function Admin() {
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + dateUpdateV.current);
+                /*let temps = SlotService.getCurrentSlots(checkDate.currentDate);
+                temps.sort(function (a, b) {
+                    return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
+                });*/
                 setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
@@ -272,7 +277,7 @@ function Admin() {
     const onCreate = (e) => {
         SlotService.createSlot(dateCreate.current, timeCreate.current, capacityCreate)
             .then(() => {
-                alert("Slot Settings have been created");
+                alert("Slot has been created");
                 console.log("Successfully Created");
                 window.location.reload();
             },
@@ -303,7 +308,7 @@ function Admin() {
                 setSlotsD(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
-                console.log("cant find slot for " + dateUpdateD.current + " " + error);
+                console.log("Can't find slot for " + dateUpdateD.current + " " + error);
                 alert("No slots that day");
                 //window.location.reload(false);
             }
@@ -314,7 +319,7 @@ function Admin() {
         selectedUsersD.forEach(user => {
             AuthService.demeritUser(user._id)
                 .then(() => {
-                    alert("Demerit success");
+                    alert("Demerit Successful");
                     console.log("Successfully Updated");
                     window.location.reload();
                 },

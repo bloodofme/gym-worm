@@ -12,8 +12,8 @@ import moment from 'moment';
 
 const { Header, Content } = Layout;
 
-//const API_URL = "http://localhost:5000/api/slot/"; // use for local testing
-const API_URL = "https://gym-worm.herokuapp.com/api/slot/"; // use when deploying to heroku
+const deployTo = "heroku" // change between "local" or "heroku"
+const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 document.body.style = 'background: #74828F;';
 
@@ -28,31 +28,36 @@ function Home() {
         UserService.getAdminBoard();
     }
 
-    /*useEffect(() => {
-        if (AuthService.getCurrentUser() === null) {
-            history.push("/");
-            window.location.reload(false);
-        }
-    }, [])*/
-
     useEffect(() => {
         const temp = [];
         let counter = 0;
+
         currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let today = new Date();
+                let date = new Date();
+                let today = new Date(date);
+                if (deployTo === "heroku") { // for heroku
+                    if (date.getHours() >= 16) {
+                        today.setHours(24, 0, 0, 0);
+                    } else {
+                        today.setHours(0, 0, 0, 0);
+                    }
+                } else {
+                    today.setHours(8, 0, 0, 0); // for local
+                }
+
                 //today.setHours(8, 0, 0, 0); // for local
-                today.setHours(0,0,0,0); // for heroku
+                //today.setHours(0, 0, 0, 0); // for heroku
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
                     temp.push([posts, booking]);
                 }
-                
+
                 if (counter === currentUser.bookings.length) {
                     //console.log(temp);
                     temp.sort(function (a, b) {
@@ -65,7 +70,7 @@ function Home() {
     }, [])
 
     //do not remove this!!!
-    console.log(slots);
+    //console.log(slots);
 
     function DisplayBookings(props) {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
@@ -84,7 +89,7 @@ function Home() {
         }
 
         const Time = (time) => {
-            return time <= 12 ? `${time}am` : `${time - 12}pm`
+            return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
         }
 
         return (
@@ -107,7 +112,7 @@ function Home() {
             <Navbar />
             <Layout>
                 <Header className='theTitle' >
-                    <h1 className="textHome">Welcome to Gym-Worm, {currentUser.firstName + " " + currentUser.lastName} </h1>
+                    <h1 className="textHome">Welcome to GymWorm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
                     <Layout className='layout'>

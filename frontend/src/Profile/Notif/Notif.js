@@ -75,7 +75,7 @@ class Notif extends Component {
                         </Space>
 
                         <Space size={'large'} align='center'>
-                        <h1 className="textProfile">Toggle SMS Notifcations</h1>
+                        <h1 className="textProfile">Toggle SMS Notifications</h1>
                         <Switch
                             style={{bottom: "4px"}}
                             defaultChecked={currentUser.contactNotification}
@@ -84,7 +84,7 @@ class Notif extends Component {
                         </Space>
 
                         <Space size={'large'} align='center'>
-                        <h1 className="textProfile">Toggle Telegram Notifcations</h1>
+                        <h1 className="textProfile">Toggle Telegram Notifications</h1>
                         <Switch
                             style={{bottom: "4px"}}
                             defaultChecked={currentUser.telegramNotification}
