@@ -34,12 +34,12 @@ teleRequest = (req, res) => {
                     return res.status(500).send({ message: err });
                 }
                 console.log(user);
-                if (user === undefined) {
+                if (user === null) {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
                         text: "Your telegram handle is not linked to an existing GymWorm account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
                     })
-                    console.log("No Link found for " + req.telegramHandle);
+                    console.log("No account link found for " + req.telegramHandle);
                 }
 
                 if (!user.telegramNotification) {
