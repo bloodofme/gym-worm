@@ -33,13 +33,21 @@ teleRequest = (req, res) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
-
-                if (user.length === 0 || !user.telegramNotification) {
+                console.log(user);
+                if (user === undefined) {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
-                        text: "Your telegram handle is not linked to an existing GymWorm account, or you have Telegram Notifications disabled." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
+                        text: "Your telegram handle is not linked to an existing GymWorm account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
                     })
                     console.log("No Link found for " + req.telegramHandle);
+                }
+
+                if (!user.telegramNotification) {
+                    axios.post(`${TELEGRAM_API}/sendMessage`, {
+                        chat_id: req.chatID,
+                        text: "You have Telegram Notifications disabled on your account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to enable your Telegram Notifications now!"
+                    })
+                    console.log("User has notifications disabled " + req.telegramHandle);
                 } else {
                     let slots = [];
                     let counter = 0;
