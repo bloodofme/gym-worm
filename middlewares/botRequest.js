@@ -72,7 +72,7 @@ teleRequest = (req, res) => {
                                             if (new Date(slot.date).getTime() > today.getTime()) {
                                                 slots.push(slot);
                                             } else if (new Date(slot.date).getTime() === today.getTime()) {
-                                                if (new Date(slot.date).getHours() >= later.getHours()) {
+                                                if (slot.startTime >= later.getHours()) {
                                                     slots.push(slot);
                                                 }
                                             }
