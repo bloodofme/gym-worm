@@ -171,6 +171,7 @@ function Bookings() {
                                             })
 
                                         });
+                                        window.location.reload();
                                     }}
                                 >
                                     Cancel Bookings

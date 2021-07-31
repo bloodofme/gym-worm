@@ -33,13 +33,22 @@ teleRequest = (req, res) => {
                 if (err) {
                     return res.status(500).send({ message: err });
                 }
+                console.log("user is :");
+                console.log(user);
+                if (user === null) {
+                    console.log("No account link found for " + req.telegramHandle);
 
-                if (user === undefined || !user.telegramNotification) {
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
-                        text: "Your telegram handle is not linked to an existing GymWorm account, or you have Telegram Notifications disabled." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
+                        text: "Your telegram handle is not linked to an existing GymWorm account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
                     })
-                    console.log("No Link found for " + req.telegramHandle);
+                } else if (!user.telegramNotification) {
+                    console.log("User has notifications disabled " + req.telegramHandle);
+
+                    axios.post(`${TELEGRAM_API}/sendMessage`, {
+                        chat_id: req.chatID,
+                        text: "You have Telegram Notifications disabled on your account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to enable your Telegram Notifications now!"
+                    })
                 } else {
                     let slots = [];
                     let counter = 0;
@@ -56,13 +65,18 @@ teleRequest = (req, res) => {
                                         _id: book.slot
                                     }, { _id: 1, date: 1, startTime: 1, capacity: 1 })
                                         .exec((err, slot) => {
-                                            //console.log(slot.date);
-                                            //console.log(today);
+                                            console.log("slot date is " + slot.date);
+                                            console.log("today is " + today);
                                             let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
-                                            //console.log(later);
-                                            if (new Date(slot.date).getTime() >= later.getTime()) {
+                                            console.log("later is " + later);
+                                            if (new Date(slot.date).getTime() > today.getTime()) {
                                                 slots.push(slot);
+                                            } else if (new Date(slot.date).getTime() === today.getTime()) {
+                                                if (slot.startTime >= later.getHours()) {
+                                                    slots.push(slot);
+                                                }
                                             }
+
                                             counter++;
                                             if (counter === user.bookings.length) {
                                                 bookingCallback();
