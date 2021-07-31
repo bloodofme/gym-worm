@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Select, Card, Row, Col, Checkbox, Menu, Dropdown, Collapse, message } from 'antd';
+import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Select, Card, Row, Col, Checkbox, Menu, Dropdown, Collapse, message, notification } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import './Admin.css';
 import Navbar from '../components/Navbar/Navbar';
@@ -10,6 +10,7 @@ import moment from 'moment';
 import axios from "axios";
 import { FormProvider } from 'antd/lib/form/context';
 import Deployment from "../DeploymentMethod"
+//import { listEmailNotif } from '../../../controllers/auth.controller';
 
 /*
 Admin page functions
@@ -27,8 +28,7 @@ Admin page functions
 6) list all customers with the sms / notification as yes -> for contacting purposes.
 */ 
 
-const { Header, Content } = Layout;
-const { Option } = Select;
+const { Header } = Layout;
 const { Panel } = Collapse;
 
 const deployTo = Deployment() // change between "local" or "heroku"
@@ -45,6 +45,14 @@ function PickerWithTypeSlot({ type, onChange }) {
     if (type === 'date') return <DatePicker onChange={onChange} />;
     return <DatePicker picker={type} onChange={onChange} />;
 }
+
+const notif = (message) => {
+    notification.open({
+      message: 'Notification Title',
+      description:
+        message,
+    });
+};
 
 function Admin() {
     const [slotSettings, setSlotSettings] = useState("");
@@ -77,7 +85,7 @@ function Admin() {
             },
             error => {
                 console.log("cant find slot for " + dateUpdateV.current + " " + error);
-                alert("No slots that day");
+                notif(`No slots for ${dateUpdateV.current}`);
                 //window.location.reload(false);
             }
         );
@@ -155,12 +163,12 @@ function Admin() {
         SlotService.updateSlotSetting(slotCreationSettings.startTime,
             slotCreationSettings.endTime, slotCreationSettings.capacity)
             .then(() => {
-                alert("Slot Settings have been updated");
+                notif("Slot Settings have been updated");
                 console.log("Successfully Updated");
                 window.location.reload();
             },
                 err => {
-                    alert("Unable to Update");
+                    notif("Unable to Update");
                     console.log("Unable to update " + err);
                     window.location.reload();
                 });
@@ -192,7 +200,7 @@ function Admin() {
             },
             error => {
                 console.log("cant find slot for " + dateUpdateE.current + " " + error);
-                alert("No slots that day");
+                notif(`No slots during ${dateUpdateE.current}`);
                 //window.location.reload(false);
             }
         );
@@ -209,12 +217,12 @@ function Admin() {
             SlotService.updateSlot(value._id, dateUpdateE.current, value.startTime,
                 vacancy, slotCreationSettings.fullCapacity)
                 .then(() => {
-                    alert("Slot Settings have been updated");
+                    notif("Slot Settings have been updated");
                     console.log("Successfully Updated");
                     window.location.reload();
                 },
                     err => {
-                        alert("Unable to Update");
+                        notif("Unable to Update");
                         console.log("Unable to update " + err);
                         //window.location.reload();
             });
@@ -278,12 +286,12 @@ function Admin() {
     const onCreate = (e) => {
         SlotService.createSlot(dateCreate.current, timeCreate.current, capacityCreate)
             .then(() => {
-                alert("Slot has been created");
+                notif("Slot has been created");
                 console.log("Successfully Created");
                 window.location.reload();
             },
                 err => {
-                    alert("Unable to Create");
+                    notif("Unable to Create");
                     console.log("Unable to create " + err);
                     //window.location.reload();
                 });
@@ -310,7 +318,7 @@ function Admin() {
             },
             error => {
                 console.log("Can't find slot for " + dateUpdateD.current + " " + error);
-                alert("No slots that day");
+                notif(`No slots during ${dateUpdateD.current}`);
                 //window.location.reload(false);
             }
         );
@@ -320,12 +328,12 @@ function Admin() {
         selectedUsersD.forEach(user => {
             AuthService.demeritUser(user._id)
                 .then(() => {
-                    alert("Demerit Successful");
+                    //listEmailNotif("Demerit Successful");
                     console.log("Successfully Updated");
                     window.location.reload();
                 },
                     err => {
-                        alert("Unable to Update");
+                        notif("Unable to Update");
                         console.log("Unable to update " + err);
                         //window.location.reload();
             });

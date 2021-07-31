@@ -159,19 +159,6 @@ function Information() {
                         Update
                     </Button>
 
-                    <Button
-                        type="primary"
-                        shape="round"
-                        style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
-                        onClick={() => {
-                            AuthService.logout();
-                            history.push('/');
-                            window.location.reload(false);
-                        }}
-                    >
-                        Log Out
-                    </Button>
-
                     {
                         accessStatus === "Admin" &&
                         <Button

@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import './Signup.css';
 import history from './../history';
 import AuthService from "../services/auth.service";
+import NavBar from "../components/Navbar/Navbar"
 
 document.body.style.backgroundColor = '#ebeced';
 
@@ -115,175 +116,162 @@ function Signup() {
     });
     
     return (
-    <div>
-        <Layout className="layout">
-            <Header className="welcome">
-                <h1 className="textSignup" align="center">Register</h1>
+        <div>
+            <NavBar/>
+            <Header className='theTitleLogin' >
+                <h1 className="textLogin" >Register for GymWorm</h1>
             </Header>
-            <Content style={{ background: "#ECEBED" }}>
-                <Row className="pos" type="flex" justify="vertical" align="center" verticalAlign="middle" >
-                    <Card style={{padding: "50px"}}>
-                        <Form
-                            {...layout}
-                            name="basic"
-                            justify="center"
-                            initialValues={{
-                                remember: true,
-                            }}
-                            onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
-                            >
+        
+            <Row className="pos" justify="vertical" align="center" verticalAlign="middle" >
+                <Form
+                    {...layout}
+                    name="basic"
+                    justify="center"
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    >
 
-                            <Form.Item
-                                label="Email"
-                                name="email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your Email!',
-                                    },
-                                    {
-                                        type: "email",
-                                        message: "The input is not valid E-mail!"
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your Email!',
+                            },
+                            {
+                                type: "email",
+                                message: "The input is not valid E-mail!"
+                            }
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input type="text" onChange={onChangeEmail} value={email}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="First Name"
+                        name="firstName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your First Name!',
+                            },
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input type="text" onChange={onChangeFirstName} value={firstName}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Last Name"
+                        name="lastName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your First Name!',
+                            },
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input type="text" onChange={onChangeLastName} value={lastName}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Password"
+                        name="password"
+                        min={6}
+                        max={20}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your password!',
+                            },
+                            {
+                                min: 6,
+                                message: 'Your password should be more than 6 characters!'
+                            }
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input.Password type="text" onChange={onChangePassword} value={password}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Confirm Password"
+                        name="confirmpassword"
+                        min={6}
+                        max={20}
+                        rules={[
+                            {
+                                required: true,
+                                minLength: 6,
+                                message: 'Please confirm your password!',
+                            },
+                            {
+                                min: 6,
+                                message: 'Your password should be more than 6 characters!'
+                            },
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input.Password onChange={onChangeConfirmPassword} value={confirmPassword}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Contact Number"
+                        name="contactNo"
+                        min={8}
+                        max={8}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your contact number!',
+                            },
+                            {
+                                min: 8,
+                                max: 8,
+                                message: 'Your number should be 8 digits!'
+                            },
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input type="text" onChange={onChangeContactNo} value={contactNo}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Telegram Handle"
+                        name="telegramHandle"
+                        rules={[
+                            {
+                                required: false,
+                            },
+                        ]}
+                        className="fieldSize"
+                    >
+                        <Input type="text" onChange={onChangeTelegramHandle} value={telegramHandle}/>
+                    </Form.Item>
+
+                    <Form.Item {...tailLayout} align="center">
+                        <Button type="primary" 
+                                htmlType="submit" 
+                                disabled={ disabled }
+                                onClick={() => { 
+                                    onSubmit()
+                                    //history.push('/Home')
+                                    //window.location.reload(false);
                                     }
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input type="text" onChange={onChangeEmail} value={email}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="FirstName"
-                                name="firstName"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your First Name!',
-                                    },
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input type="text" onChange={onChangeFirstName} value={firstName}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="LastName"
-                                name="lastName"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your First Name!',
-                                    },
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input type="text" onChange={onChangeLastName} value={lastName}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Password"
-                                name="password"
-                                min={6}
-                                max={20}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your password!',
-                                    },
-                                    {
-                                        min: 6,
-                                        message: 'Your password should be more than 6 characters!'
-                                    }
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input.Password type="text" onChange={onChangePassword} value={password}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Confirm Password"
-                                name="confirmpassword"
-                                min={6}
-                                max={20}
-                                rules={[
-                                    {
-                                        required: true,
-                                        minLength: 6,
-                                        message: 'Please confirm your password!',
-                                    },
-                                    {
-                                        min: 6,
-                                        message: 'Your password should be more than 6 characters!'
-                                    },
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input.Password onChange={onChangeConfirmPassword} value={confirmPassword}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Contact Number"
-                                name="contactNo"
-                                min={8}
-                                max={8}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your contact number!',
-                                    },
-                                    {
-                                        min: 8,
-                                        max: 8,
-                                        message: 'Your number should be 8 digits!'
-                                    },
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input type="text" onChange={onChangeContactNo} value={contactNo}/>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Telegram Handle"
-                                name="telegramHandle"
-                                rules={[
-                                    {
-                                        required: false,
-                                    },
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input type="text" onChange={onChangeTelegramHandle} value={telegramHandle}/>
-                            </Form.Item>
-
-                            <Form.Item {...tailLayout}>
-                                <Button type="primary" 
-                                        htmlType="submit" 
-                                        disabled={ disabled }
-                                        onClick={() => { 
-                                            onSubmit()
-                                            //history.push('/Home')
-                                            //window.location.reload(false);
-                                            }
-                                        }
-                                >
-                                    Register
-                                </Button>
-                            </Form.Item>
-
-                            <Form.Item {...tailLayout}>
-                                <Button type="primary" htmlType="submit" onClick={() => { 
-                                            history.push('/')
-                                            window.location.reload(false);
-                                        } }>
-                                    Log in
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
-                </Row>
-            </Content>
-        </Layout>
-    </div>
+                                }
+                        >
+                            Register
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Row>
+        </div>
     )
 }
 

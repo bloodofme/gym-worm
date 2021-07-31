@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Space, Row, DatePicker, Breadcrumb, Col, Card, Checkbox, Tabs } from 'antd';
+import { Button, Space, Row, Col, Card, Checkbox, Tabs, notification } from 'antd';
 import 'antd/dist/antd.css';
 import './Bookings.css'
 import moment from 'moment';
@@ -8,6 +8,7 @@ import SlotService from "../services/slot.service";
 import AuthService from "../services/auth.service";
 import axios from "axios";
 import Deployment from "../DeploymentMethod"
+import { useMediaQuery } from 'react-responsive';
 
 const { TabPane } = Tabs;
 
@@ -21,10 +22,10 @@ function MakeBookings() {
 
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
-    const today = moment();
     const tdy = moment().format(dateFormat)
     const tmr = moment().add(1, 'days').format(dateFormat)
     const dayAfter = moment().add(2, 'days').format(dateFormat)
+    const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
 
     let aDate = new Date();
     let aToday = new Date(aDate);
@@ -41,65 +42,21 @@ function MakeBookings() {
     const todayDate = JSON.stringify(new Date(aToday)).substring(1, 11);
     //console.log(todayDate);
 
-    const [slotsAvail, setSlotAvail] = useState(false)
-    const [container, setContainer] = useState(null);
+    const [slotsAvail, setSlotAvail] = useState(true)
+    const [slotsAvail1, setSlotAvail1] = useState(true)
+    const [slotsAvail2, setSlotAvail2] = useState(true)
     const [userSlots, setUserSlots] = useState([]);
     const arrSlots = []
+    const arrSlots1 = []
+    const arrSlots2 = []
     var bookedSlots = []
     const [slots, setSlots] = useState([])
-
-    if (getLength() === 0) { // This is today's available slots
-        //console.log(todayDate);
-        SlotService.fetchSlots(todayDate).then(
-            () => {
-                console.log("Finding slots for " + todayDate);
-                //setSlots(SlotService.getCurrentSlots(todayDate));
-                //slots.push(SlotService.getCurrentSlots(todayDate));
-                let tempSlots = SlotService.getCurrentSlots(todayDate);
-                tempSlots.sort((first, second) => first.startTime - second.startTime);
-
-                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                //console.log(tempSlots);
-                let validSlots = [];
-
-                tempSlots.forEach(s => {
-                    //console.log(new Date(s.date).getDate());
-                    //console.log(time.getDate());
-                    //console.log(s.startTime);
-                    //console.log(time.getHours());
-                    if (new Date(s.date).getDate() === time.getDate()) {
-                        if (s.startTime < time.getHours()) {
-                            //console.log(s);
-                            //console.log("should not show");
-                        } else {
-                            validSlots.push(s);
-                        }
-                    } else {
-                        validSlots.push(s);
-                    }
-                })
-
-                if (validSlots.length === 0) {
-                    console.log("Can't find slots for " + todayDate);
-                    //alert("No slots that day");
-                    setSlotAvail(false);
-                } else {
-                    //console.log(validSlots);
-                    setSlots(validSlots);
-                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true);
-                }
-                //slots.push(validSlots);
-            },
-            error => {
-                console.log("Can't find slots for " + todayDate + " " + error);
-                alert("No slots that day");
-                setSlotAvail(false)
-            }
-        );
-    }
-
+    const [slots1, setSlots1] = useState([])
+    const [slots2, setSlots2] = useState([])
+    
     useEffect(() => {
         const temp = []
+        
         currentUser.bookings.forEach(slot => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
@@ -127,27 +84,30 @@ function MakeBookings() {
                 }
             })()
         });
+        console.log(userSlots)
     }, [])
 
-    //console.log(userSlots);
-
-    function onChangeDate(dateString) { // This is other day's available slots
-        date.current = JSON.parse(JSON.stringify(dateString));
-        console.log("date is " + date.current.toString());
-
-        const checkDate = {
-            currentDate: date.current,
-        }
-
-        SlotService.fetchSlots(checkDate.currentDate).then(
+    function getAvailSlots(slotsArr, theDate, sAvail) {
+        const notif = (date) => {
+            notification.open({
+              message: 'Notification Title',
+              description:
+                `no slots for that day: ${date}`,
+              onClick: () => {
+                console.log("Can't find slots for " + date);
+              },
+            });
+        };
+        
+        SlotService.fetchSlots(theDate).then(
             () => {
-                console.log("Finding slots for " + date.current);
+                console.log("Finding slots for " + theDate);
                 //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
-                let tempSlots = SlotService.getCurrentSlots(checkDate.currentDate);
+                let tempSlots = SlotService.getCurrentSlots(theDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                //console.log(tempSlots);
+                console.log(tempSlots);
                 let validSlots = [];
 
                 tempSlots.forEach(s => {
@@ -168,31 +128,30 @@ function MakeBookings() {
                 })
 
                 if (validSlots.length === 0) {
-                    console.log("Can't find slots for " + date.current);
-                    //alert("No slots that day");
-                    setSlotAvail(false);
+                    console.log("Can't find slots for " + theDate);
+                    notif(theDate)
+                    sAvail(false);
                 } else {
                     //console.log(validSlots);
-                    setSlots(validSlots);
-                    getLength() === 0 ? setSlotAvail(false) : setSlotAvail(true)
+                    slotsArr(validSlots);
+                    //validSlots === 0 ? setSlotAvail(false) : setSlotAvail(true)
                 }
             },
             error => {
-                console.log("Can't find slots for " + date.current + " " + error);
-                alert("No slots that day");
-                setSlotAvail(false);
-                window.location.reload(false);
+                console.log("Can't find slots for " + theDate + " " + error);
+                notif(theDate)
+                sAvail(false);
+                //window.location.reload(false);
                 //onChangeDate(null, todayDate);
             }
         );
     }
 
-    function getLength() {      // these are for testing, can remove later
-        if (slots.length !== 0) {
-            return slots.length;
-        }
-        return 0;
-    }
+    useEffect(() => {
+        getAvailSlots(setSlots, tdy, setSlotAvail);
+        getAvailSlots(setSlots1, tmr, setSlotAvail1);
+        getAvailSlots(setSlots2, dayAfter, setSlotAvail2);
+    }, [])
 
     function bookingsLen() {
         return bookedSlots.length > 2 ? true : false;
@@ -234,8 +193,6 @@ function MakeBookings() {
         );
     }
 
-
-
     return (
         <div style={{ background: "74828F", alignItems: "center" }}>
             <Row justify="center" direction="vertical">
@@ -245,62 +202,142 @@ function MakeBookings() {
                     size={'large'}
                     align='center'
                 >
-                    {
-                        currentUser.banstatus ? <Row /> : slotsAvail ? slots
-                            .filter(s => {
-                                var test = true;
-                                userSlots.forEach(us => {
-                                    if (s._id === us._id) {
-                                        test = false
-                                    }
+                        {
+                            currentUser.banstatus ? <Row /> : slotsAvail ? 
+                                slots
+                                .filter(s => {
+                                    var test = true;
+                                    userSlots.forEach(us => {
+                                        if (s._id === us._id) {
+                                            test = false
+                                        }
+                                    })
+                                    return test;
                                 })
-                                return test;
-                            })
-                            .forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
-                    }
+                                .forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) : <Row />
+                        }
+                        {
+                            currentUser.banstatus ? <Row /> : slotsAvail1 ? 
+                                slots1
+                                .filter(s => {
+                                    var test = true;
+                                    userSlots.forEach(us => {
+                                        if (s._id === us._id) {
+                                            test = false
+                                        }
+                                    })
+                                    return test;
+                                })
+                                .forEach(element => { arrSlots1.push(<DisplayBookings slot={element} />) }) : <Row />
+                        }
+                        {
+                            currentUser.banstatus ? <Row /> : slotsAvail2 ? 
+                                slots2
+                                .filter(s => {
+                                    var test = true;
+                                    userSlots.forEach(us => {
+                                        if (s._id === us._id) {
+                                            test = false
+                                        }
+                                    })
+                                    return test;
+                                })
+                                .forEach(element => { arrSlots2.push(<DisplayBookings slot={element} />) }) : <Row />
+                        }
 
                     <text className="booking">Make Bookings</text>
+                    {
+                        isMobile ?  
+                                (
+                                    <div>
+            
+                                        <Tabs defaultActiveKey="1" centered >
+                                            <TabPane tab={`${tdy}`} key={`${tdy}`} centered>
+                                                <Row justify="center" direction="vertical">
+                                                    <Space
+                                                        style={{ background: "74828F", alignItems: "center" }}
+                                                        direction="vertical"
+                                                        size={'small'}
+                                                        align='center'
+                                                    >
+                                                        {arrSlots.map(element => <div> {element} </div>)}
+                                                    </Space>
+                                                </Row>
+                                            </TabPane>
 
-                    <Tabs defaultActiveKey="1" centered onChange={onChangeDate}>
-                        <TabPane tab={`${tdy}`} key={`${tdy}`} centered>
-                            <Row justify="center" direction="vertical">
-                                <Space
-                                    style={{ background: "74828F", alignItems: "center" }}
-                                    direction="vertical"
-                                    size={'small'}
-                                    align='center'
-                                >
-                                    {arrSlots.map(element => <div> {element} </div>)}
-                                </Space>
-                            </Row>
-                        </TabPane>
+                                            <TabPane tab={`${tmr}`} key={`${tmr}`}>
+                                                <Row justify="center" direction="vertical">
+                                                    <Space
+                                                        style={{ background: "74828F", alignItems: "center" }}
+                                                        direction="vertical"
+                                                        size={'small'}
+                                                        align='center'
+                                                    >
+                                                        {arrSlots1.map(element => <div> {element} </div>)}
+                                                    </Space>
+                                                </Row>
+                                            </TabPane>
 
-                        <TabPane tab={`${tmr}`} key={`${tmr}`}>
-                            <Row justify="center" direction="vertical">
-                                <Space
-                                    style={{ background: "74828F", alignItems: "center" }}
-                                    direction="vertical"
-                                    size={'small'}
-                                    align='center'
-                                >
-                                    {arrSlots.map(element => <div> {element} </div>)}
-                                </Space>
-                            </Row>
-                        </TabPane>
+                                            <TabPane tab={`${dayAfter}`} key={`${dayAfter}`}>
+                                                <Row justify="center" direction="vertical">
+                                                    <Space
+                                                        style={{ background: "74828F", alignItems: "center" }}
+                                                        direction="vertical"
+                                                        size={'small'}
+                                                        align='center'
+                                                    >
+                                                        {arrSlots2.map(element => <div> {element} </div>)}
+                                                    </Space>
+                                                </Row>
+                                            </TabPane>
+                                        </Tabs>
+                                    </div>  
+                                 ) :    
+                                        <div className="container">
+                                            <Row gutter={70}>
+                                                <Col span={8}>
+                                                    <Row justify="center" direction="vertical">
+                                                            <Space
+                                                                style={{ background: "74828F", alignItems: "center" }}
+                                                                direction="vertical"
+                                                                size={'small'}
+                                                                align='center'
+                                                            >
+                                                                <text className="booking">{tdy}</text>
+                                                                {arrSlots.map(element => <div> {element} </div>)}
+                                                            </Space>
+                                                    </Row>
+                                                </Col>
+                                                <Col span={8}>
+                                                    <Row justify="center" direction="vertical">
+                                                            <Space
+                                                                style={{ background: "74828F", alignItems: "center" }}
+                                                                direction="vertical"
+                                                                size={'small'}
+                                                                align='center'
+                                                            >
+                                                                <text className="booking">{tmr}</text>
+                                                                {arrSlots1.map(element => <div> {element} </div>)}
+                                                            </Space>
+                                                    </Row>
+                                                </Col>
 
-                        <TabPane tab={`${dayAfter}`} key={`${dayAfter}`}>
-                            <Row justify="center" direction="vertical">
-                                <Space
-                                    style={{ background: "74828F", alignItems: "center" }}
-                                    direction="vertical"
-                                    size={'small'}
-                                    align='center'
-                                >
-                                    {arrSlots.map(element => <div> {element} </div>)}
-                                </Space>
-                            </Row>
-                        </TabPane>
-                    </Tabs>
+                                                <Col span={8}>
+                                                    <Row justify="center" direction="vertical">
+                                                            <Space
+                                                                style={{ background: "74828F", alignItems: "center" }}
+                                                                direction="vertical"
+                                                                size={'small'}
+                                                                align='center'
+                                                            >
+                                                                <text className="booking">{dayAfter}</text>
+                                                                {arrSlots2.map(element => <div> {element} </div>)}
+                                                            </Space>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </div>
+                    }
 
                     <Button
                         className="bookingsButtons"

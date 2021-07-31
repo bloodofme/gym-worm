@@ -1,66 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Row, Layout, Card} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Row, Layout, Card } from 'antd';
 import 'antd/dist/antd.css';
 import './Login.css';
-import history from './../history';
 import AuthService from "../services/auth.service";
 import NavBar from "../components/Navbar/Navbar"
 
-document.body.style = 'background: #74828F;';
+document.body.style.backgroundColor = '#ebeced';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 const layout = {
     labelCol: {
-        span: 8,
+      span: 8,
     },
     wrapperCol: {
-        span: 16,
+      span: 16,
     },
-};
-
+  };
+  
 const tailLayout = {
     wrapperCol: {
         offset: 8,
         span: 16,
     },
 };
-
-function Login() {
+  
+function ForgotPassword() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [disabled, setDisabled] = useState(false);
-
-    const onChangeEmail = (e) => {
+    
+    const  onChangeEmail = (e) => {
         setEmail(e.target.value);
     }
 
-    const onChangePassword = (e) => {
-        setPassword(e.target.value);
-    }
-
-    const onSubmit = (e) => {
-        const user = {
-            email: email,
-            password: password,
-        }
-
-        console.log(user);
-        
-        AuthService.login(user.email, user.password).then(
+    const onSubmit = (e) =>  {
+        /*
+        AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
-                alert("Logging In");
-                console.log(user.email + " has logged in");
-                history.push("/Home");
+                alert("Registration Successful");
+                console.log(user.email + " has registered");
+                history.push("/");
                 window.location.reload();
             },
             error => {
-                alert("Unable to log in. Try Again");
-                console.log("unable to login " + error);
-                history.push("/");
+                alert("Unable to register. Try Again");
+                console.log("Unable to register " + error);
+                history.push("/signup");
                 window.location.reload();
             }
         );
+        */
+       console.log(email)
     }
 
     const onFinish = (values) => {
@@ -73,39 +63,16 @@ function Login() {
         setDisabled(true);
     };
 
-    function checkEmail(e) {
-        if (typeof e !== 'undefined') {
-            let lastAtPos = e.lastIndexOf('@');
-            let lastDotPos = e.lastIndexOf('.');
-
-            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && e.indexOf('@@') === -1 && lastDotPos > 2 && (e.length - lastDotPos) > 2)) {
-                return false; // invalid email
-            } else {
-                return true; // valid email
-            }
-        } else {
-            return false; // invalid email
-        }
-    }
-
     useEffect(() => {
-        if (email === '' || password === '') {
-            setDisabled(true);
-        } else {
-            if (password.length < 6 || !checkEmail(email)) { // check if password or email not valid
-                setDisabled(true);
-            } else {
-                setDisabled(false);
-            }
-        }
     });
-
+    
     return (
         <div>
             <NavBar/>
             <Header className='theTitleLogin' >
-                <h1 className="textLogin" >Login to GymWorm</h1>
+                <h1 className="textLogin" >Forgot PassWord</h1>
             </Header>
+        
             <Layout style={{background:'#FFFFFF', padding: "0px"}}>
                 <Card style={{whiteSpace: 'pre-line'}}>
                     <Row className="pos" type="flex" justify="vertical" align="center" verticalAlign="middle" >
@@ -138,23 +105,6 @@ function Login() {
                                 <Input type="text" onChange={onChangeEmail} value={email} />
                             </Form.Item>
 
-                            <Form.Item
-                                label="Password"
-                                name="password"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your password!',
-                                    },
-                                    {
-                                        min: 6,
-                                        message: 'Your password should be more than 6 characters!'
-                                    }
-                                ]}
-                                className="fieldSize"
-                            >
-                                <Input.Password type="text" onChange={onChangePassword} value={password} />
-                            </Form.Item>
                             <Form.Item {...tailLayout}>
                                 <Button type="primary"
                                     htmlType="submit"
@@ -162,11 +112,8 @@ function Login() {
                                     onClick={() => {
                                         onSubmit()
                                     }}>
-                                    Log in
+                                    Verify Email
                                 </Button>
-                            </Form.Item>
-                            <Form.Item {...tailLayout}>
-                                <a href="/ForgotPassword">Forgot Password ?</a>
                             </Form.Item>
                         </Form>
                     </Row>
@@ -176,4 +123,4 @@ function Login() {
     )
 }
 
-export default Login;
+export default ForgotPassword;
