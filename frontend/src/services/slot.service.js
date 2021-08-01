@@ -119,7 +119,10 @@ class SlotService {
             })
             .then(response => {
                 return response.data;
-            });
+            },
+                (error) => {
+                    return error.response.data;
+                });
     }
 }
 

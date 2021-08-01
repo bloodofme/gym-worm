@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Row, Layout, Card} from 'antd';
+import { Form, Input, Button, Row, Layout, Card } from 'antd';
 import 'antd/dist/antd.css';
 import './Login.css';
 import history from './../history';
@@ -45,18 +45,26 @@ function Login() {
             password: password,
         }
 
-        console.log(user);
-        
+        //console.log(user);
+        console.log("Login request");
         AuthService.login(user.email, user.password).then(
             () => {
-                alert("Logging In");
-                console.log(user.email + " has logged in");
+                alert("Login Successful.");
+                console.log("Successfully Logged In");
                 history.push("/Home");
                 window.location.reload();
             },
             error => {
-                alert("Unable to log in. Try Again");
-                console.log("unable to login " + error);
+                if (error.response.data.message === "No user to check") {
+                    alert("No account with that email found. Please check your email and try again.");
+                    console.log("Unable to login, no account found.");
+                } else if (error.response.data.message === "Invalid Password!") {
+                    alert("Password is invalid. Please try again.")
+                    console.log("Unable to login, password invalid.");
+                } else {
+                    console.log("Unable to login " + error);
+                    console.log("Unable to login " + error.response.data.message);
+                }
                 history.push("/");
                 window.location.reload();
             }
@@ -64,12 +72,12 @@ function Login() {
     }
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 
@@ -102,12 +110,12 @@ function Login() {
 
     return (
         <div>
-            <NavBar/>
+            <NavBar />
             <Header className='theTitleLogin' >
                 <h1 className="textLogin" >Login to GymWorm</h1>
             </Header>
-            <Layout style={{background:'#FFFFFF', padding: "0px"}}>
-                <Card style={{whiteSpace: 'pre-line'}}>
+            <Layout style={{ background: '#FFFFFF', padding: "0px" }}>
+                <Card style={{ whiteSpace: 'pre-line' }}>
                     <Row className="pos" type="flex" justify="vertical" align="center" verticalAlign="middle" >
                         <Form
                             {...layout}

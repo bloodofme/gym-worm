@@ -75,7 +75,7 @@ function Signup() {
             roles: ["user"]
         }
 
-        console.log(user);
+        //console.log(user);
 
         AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
@@ -85,8 +85,13 @@ function Signup() {
                 window.location.reload();
             },
             error => {
-                alert("Unable to register. Try Again");
-                console.log("Unable to register " + error);
+                if (error.response.data.message === "Failed! Email is already in use!") {
+                    alert("Email Address is already in use. Please try again with a new email.");
+                    console.log("Unable to Signup, email is already in use.");
+                } else {
+                    console.log("Unable to signup " + error);
+                    console.log("Unable to signup " + error.response.data.message);
+                }
                 history.push("/signup");
                 window.location.reload();
             }
@@ -94,12 +99,12 @@ function Signup() {
     }
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 

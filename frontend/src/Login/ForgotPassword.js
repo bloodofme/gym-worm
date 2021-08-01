@@ -11,70 +11,95 @@ const { Header } = Layout;
 
 const layout = {
     labelCol: {
-      span: 8,
+        span: 8,
     },
     wrapperCol: {
-      span: 16,
+        span: 16,
     },
-  };
-  
+};
+
 const tailLayout = {
     wrapperCol: {
         offset: 8,
         span: 16,
     },
 };
-  
+
 function ForgotPassword() {
     const [email, setEmail] = useState('');
-    const [disabled, setDisabled] = useState(false);
-    
-    const  onChangeEmail = (e) => {
+    const [disabled, setDisabled] = useState(true);
+
+    const onChangeEmail = (e) => {
         setEmail(e.target.value);
     }
 
-    const onSubmit = (e) =>  {
-        /*
-        AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
-            () => {
-                alert("Registration Successful");
-                console.log(user.email + " has registered");
-                history.push("/");
-                window.location.reload();
+    const onSubmit = (e) => {
+        console.log("Resetting Password for " + email);
+        AuthService.resetPasswordReq(email).then(
+            (res) => {
+                if (res.message === "No account with that email found") {
+                    alert("No account with that email found. Please check your email and try again.");
+                    console.log("Unable to reset password, no account found.");
+                } else {
+                    alert("Password has been reset. Please refer to your email on how to set your new password.");
+                    console.log("Successfully Reset");
+                }
             },
             error => {
-                alert("Unable to register. Try Again");
-                console.log("Unable to register " + error);
-                history.push("/signup");
-                window.location.reload();
+                alert("Unable to Reset");
+                console.log("Unable to Reset Password");
+                console.log(error);
             }
-        );
-        */
-       console.log(email)
+        )
+        console.log("Reset Password Request Done");
     }
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 
+    function checkEmail(e) {
+        if (typeof e !== 'undefined') {
+            let lastAtPos = e.lastIndexOf('@');
+            let lastDotPos = e.lastIndexOf('.');
+
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && e.indexOf('@@') === -1 && lastDotPos > 2 && (e.length - lastDotPos) > 2)) {
+                return false; // invalid email
+            } else {
+                return true; // valid email
+            }
+        } else {
+            return false; // invalid email
+        }
+    }
+
     useEffect(() => {
+        if (email) {
+            if (checkEmail(email)) {
+                setDisabled(false);
+            } else {
+                setDisabled(true);
+            }
+        } else {
+            setDisabled(true);
+        }
     });
-    
+
     return (
         <div>
-            <NavBar/>
+            <NavBar />
             <Header className='theTitleLogin' >
-                <h1 className="textLogin" >Forgot PassWord</h1>
+                <h1 className="textLogin" >Forgot Password</h1>
             </Header>
-        
-            <Layout style={{background:'#FFFFFF', padding: "0px"}}>
-                <Card style={{whiteSpace: 'pre-line'}}>
+
+            <Layout style={{ background: '#FFFFFF', padding: "0px" }}>
+                <Card style={{ whiteSpace: 'pre-line' }}>
                     <Row className="pos" type="flex" justify="vertical" align="center" verticalAlign="middle" >
                         <Form
                             {...layout}

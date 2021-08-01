@@ -1,4 +1,6 @@
 const { verifySignUp } = require("../middlewares");
+const { checkBans } = require("../middlewares");
+
 const controller = require("../controllers/auth.controller");
 
 module.exports = function (app) {
@@ -19,7 +21,12 @@ module.exports = function (app) {
         controller.signup
     );
 
-    app.post("/api/auth/signin", controller.signin);
+    app.post("/api/auth/signin",
+        [
+            checkBans.checkUser
+        ],
+        controller.signin
+    );
 
     app.put("/api/auth/update", controller.update);
 
@@ -38,4 +45,8 @@ module.exports = function (app) {
     app.put("/api/auth/demeritUser", controller.demeritUser);
 
     app.get("/api/auth/teleFetchSlot", controller.teleFetchSlot);
+
+    app.put("/api/auth/resetPasswordReq", controller.resetPasswordReq);
+
+    app.put("/api/auth/changePasswordSet", controller.changePasswordSet);
 };

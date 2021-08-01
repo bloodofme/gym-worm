@@ -156,7 +156,7 @@ class AuthService {
 
   listSlotCustomers(userID) {
     return axios
-      .post(API_URL + 'listSlotCustomers', {userID})
+      .post(API_URL + 'listSlotCustomers', { userID })
       .then((response) => {
         return response.data;
       })
@@ -164,7 +164,7 @@ class AuthService {
 
   listOneCustomer(userID) {
     return axios
-      .get(API_URL + 'listOneCustomer', {userID})
+      .get(API_URL + 'listOneCustomer', { userID })
       .then((response) => {
         return response.data;
       })
@@ -182,10 +182,40 @@ class AuthService {
 
   async teleFetchSlot(telegramHandle) {
     return await axios
-      .get(API_URL + 'teleFetchSlot', {telegramHandle})
+      .get(API_URL + 'teleFetchSlot', { telegramHandle })
       .then((response) => {
         return response.data;
       })
+  }
+
+  async resetPasswordReq(email) {
+    return await axios
+      .put(API_URL + 'resetPasswordReq', {
+        email,
+      })
+      .then((response) => {
+        return response.data;
+      },
+        (error) => {
+          return error.response.data;
+        }
+      )
+  }
+
+  async changePasswordSet(email, tempPassword, newPassword) {
+    return await axios
+      .put(API_URL + 'changePasswordSet', {
+        email,
+        tempPassword,
+        newPassword
+      })
+      .then((response) => {
+        return response.data;
+      },
+        (error) => {
+          return error.response.data;
+        }
+      )
   }
 }
 

@@ -81,8 +81,8 @@ exports.signin = (req, res) => {
         return;
       }
 
-      if (!user) {
-        return res.status(404).send({ message: "User not found." });
+      if (user === undefined || user === null) {
+        return res.status(404).send({ message: "No account with that email found" });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -171,6 +171,12 @@ exports.update = (req, res) => {
       }
       if (req.body.creditScore !== undefined) {
         user.creditScore = req.body.creditScore
+      }
+      if (req.body.creditCounter !== undefined) {
+        user.creditCounter = req.body.creditCounter
+      }
+      if (req.body.banCounter !== undefined) {
+        user.banCounter = req.body.banCounter
       }
       if (req.body.password !== undefined) {
         if (req.body.password.length < 6) {
@@ -390,7 +396,7 @@ exports.listSlotCustomers = (req, res) => {
       console.log(users)
       if (err) {
         return res.status(500).send({ message: err });
-      } 
+      }
 
       return res.status(200).send({
         users
@@ -479,7 +485,7 @@ exports.teleFetchSlot = (req, res) => {
 
       function callback() {
         //console.log(slots);
-        slots.sort(function(a,b){return a.startTime - b.startTime});
+        slots.sort(function (a, b) { return a.startTime - b.startTime });
         //console.log(bookings);
         return res.status(200).send({
           slots
@@ -510,7 +516,7 @@ exports.teleFetchSlot = (req, res) => {
                 .exec((err, slot) => {
                   //console.log(slot);
                   let today = new Date();
-                  today.setHours(8,0,0,0);
+                  today.setHours(8, 0, 0, 0);
                   //console.log(today);
                   if (new Date(slot.date).getTime() >= today.getTime()) {
                     slots.push(slot);
@@ -522,12 +528,94 @@ exports.teleFetchSlot = (req, res) => {
                 })
             } else {
               counter++;
-                  if (counter === user.bookings.length) {
-                    callback();
-                  }
+              if (counter === user.bookings.length) {
+                callback();
+              }
             }
           })
       });
     });
 }
 
+exports.resetPasswordReq = (req, res) => {
+  User.findOne({
+    email: req.body.email
+  })
+    .exec((err, user) => {
+      console.log("Reset Change Request for " + req.body.email);
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (user === undefined || user === null) {
+        return res.status(404).send({ message: "No account with that email found" });
+      } else {
+        const resetPassword = "lMNop" + user.lastName;
+        console.log("Temp un-hashed password of " + resetPassword);
+        user.password = (bcrypt.hashSync(resetPassword, 1)).substring(0, 10);
+        console.log("Temp hashed password of " + user.password);
+
+        var token = jwt.sign({ id: user.id }, config.secret, {
+          expiresIn: 14400 // 4 hours
+        });
+
+        user.save((err, newUser) => {
+          if (err) {
+            return res.status(400).send({ message: err })
+          }
+          console.log("Password for " + newUser.email + " has been reset.");
+          return res.status(200).send({
+            message: "Password reset, Please set new password with " + newUser.password
+          });
+        });
+      }
+    });
+};
+
+exports.changePasswordSet = (req, res) => {
+  User.findOne({
+    email: req.body.email
+  })
+    .exec((err, user) => {
+      console.log("Password Change Set Request for " + req.body.email);
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (user === undefined || user === null) {
+        return res.status(404).send({ message: "No account with that email found" });
+      }
+
+      if (req.body.tempPassword !== user.password) {
+        return res.status(200).send({
+          message: "Reset code is invalid"
+        });
+      }
+
+      if (req.body.newPassword !== undefined) {
+        if (req.body.newPassword.length < 6) {
+          return res.status(401).send({
+            message: "New Password needs to be at least 6 characters!"
+          });
+        }
+        user.password = bcrypt.hashSync(req.body.newPassword, 8)
+      }
+
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 14400 // 4 hours
+      });
+
+      user.save((err, newUser) => {
+        if (err) {
+          return res.status(400).send({ message: err })
+        }
+        return res.status(200).send({
+          message: "Password changed for " + newUser.email
+        });
+      });
+    });
+};
