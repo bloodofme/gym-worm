@@ -31,7 +31,7 @@ class Routes extends Component {
                         {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Profile />}
                     </Route>
                     <Route path="/Admin" >
-                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : localStorage.getItem('access') !== "Admin" ? <Redirect to="/Home" /> : <Admin />}
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : sessionStorage.getItem('access') !== "Admin" ? <Redirect to="/Home" /> : <Admin />}
                     </Route>
                     <Route path="/Signup" >
                         {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <Signup />}

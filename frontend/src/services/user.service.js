@@ -18,11 +18,11 @@ class UserService {
     return axios.get(API_URL + 'admin', { headers: authHeader() })
       .then((res) => {
         //console.log(res);
-        localStorage.setItem("access", "Admin");
+        sessionStorage.setItem("access", "Admin");
       },
       (err) => {
         //console.log(err);
-        localStorage.setItem("access", "User");
+        sessionStorage.setItem("access", "User");
       });
   }
 }

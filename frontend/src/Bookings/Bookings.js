@@ -16,8 +16,6 @@ const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
 function Bookings() {
-    //history.push('/Bookings');
-
     console.log(deployTo)
 
     const [slots, setSlots] = useState([])

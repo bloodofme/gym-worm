@@ -13,8 +13,8 @@ class AuthService {
       })
       .then(response => {
         if (response.data.accessToken) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-          localStorage.setItem("access", "User");
+          sessionStorage.setItem("user", JSON.stringify(response.data));
+          sessionStorage.setItem("access", "User");
         }
 
         return response.data;
@@ -22,9 +22,9 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("access");
-    localStorage.clear();
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("access");
+    sessionStorage.clear();
   }
 
   async updateInfo(firstName, lastName, email, contactNo, roles, telegramHandle) {
@@ -39,7 +39,7 @@ class AuthService {
       })
       .then((response) => {
         if (response.data.accessToken) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+          sessionStorage.setItem("user", JSON.stringify(response.data));
         }
         return response.data;
       },
@@ -87,10 +87,10 @@ class AuthService {
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'));;
+    return JSON.parse(sessionStorage.getItem('user'));;
   }
 
-  async updateCurrentUser(email, password) {
+    async updateCurrentUser(email, password) {
     return await axios
       .post(API_URL + "updateSignin", {
         email,
@@ -98,7 +98,7 @@ class AuthService {
       })
       .then(response => {
         if (response.data.accessToken) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+          sessionStorage.setItem("user", JSON.stringify(response.data));
         }
 
         //return response.data;

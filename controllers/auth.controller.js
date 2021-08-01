@@ -329,6 +329,8 @@ exports.cancelBooking = (req, res) => {
               console.log("Booking is updated as cancelled");
             });
 
+            user.creditCounter--;
+
             user.save((err, newUser) => {
               if (err) {
                 return res.status(400).send({ message: err })

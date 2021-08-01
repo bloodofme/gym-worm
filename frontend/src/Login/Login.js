@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Row, Layout, Card } from 'antd';
+import { Form, Input, Button, Row, Layout, Card, Space, notification } from 'antd';
 import 'antd/dist/antd.css';
 import './Login.css';
 import history from './../history';
@@ -26,6 +26,22 @@ const tailLayout = {
     },
 };
 
+const notifWarning = (message) => {
+    notification["warning"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 3.5,
+    });
+};
+
+const notifOk = (message) => {
+    notification["success"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 2,
+    });
+};
+
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -49,24 +65,34 @@ function Login() {
         console.log("Login request");
         AuthService.login(user.email, user.password).then(
             () => {
-                alert("Login Successful.");
+                notifOk("Login Successful.");
                 console.log("Successfully Logged In");
-                history.push("/Home");
-                window.location.reload();
+                setTimeout(
+                    () => {
+                        history.push("/Home");
+                        window.location.reload();
+                    },
+                    2 * 1000
+                );
             },
             error => {
                 if (error.response.data.message === "No user to check") {
-                    alert("No account with that email found. Please check your email and try again.");
+                    notifWarning("No account with that email found. Please check your email and try again.");
                     console.log("Unable to login, no account found.");
                 } else if (error.response.data.message === "Invalid Password!") {
-                    alert("Password is invalid. Please try again.")
+                    notifWarning("Password is invalid. Please try again.")
                     console.log("Unable to login, password invalid.");
                 } else {
-                    console.log("Unable to login " + error);
+                    notifWarning("Unable to login.");
                     console.log("Unable to login " + error.response.data.message);
                 }
-                history.push("/");
-                window.location.reload();
+                setTimeout(
+                    () => {
+                        history.push("/");
+                        window.location.reload();
+                    },
+                    3.5 * 1000
+                );
             }
         );
     }

@@ -90,9 +90,9 @@ function MakeBookings() {
     function getAvailSlots(slotsArr, theDate, sAvail) {
         const notif = (date) => {
             notification.open({
-              message: 'Notification Title',
+              message: 'Availability Update',
               description:
-                `no slots for that day: ${date}`,
+                `There are no available slots for ${date}`,
               onClick: () => {
                 console.log("Can't find slots for " + date);
               },

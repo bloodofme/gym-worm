@@ -12,22 +12,6 @@ import { FormProvider } from 'antd/lib/form/context';
 import Deployment from "../DeploymentMethod"
 //import { listEmailNotif } from '../../../controllers/auth.controller';
 
-/*
-Admin page functions
-
-1) changing auto slot settings
-
-2) view upcoming slots (reuse code) -> select one slot / afew slots and then be able to change the capacity of the slots ~ in display bookings maybe we set it such that if capacity is high we can give it a color then when it gets lower to 0 if its possible to do a gradient to grey? 
-
-3) apply demerit to users -> view bookings that have passed in the last 24hr maybe -> select a slot and see the list of users -> button to apply demerit (will need to work out an algo for this)
-
-4) function to manually execute the auto slot creation one time (slotDate, startTime, ,endTime capacity)
-
-5) list all customers
-
-6) list all customers with the sms / notification as yes -> for contacting purposes.
-*/ 
-
 const { Header } = Layout;
 const { Panel } = Collapse;
 
@@ -48,9 +32,39 @@ function PickerWithTypeSlot({ type, onChange }) {
 
 const notif = (message) => {
     notification.open({
-      message: 'Notification Title',
-      description:
-        message,
+        message: 'GymWorm',
+        description: message,
+        duration: 5,
+    });
+};
+
+const notifError = (message) => {
+    const btn = (
+        <Button type="primary" size="small" onClick={() => window.location.reload(false)}>
+            Confirm
+        </Button>
+    );
+
+    notification["warning"]({
+        message: 'Unable to Update',
+        description: message,
+        duration: 0,
+        btn,
+    });
+};
+
+const notifOk = (message) => {
+    const btn = (
+        <Button type="primary" size="small" onClick={() => window.location.reload(false)}>
+            Confirm
+        </Button>
+    );
+
+    notification["success"]({
+        message: 'Successfully Updated',
+        description: message,
+        duration: 5,
+        btn,
     });
 };
 
@@ -101,8 +115,8 @@ function Admin() {
                 <Card className='bookingStyle'>
                     <Row>
                         <Col wrap="true">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
-                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text><br/>
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br />
+                            <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text><br />
                             <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text>
                         </Col>
                     </Row>
@@ -162,15 +176,18 @@ function Admin() {
 
         SlotService.updateSlotSetting(slotCreationSettings.startTime,
             slotCreationSettings.endTime, slotCreationSettings.capacity)
-            .then(() => {
-                notif("Slot Settings have been updated");
-                console.log("Successfully Updated");
-                window.location.reload();
+            .then((res) => {
+                if (res.message === "Endtime cannot be after Starttime") {
+                    notifError("Gym closing time can't be before the opening time.");
+                    console.log("Unable to Update, end time can't be before start time.");
+                } else {
+                    notifOk("Slot Settings have been updated");
+                    console.log("Successfully Updated");
+                }
             },
                 err => {
-                    notif("Unable to Update");
+                    notifError("Unable to Update");
                     console.log("Unable to update " + err);
-                    window.location.reload();
                 });
     }
 
@@ -200,7 +217,7 @@ function Admin() {
             },
             error => {
                 console.log("cant find slot for " + dateUpdateE.current + " " + error);
-                notif(`No slots during ${dateUpdateE.current}`);
+                notif(`No slots for ${dateUpdateE.current}`);
                 //window.location.reload(false);
             }
         );
@@ -225,7 +242,7 @@ function Admin() {
                         notif("Unable to Update");
                         console.log("Unable to update " + err);
                         //window.location.reload();
-            });
+                    });
         })
     }
 
@@ -255,10 +272,10 @@ function Admin() {
                 <Card className='bookingStyle'>
                     <Row>
                         <Col wrap="true">
-                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br/>
+                            <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text><br />
                             <text className='text'>{`Time: ${Time(props.slot.startTime)}`}</text>
-                            <Checkbox className="ant-checkbox" onChange={onChange} /><br/>
-                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br/>
+                            <Checkbox className="ant-checkbox" onChange={onChange} /><br />
+                            <text className='text'>{`Vacancy: ${props.slot.capacity}`}</text><br />
                         </Col>
                     </Row>
                 </Card>
@@ -286,14 +303,12 @@ function Admin() {
     const onCreate = (e) => {
         SlotService.createSlot(dateCreate.current, timeCreate.current, capacityCreate)
             .then(() => {
-                notif("Slot has been created");
+                notifOk("Slot has been created");
                 console.log("Successfully Created");
-                window.location.reload();
             },
                 err => {
-                    notif("Unable to Create");
-                    console.log("Unable to create " + err);
-                    //window.location.reload();
+                    notifError(err.response.data);
+                    console.log("Unable to create " + err.response.data);
                 });
     }
 
@@ -328,15 +343,13 @@ function Admin() {
         selectedUsersD.forEach(user => {
             AuthService.demeritUser(user._id)
                 .then(() => {
-                    //listEmailNotif("Demerit Successful");
-                    console.log("Successfully Updated");
-                    window.location.reload();
+                    notifOk("Successfully Updated");
+                    console.log("Demerit applied for " + user.email);
                 },
                     err => {
-                        notif("Unable to Update");
+                        notifError("Unable to Update");
                         console.log("Unable to update " + err);
-                        //window.location.reload();
-            });
+                    });
         })
     }
 
@@ -370,7 +383,7 @@ function Admin() {
             props.slot.userList.forEach(userID => {
                 console.log("User ID is " + userID); // booking id
                 (async () => {
-                    const res = await axios.post(API_URL + 'listSlotCustomers', { userID : userID });
+                    const res = await axios.post(API_URL + 'listSlotCustomers', { userID: userID });
                     const customer = res.data.users;
                     temp.push(customer)
                     if (props.slot.userList.length === temp.length) {
@@ -387,8 +400,8 @@ function Admin() {
             console.log(username);
             return (
                 <Menu.Item key={`${count}`} >
-                        <Checkbox onChange={(e) => onChange(e, username)} style={{marginRight: '40px'}}/>
-                        <text>{`${username.firstName} ${username.lastName}`}</text>
+                    <Checkbox onChange={(e) => onChange(e, username)} style={{ marginRight: '40px' }} />
+                    <text>{`${username.firstName} ${username.lastName}`}</text>
                 </Menu.Item>
             )
         }
@@ -397,8 +410,8 @@ function Admin() {
             if (e.key === '3') {
                 setVisible(false)
             }
-          };
-        
+        };
+
         const handleVisibleChange = flag => {
             setVisible(flag)
         };
@@ -410,10 +423,10 @@ function Admin() {
                         userArr.push(userNames(user, count++))
                     })
                 }
-                { userArr.map(user => <div> {user} </div>) }
+                {userArr.map(user => <div> {user} </div>)}
             </Menu>
-        ); 
-        
+        );
+
         return (
             <div>
                 <Card className='bookingStyle'>
@@ -421,8 +434,8 @@ function Admin() {
                         <Col span={15} wrap="false">
                             <text className='text'>{`Date: ${props.slot.date.slice(0, 10)}`}</text>
                             <text className='text'>{` \n Time: ${Time(props.slot.startTime)}`}</text>
-                            <Dropdown 
-                                overlay={userFrontend} 
+                            <Dropdown
+                                overlay={userFrontend}
                                 trigger={['click']}
                                 onVisibleChange={handleVisibleChange}
                                 visible={visible}
@@ -513,7 +526,7 @@ function Admin() {
         message.info('Click on left button.');
         console.log('click left button', e);
     }
-    
+
     function handleMenuClickOC(username) {
         console.log('click', username);
         setSelectedUserOC([username]);
@@ -522,7 +535,7 @@ function Admin() {
     const userNamesOC = (username, count) => {
         return (
             <Menu.Item key={`${count}`} onClick={() => handleMenuClickOC(username)}>
-                    <text>{`${username.firstName} ${username.lastName}`}</text>
+                <text>{`${username.firstName} ${username.lastName}`}</text>
             </Menu.Item>
         )
     }
@@ -534,7 +547,7 @@ function Admin() {
                     arrUsersOC.push(userNamesOC(user, count++))
                 })
             }
-            { arrUsersOC.map(user => <div> {user} </div>) }
+            {arrUsersOC.map(user => <div> {user} </div>)}
         </Menu>
     );
 
@@ -544,27 +557,27 @@ function Admin() {
             <Header className='theTitleAdmin' >
                 <h1 className="textHome" >Admin</h1>
             </Header>
-            <Layout style={{background:'#FFFFFF', padding: "0px"}}>
+            <Layout style={{ background: '#FFFFFF', padding: "0px" }}>
 
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>View Slots</h1>
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>View Slots</h1>
                     </Header>
-                    
+
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
-                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateV}/>
-                                { slotsV.forEach(element => { arrSlotsV.push(<DisplayBookingsV slot={element} />) }) }
-                                { arrSlotsV.map(element => <div> {element} </div>) }
+                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateV} />
+                            {slotsV.forEach(element => { arrSlotsV.push(<DisplayBookingsV slot={element} />) })}
+                            {arrSlotsV.map(element => <div> {element} </div>)}
                         </Space>
                     </Row>
                 </Card>
-                
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>Auto Slot Creation Settings</h1>
+
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>Auto Slot Creation Settings</h1>
                     </Header>
-                    
+
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
                             <Input style={{ borderRadius: 35, width: "50vw" }}
@@ -621,14 +634,14 @@ function Admin() {
                     </Row>
                 </Card>
 
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>Update Existing Slot Capacity</h1>
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>Update Existing Slot Capacity</h1>
                     </Header>
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
 
-                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateE}/>
+                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateE} />
 
                             <Input style={{ borderRadius: 35, width: "50vw" }}
                                 placeholder={"Change Capcity"}
@@ -644,8 +657,8 @@ function Admin() {
                                 {"Current Capacity: " + capacityUpdateE}
                             </text>
 
-                            { slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) }) }
-                            { arrSlots.map(element => <div> {element} </div>) }
+                            {slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) })}
+                            {arrSlots.map(element => <div> {element} </div>)}
 
                             <Button
                                 className="bookingsButtons"
@@ -661,16 +674,16 @@ function Admin() {
                         </Space>
                     </Row>
                 </Card>
-                
-                
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>Create Slot</h1>
+
+
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>Create Slot</h1>
                     </Header>
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
-                            <PickerWithTypeSlot type={'Date'} onChange={onChangeDateCreate}/>
-                            <PickerWithTypeSlot type={'time'} onChange={onChangeTimeCreate}/>
+                            <PickerWithTypeSlot type={'Date'} onChange={onChangeDateCreate} />
+                            <PickerWithTypeSlot type={'time'} onChange={onChangeTimeCreate} />
                             <Input style={{ borderRadius: 35, width: "50vw" }}
                                 placeholder={"Input Capacity"}
                                 onChange={onChangeCapacityCreate}
@@ -693,23 +706,23 @@ function Admin() {
                                 }}
                             >
                                 Confirm
-                            </Button>                       
+                            </Button>
                         </Space>
                     </Row>
                 </Card>
 
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>Credits</h1>
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>Credits</h1>
                     </Header>
-                    
+
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
                         <Space direction="vertical" size={'large'} align='center'>
-                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateD}/>
+                            <PickerWithTypeSlot type={'Date'} onChange={onChangeUpdateDateD} />
 
-                            { slotD.filter(value => value.userList.length !== 0).forEach(
-                                element => { arrSlotsD.push(<DisplayBookingsD slot={element} />) }) }
-                            { arrSlotsD.map(element => <div> {element} </div>) }
+                            {slotD.filter(value => value.userList.length !== 0).forEach(
+                                element => { arrSlotsD.push(<DisplayBookingsD slot={element} />) })}
+                            {arrSlotsD.map(element => <div> {element} </div>)}
 
                             <Button
                                 className="bookingsButtons"
@@ -725,53 +738,53 @@ function Admin() {
                     </Row>
                 </Card>
 
-                <Card style={{whiteSpace: 'pre-line'}}>
-                    <Header alignItems="center" style={{ background:'#4C586F', padding: "30px", alignItems: 'center', display: "flex"}}>
-                        <h1 style={{color:'#FFFFFF'}}>Customers</h1>
+                <Card style={{ whiteSpace: 'pre-line' }}>
+                    <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
+                        <h1 style={{ color: '#FFFFFF' }}>Customers</h1>
                     </Header>
 
-                    
+
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
-                        
+
                         <Space direction="vertical" size={'large'} align='center'>
 
-                            <Card style={{whiteSpace: 'pre-line'}}>
+                            <Card style={{ whiteSpace: 'pre-line' }}>
                                 <Row type="flex" justify="center" style={{ padding: 20 }}>
                                     <Space direction="vertical" size={'large'} align='center'>
-                                        <Dropdown.Button overlay={userFrontendOC}>   
+                                        <Dropdown.Button overlay={userFrontendOC}>
                                             Users
                                         </Dropdown.Button>
 
-                                        { selectedUserOC.map(element => <DisplayBookingsC user={element} />) } 
+                                        {selectedUserOC.map(element => <DisplayBookingsC user={element} />)}
                                     </Space>
                                 </Row>
                             </Card>
 
                             <Collapse defaultActiveKey={['1']}>
-                                <Panel  style={{color:'black'}}  header="All Customers" key="1">      
-                                    <Card style={{whiteSpace: 'pre-line'}}>
+                                <Panel style={{ color: 'black' }} header="All Customers" key="1">
+                                    <Card style={{ whiteSpace: 'pre-line' }}>
                                         <Row type="flex" justify="center" style={{ padding: 20 }}>
                                             <Space direction="vertical" size={'large'} align='center'>
-                                            { usersAC.forEach(element => { arrUsersAC.push(<DisplayBookingsC user={element} />) }) }
-                                            { arrUsersAC.map(element => <div> {element} </div>) }
+                                                {usersAC.forEach(element => { arrUsersAC.push(<DisplayBookingsC user={element} />) })}
+                                                {arrUsersAC.map(element => <div> {element} </div>)}
                                             </Space>
                                         </Row>
                                     </Card>
                                 </Panel>
-                            </Collapse>     
+                            </Collapse>
 
                             <Collapse defaultActiveKey={['1']}>
-                                <Panel header="Email Notifications" key="2">      
-                                    <Card style={{whiteSpace: 'pre-line'}}>
+                                <Panel header="Email Notifications" key="2">
+                                    <Card style={{ whiteSpace: 'pre-line' }}>
                                         <Row type="flex" justify="center" style={{ padding: 20 }}>
                                             <Space direction="vertical" size={'large'} align='center'>
-                                                { usersEN.forEach(element => { arrUsersEN.push(<DisplayBookingsEN user={element} />) }) }
-                                                { arrUsersEN.map(element => <div> {element} </div>) }
+                                                {usersEN.forEach(element => { arrUsersEN.push(<DisplayBookingsEN user={element} />) })}
+                                                {arrUsersEN.map(element => <div> {element} </div>)}
                                             </Space>
                                         </Row>
                                     </Card>
                                 </Panel>
-                            </Collapse>  
+                            </Collapse>
 
                         </Space>
                     </Row>

@@ -89,13 +89,13 @@ checkUser = (req, res, next) => {
                             }
                                 , (err) => { console.log(err) });
                     } else {
-                        console.log("Ban Status still Active for " + user.email);
+                        console.log("Ban Status still Active for " + user.email + " until " + (new Date(user.banStartDate.getTime() + (7 * 24 * 60 * 60 * 1000))) );
                     }
                 } else { // if ban is not active
                     let dateDiff2 = (today.getTime() - new Date(user.banStartDate).getTime()) / (1000 * 3600 * 24);
 
                     if (dateDiff2 > 30) { // check that 30 days has past since last update
-                        axios.put(API_URL + 'update', { email: u.email, banStartDate: today, banDuration: 0, creditCounter: 0, banCounter: 0, creditScore: 100 })
+                        axios.put(API_URL + 'update', { email: user.email, banStartDate: today, banDuration: 0, creditCounter: 0, banCounter: 0, creditScore: 100 })
                             .then(() => {
                                 console.log("Credits Reset for " + user.email);
                             }

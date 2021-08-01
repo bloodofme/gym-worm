@@ -38,18 +38,18 @@ class SlotService {
             })
             .then(response => {
                 if (response.data.getSlots) {
-                    localStorage.setItem(JSON.stringify(currentDate), JSON.stringify(response.data.getSlots));
+                    sessionStorage.setItem(JSON.stringify(currentDate), JSON.stringify(response.data.getSlots));
                 }
                 return response.data;
             });
     }
 
     getCurrentSlots(currentDate) {
-        return JSON.parse(localStorage.getItem(JSON.stringify(currentDate)));
+        return JSON.parse(sessionStorage.getItem(JSON.stringify(currentDate)));
     }
 
     clearCurrentSlots(currentDate) {
-        localStorage.removeItem(JSON.stringify(currentDate));
+        sessionStorage.removeItem(JSON.stringify(currentDate));
     }
 
     async bookSlot(slotID, userID, userEmail) { // use this command -> SlotService.bookSlot(currentSlot.id, currentUser.id, currentUser.email)

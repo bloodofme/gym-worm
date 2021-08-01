@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Row, Layout, Card } from 'antd';
+import { Form, Input, Button, Row, Layout, Card, notification } from 'antd';
 import 'antd/dist/antd.css';
 import './Login.css';
 import AuthService from "../services/auth.service";
-import NavBar from "../components/Navbar/Navbar"
+import NavBar from "../components/Navbar/Navbar";
+import history from './../history';
+
 
 document.body.style.backgroundColor = '#ebeced';
 
@@ -25,6 +27,22 @@ const tailLayout = {
     },
 };
 
+const notifWarning = (message) => {
+    notification["warning"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 3.5,
+    });
+};
+
+const notifOk = (message) => {
+    notification["success"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 3.5,
+    });
+};
+
 function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [disabled, setDisabled] = useState(true);
@@ -32,23 +50,44 @@ function ForgotPassword() {
     const onChangeEmail = (e) => {
         setEmail(e.target.value);
     }
-
+    
     const onSubmit = (e) => {
         console.log("Resetting Password for " + email);
         AuthService.resetPasswordReq(email).then(
             (res) => {
                 if (res.message === "No account with that email found") {
-                    alert("No account with that email found. Please check your email and try again.");
+                    notifWarning("No account with that email found. Please check your email and try again.");
                     console.log("Unable to reset password, no account found.");
+                    setTimeout(
+                        () => {
+                            history.push("/ForgotPassword");
+                            window.location.reload();
+                        },
+                        3.5 * 1000
+                    );
                 } else {
-                    alert("Password has been reset. Please refer to your email on how to set your new password.");
+                    notifOk("Password has been reset. Please refer to your email on how to set your new password.");
                     console.log("Successfully Reset");
+                    setTimeout(
+                        () => {
+                            history.push("/");
+                            window.location.reload();
+                        },
+                        3.5 * 1000
+                    );
                 }
             },
             error => {
-                alert("Unable to Reset");
+                notifWarning("Unable to Reset Password");
                 console.log("Unable to Reset Password");
                 console.log(error);
+                setTimeout(
+                    () => {
+                        history.push("/ForgotPassword");
+                        window.location.reload();
+                    },
+                    3.5 * 1000
+                );
             }
         )
         console.log("Reset Password Request Done");

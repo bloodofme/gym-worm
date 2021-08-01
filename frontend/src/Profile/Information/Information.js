@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Image, Input, Tooltip, Row, Space, Button } from 'antd';
+import { Avatar, Image, Input, Tooltip, Row, Space, Button, notification } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined, MessageOutlined } from '@ant-design/icons';
 import './Information.css';
 import history from "../../history";
 import AuthService from "../../services/auth.service";
+
+const notifWarning = (message) => {
+    notification["warning"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 2.5,
+    });
+};
+
+const notifOk = (message) => {
+    notification["success"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 2.5,
+    });
+};
 
 function Information() {
     const [currentUser, setCurrentUser] = useState("");
@@ -12,7 +28,7 @@ function Information() {
     const [email, setEmail] = useState(currentUser.email);
     const [contactNo, setContactNo] = useState(currentUser.contactNo);
     const [telegramHandle, setTelegramHandle] = useState(currentUser.telegramHandle);
-    const [accessStatus] = useState(localStorage.getItem('access'));
+    const [accessStatus] = useState(sessionStorage.getItem('access'));
 
     useEffect(() => {
         async function getUser() {
@@ -63,24 +79,28 @@ function Information() {
             .then(
                 (res) => {
                     if (res.message === "New Contact Number is Invalid! Should be 8 digits.") {
-                        alert("New Contact Number is Invalid! Should be 8 digits.");
-                        console.log("Unable to Update");
+                        notifWarning("New Contact Number is Invalid! Should be 8 digits.");
+                        console.log("Unable to Update, contact number is not 8 digits");
                     } else if (res.message === "New Contact Number is Invalid! Should start with 8 or 9.") {
-                        alert("New Contact Number is Invalid! Should start with 8 or 9.");
+                        notifWarning("New Contact Number is Invalid! Should start with 8 or 9.");
                         console.log("Unable to Update");
                     } else {
-                        alert("Updated");
+                        notifOk("Updated");
                         console.log("Successfully Updated");
                     }
                 },
                 error => {
-                    alert("Unable to Update");
-                    //console.log("Unable to update " + error);
+                    notifWarning("Unable to Update");
                     console.log(error);
                 }
             )
             .then(() => {
-                window.location.reload();
+                setTimeout(
+                    () => {
+                        window.location.reload();
+                    },
+                    2.5 * 1000
+                );
             })
     }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Row, Layout, Card } from 'antd';
+import { Form, Input, Button, Row, Layout, Card, Space, notification } from 'antd';
 import 'antd/dist/antd.css';
 import './Signup.css';
 import history from './../history';
@@ -25,7 +25,23 @@ const tailLayout = {
         span: 16,
     },
 };
-  
+
+const notifWarning = (message) => {
+    notification["warning"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 3.5,
+    });
+};
+
+const notifOk = (message) => {
+    notification["success"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 2,
+    });
+};
+
 function Signup() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -79,21 +95,31 @@ function Signup() {
 
         AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
-                alert("Registration Successful");
+                notifOk("Registration Successful");
                 console.log(user.email + " has registered");
-                history.push("/");
-                window.location.reload();
+                setTimeout(
+                    () => {
+                        history.push("/");
+                        window.location.reload();
+                    },
+                    2 * 1000
+                );
             },
             error => {
                 if (error.response.data.message === "Failed! Email is already in use!") {
-                    alert("Email Address is already in use. Please try again with a new email.");
+                    notifWarning("Email Address is already in use. Please try again with a new email.");
                     console.log("Unable to Signup, email is already in use.");
                 } else {
-                    console.log("Unable to signup " + error);
+                    notifWarning("Unable to signup.");
                     console.log("Unable to signup " + error.response.data.message);
                 }
-                history.push("/signup");
-                window.location.reload();
+                setTimeout(
+                    () => {
+                        history.push("/signup");
+                        window.location.reload();
+                    },
+                    3.5 * 1000
+                );
             }
         );
     }
