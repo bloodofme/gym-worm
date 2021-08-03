@@ -4,9 +4,21 @@ const User = db.user;
 const Role = db.role;
 const Booking = db.booking;
 const Slot = db.slot;
+const nodemailer = require('nodemailer');
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'gymworm.team@gmail.com',
+    pass: 'Orbital123!@#'
+  }
+},
+  {
+    from: '"GymWorm" <gymworm.team@gmail.com>',
+  });
 
 exports.signup = (req, res) => {
   console.log("signing up for " + req.body.email);
@@ -27,6 +39,38 @@ exports.signup = (req, res) => {
       return;
     }
 
+    function sendMail() { // Send Registration Confirmation Mail to User
+      const output = `
+      <p>Hello ${user.firstName},</p>
+      <br>
+      <h3>Welcome to GymWorm!</h3>
+      <p>Start your journey to fitness by booking your slots <a href="http://gym-worm.herokuapp.com/">here</a> now!</p>
+      
+      <p><u>If you did not create this account</u>, let us know by replying to this email.</p>
+      <br>
+      <p>Regards,</p>
+      <p>GymWorm Team</p>
+      <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
+      <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+      <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
+    `;
+
+      let mailOptions = {
+        to: user.email,
+        subject: 'GymWorm Signup',
+        text: 'GymWorm Signup',
+        html: output
+      };
+
+      transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+          console.log('Error sending Email' + err);
+        } else {
+          console.log('Email sent to ' + user.email);
+        }
+      });
+    }
+
     if (req.body.roles) {
       Role.find(
         {
@@ -44,7 +88,7 @@ exports.signup = (req, res) => {
               res.status(500).send({ message: err });
               return;
             }
-
+            sendMail();
             res.send({ message: "User was registered successfully!" });
           });
         }
@@ -62,7 +106,7 @@ exports.signup = (req, res) => {
             res.status(500).send({ message: err });
             return;
           }
-
+          sendMail();
           res.send({ message: "User was registered successfully!" });
         });
       });
@@ -568,6 +612,40 @@ exports.resetPasswordReq = (req, res) => {
             return res.status(400).send({ message: err })
           }
           console.log("Password for " + newUser.email + " has been reset.");
+
+          function sendMailToUser() { // Send reset code to user
+            const output = `
+            <p>Hello ${newUser.firstName},</p>
+            <br>
+            <p>Use code <b>${newUser.password}</b> to reset your password <a href="http://localhost:3000/ChangePassword">here</a>.</p>
+            
+            <p><u>If you did not make this request</u> to reset your GymWorm password, let us know by replying to this email.</p>
+            <br>
+            <p>Regards,</p>
+            <p>GymWorm Team</p>
+            <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
+            <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+            <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
+          `;
+
+            let mailOptions = {
+              to: newUser.email,
+              bcc: 'gymworm.team@gmail.com',
+              subject: 'GymWorm Reset Password Request',
+              text: 'GymWorm Reset Password',
+              html: output
+            };
+            console.log("Email sending");
+            transporter.sendMail(mailOptions, function (err, data) {
+              if (err) {
+                console.log('Error sending Email' + err);
+              } else {
+                console.log('Email sent to ' + newUser.email);
+              }
+            });
+          }
+
+          sendMailToUser();
           return res.status(200).send({
             message: "Password reset, Please set new password with " + newUser.password
           });

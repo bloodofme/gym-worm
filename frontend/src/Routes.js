@@ -12,6 +12,7 @@ import Login from "./Login/Login";
 import Signup from "./Signup/Signup";
 import Admin from "./Admin/Admin";
 import ForgotPass from "./Login/ForgotPassword"
+import ChangePass from "./Login/ChangePassword"
 
 class Routes extends Component {
     render() {
@@ -41,6 +42,9 @@ class Routes extends Component {
                     </Route>
                     <Route path="/ForgotPassword" >
                         {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <ForgotPass />}
+                    </Route>
+                    <Route path="/ChangePassword" >
+                        {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <ChangePass />}
                     </Route>
                 </Switch>
             </BrowserRouter>

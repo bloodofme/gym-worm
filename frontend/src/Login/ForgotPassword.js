@@ -39,7 +39,7 @@ const notifOk = (message) => {
     notification["success"]({
         message: 'GymWorm',
         description: message,
-        duration: 3.5,
+        duration: 5,
     });
 };
 
@@ -66,14 +66,14 @@ function ForgotPassword() {
                         3.5 * 1000
                     );
                 } else {
-                    notifOk("Password has been reset. Please refer to your email on how to set your new password.");
+                    notifOk("Password has been reset. Please refer to your email on how to set your new password. Do check the 'Spam' folder if you do not receive the email within 5 minutes.");
                     console.log("Successfully Reset");
                     setTimeout(
                         () => {
                             history.push("/");
                             window.location.reload();
                         },
-                        3.5 * 1000
+                        5 * 1000
                     );
                 }
             },
@@ -176,7 +176,7 @@ function ForgotPassword() {
                                     onClick={() => {
                                         onSubmit()
                                     }}>
-                                    Verify Email
+                                    Reset Password
                                 </Button>
                             </Form.Item>
                         </Form>

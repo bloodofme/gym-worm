@@ -106,6 +106,7 @@ function Signup() {
                 );
             },
             error => {
+                console.log(error);
                 if (error.response.data.message === "Failed! Email is already in use!") {
                     notifWarning("Email Address is already in use. Please try again with a new email.");
                     console.log("Unable to Signup, email is already in use.");

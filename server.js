@@ -47,18 +47,17 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
 const { botRequest } = require("./middlewares");
-
 //console.log(WEBHOOK_URL); // test
 //console.log(TELEGRAM_API);
 
-// for Initializing connection to GymWorm_bot
-const botInit = async () => {
+
+
+const botInit = async () => { // for Initializing connection to GymWorm_bot
   const result = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
   //console.log(result.data);
 }
 
-// GymWorm_bot functions
-app.post(URI, async (req, res) => {
+app.post(URI, async (req, res) => { // GymWorm_bot functions
   //console.log(req.body);
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
@@ -80,9 +79,8 @@ app.post(URI, async (req, res) => {
   return res.send();
 })
 
-//botRequest.teleRequest({ chatID: 1234, telegramHandle: "0000", task: "fetch"});
+function initial() { // Role Initiation
 
-function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
@@ -117,7 +115,7 @@ require('./routes/slot.routes')(app);
 const { autoSlots } = require("./middlewares");
 const { checkBans } = require("./middlewares");
 
-function checkSlots() { // Make sure to change for 
+function checkSlots() { // Check user's ban status
   console.log("Slot Generation Request Dates : ");
 
   // Checking today's date
@@ -165,9 +163,8 @@ function checkSlots() { // Make sure to change for
   autoSlots.generateSlots({ date: nextDayDate });
 }
 
-// Auto Daily Slot Creation
 const cron = require('node-cron');
-cron.schedule("0 0 * * *", function () {
+cron.schedule("0 0 * * *", function () { // Auto Daily Slot Creation
   console.log("Daily Scheduled Running");
   checkSlots();
   checkBan();
@@ -184,7 +181,7 @@ function checkBan() {
   res.status(500).send('Something broke!')
 })*/
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') { // Building app for Heroku
   app.use(express.static('frontend/build'));
 
   app.get('*', (req, res) => {
