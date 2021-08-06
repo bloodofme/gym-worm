@@ -14,9 +14,14 @@ class AuthService {
       .then(response => {
         if (response.data.accessToken) {
           sessionStorage.setItem("user", JSON.stringify(response.data));
-          sessionStorage.setItem("access", "User");
+          if (response.data.roles.includes("ROLE_ADMIN")) {
+            //console.log("User is an admin");
+            sessionStorage.setItem("access", "Admin");
+          } else {
+            //console.log("User is a customer");
+            sessionStorage.setItem("access", "User");
+          }
         }
-
         return response.data;
       });
   }

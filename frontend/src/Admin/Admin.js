@@ -72,7 +72,8 @@ function Admin() {
     const [slotSettings, setSlotSettings] = useState("");
     const dateFormat = "YYYY-MM-DD";
     const timeFormat = "HH"
-
+    const currentUser = AuthService.getCurrentUser()
+    
     const [typeView, setTypeView] = useState('time')
 
     //view slots
@@ -555,7 +556,7 @@ function Admin() {
         <div style={{ background: "74828F", alignItems: "center" }}>
             <Navbar />
             <Header className='theTitleAdmin' >
-                <h1 className="textHome" >Admin</h1>
+                <h1 className="textHome" >Welcome to GymWorm, {currentUser.firstName + " " + currentUser.lastName}</h1>
             </Header>
             <Layout style={{ background: '#FFFFFF', padding: "0px" }}>
 

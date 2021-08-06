@@ -179,21 +179,6 @@ function Information() {
                         Update
                     </Button>
 
-                    {
-                        accessStatus === "Admin" &&
-                        <Button
-                            type="primary"
-                            shape="round"
-                            style={{ background: "#4C586F", width: "calc(100px + 1.5vw", border: "none", color: "white" }}
-                            onClick={() => {
-                                history.push('/Admin');
-                                window.location.reload();
-                            }}
-                        >
-                            Admin Page
-                        </Button>
-                    }
-
                 </Space>
             </Row>
         </div>

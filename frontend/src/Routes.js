@@ -23,10 +23,10 @@ class Routes extends Component {
                         {AuthService.getCurrentUser() !== null ? <Redirect to="/Home" /> : <Login />}
                     </Route>
                     <Route path="/Home" >
-                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Home />}
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : sessionStorage.getItem('access') === "Admin" ? <Redirect to="/Admin" /> : <Home />}
                     </Route>
                     <Route path="/Bookings" >
-                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Bookings />}
+                        {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : sessionStorage.getItem('access') === "Admin" ? <Redirect to="/Admin" /> : <Bookings />}
                     </Route>
                     <Route path="/Profile" >
                         {AuthService.getCurrentUser() === null ? <Redirect to="/" /> : <Profile />}

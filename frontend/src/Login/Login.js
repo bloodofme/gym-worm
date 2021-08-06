@@ -46,6 +46,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [disabled, setDisabled] = useState(false);
+    const [accessStatus] = useState(sessionStorage.getItem('access'));
 
     const onChangeEmail = (e) => {
         setEmail(e.target.value);
@@ -69,7 +70,8 @@ function Login() {
                 console.log("Successfully Logged In");
                 setTimeout(
                     () => {
-                        history.push("/Home");
+                        console.log(accessStatus)
+                        accessStatus === 'Admin' ? history.push('/Admin') : history.push("/Home");
                         window.location.reload();
                     },
                     2 * 1000

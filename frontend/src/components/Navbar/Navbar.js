@@ -11,6 +11,7 @@ function Navbar() {
     const [current, setCurrent] = useState('mail');
     const currentUser = AuthService.getCurrentUser();
     const isSignedIn = currentUser === null;
+    const [accessStatus] = useState(sessionStorage.getItem('access'));
 
     return (
       <div>
@@ -46,28 +47,48 @@ function Navbar() {
           ) : (
             <div>
               <Menu className="navbarItems" selectedKeys={[current]} mode="horizontal" >
-                <Menu.Item 
+              {
+                  accessStatus !== 'Admin' &&     
+                  <Menu.Item 
+                      className="textNavbar"
+                      key="home" 
+                      icon={<HomeOutlined />} 
+                      onClick={() => { 
+                          history.push("/Home") 
+                          window.location.reload(); 
+                      }}
+                  >
+                    Home
+                  </Menu.Item>
+                }       
+
+                {        
+                  accessStatus === 'Admin' ?     
+                  <Menu.Item 
                     className="textNavbar"
-                    key="home" 
-                    icon={<HomeOutlined />} 
+                    key="admin" 
+                    icon={<ProfileOutlined />} 
                     onClick={() => { 
-                        history.push("/Home") 
-                        window.location.reload(); 
-                    }}
-                >
-                  Home
-                </Menu.Item>
-                <Menu.Item 
-                    className="textNavbar"
-                    key="bookings" 
-                    icon={<AppstoreOutlined />} 
-                    onClick={() => { 
-                        history.push("/Bookings") 
-                        window.location.reload(); 
-                    }}
-                >
-                  Bookings
-                </Menu.Item>
+                      history.push("/Admin") 
+                      window.location.reload(); 
+                  }}
+                  >
+                    Admin
+                  </Menu.Item> :
+                          
+                  <Menu.Item 
+                      className="textNavbar"
+                      key="bookings" 
+                      icon={<AppstoreOutlined />} 
+                      onClick={() => { 
+                          history.push("/Bookings") 
+                          window.location.reload(); 
+                      }}
+                  >
+                    Bookings
+                  </Menu.Item> 
+                }
+
                 <Menu.Item 
                     className="textNavbar"
                     key="profile" 

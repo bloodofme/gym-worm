@@ -15,10 +15,25 @@ const { TabPane } = Tabs;
 const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/slot/" : "http://localhost:5000/api/slot/";
 
+const notifWarning = (message) => {
+    notification["warning"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 3.5,
+    });
+};
+
+const notifOk = (message) => {
+    notification["success"]({
+        message: 'GymWorm',
+        description: message,
+        duration: 2,
+    });
+};
+
 function MakeBookings() {
     //history.push('/MakeBookings');
-
-    const currentUser = AuthService.getCurrentUser();
+    var currentUser = AuthService.getCurrentUser();
 
     const dateFormat = "YYYY-MM-DD";
     const date = useRef(moment().format(dateFormat).toString());
@@ -350,10 +365,16 @@ function MakeBookings() {
                                     SlotService.recordBooking(elements._id, currentUser.id).then(() => {
                                         console.log("Booking Successful, See you there!");
                                         SlotService.clearCurrentSlots(elements.date.substring(0, 10));
-                                        window.location.reload();
+                                        AuthService.updateCurrentUser(currentUser.email, currentUser.password).then(() => 
+                                            AuthService.getCurrentUser()
+                                        )
                                     })
                                 })
                             });
+                            
+                            setTimeout(() => {
+                                window.location.reload();
+                            } , 3000);
                         }}
                     >
                         Confirm Booking
