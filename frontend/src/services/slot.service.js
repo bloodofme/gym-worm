@@ -59,13 +59,9 @@ class SlotService {
             userEmail
         })
             .then((response) => {
-                console.log("response from bookslot");
-                console.log(response.data);
                 return response.data;
             },
                 (error) => {
-                    console.log("error from bookslot");
-                    console.log(error);
                     return error.response.data;
                 }
             )
