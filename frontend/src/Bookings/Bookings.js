@@ -7,7 +7,6 @@ import './Bookings.css'
 import AuthService from "../services/auth.service";
 import SlotService from "../services/slot.service";
 import axios from "axios";
-import Makebookings from "./MakeBookings"
 import Deployment from "../DeploymentMethod"
 import moment from 'moment';
 import { useMediaQuery } from 'react-responsive';
