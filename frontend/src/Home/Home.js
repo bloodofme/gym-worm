@@ -54,8 +54,10 @@ function Home() {
                     today.setHours(8, 0, 0, 0); // for local
                 }
 
-                console.log("slot time is " + new Date(res.data.slot.date).getTime());
-                console.log("today time is " + today.getTime());
+                console.log("slot time is ");
+                console.log(new Date(res.data.slot.date).getTime());
+                console.log("today time is ");
+                console.log(today.getTime());
                 console.log("slot starttime is " + res.data.slot.startTime);
                 console.log("now hour is " + date.getHours());
 
