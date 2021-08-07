@@ -58,7 +58,9 @@ function Home() {
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
-                    temp.push([posts, booking]);
+                    if (res.data.slot.startTime >= today.getHours()) {
+                        temp.push([posts, booking]);
+                    }
                 }
 
                 if (counter === currentUser.bookings.length) {
@@ -118,7 +120,7 @@ function Home() {
                     <h1 className="textHome">Welcome to GymWorm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
-                    <Layout className='layout'>     
+                    <Layout className='layout'>
                         <Card style={{ whiteSpace: 'pre-line' }}>
                             <Row align='center'>
                                 <Space direction="vertical" size={10} align='center'>
@@ -145,12 +147,12 @@ function Home() {
                                     <Credits></Credits>
                                 </Space>
                             </Row>
-                        </Card> 
-                    </Layout> 
+                        </Card>
+                    </Layout>
                 </Content>
             </Layout>
-        </div> 
-    
+        </div>
+
     )
 }
 

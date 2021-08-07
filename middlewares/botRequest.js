@@ -95,7 +95,7 @@ teleRequest = (req, res) => {
                         //console.log(bookings);
                         let output = '';
                         if (slots.length !== 0) {
-                            slots.sort(function (a, b) { return a.startTime - b.startTime });
+                            slots.sort(function (a, b) { return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime });
 
                             slots.forEach((s) => {
                                 if (s.startTime > 12) {

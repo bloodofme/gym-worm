@@ -690,10 +690,12 @@ exports.changePasswordSet = (req, res) => {
       }
 
       if (user === undefined || user === null) {
+        console.log("Account not found");
         return res.status(404).send({ message: "No account with that email found" });
       }
 
       if (req.body.tempPassword !== user.password) {
+        console.log("Reset code given is invalid");
         return res.status(200).send({
           message: "Reset code is invalid"
         });
@@ -701,6 +703,7 @@ exports.changePasswordSet = (req, res) => {
 
       if (req.body.newPassword !== undefined) {
         if (req.body.newPassword.length < 6) {
+          console.log("Password is too short");
           return res.status(401).send({
             message: "New Password needs to be at least 6 characters!"
           });
@@ -716,6 +719,7 @@ exports.changePasswordSet = (req, res) => {
         if (err) {
           return res.status(400).send({ message: err })
         }
+        console.log("Password changed for " + newUser.email);
         return res.status(200).send({
           message: "Password changed for " + newUser.email
         });
