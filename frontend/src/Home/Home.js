@@ -56,15 +56,14 @@ function Home() {
                 //today.setHours(8, 0, 0, 0); // for local
                 //today.setHours(0, 0, 0, 0); // for heroku
                 counter++;
-
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
-                    if (res.data.slot.startTime >= today.getHours()) {
+                    if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
                     }
                 }
 
                 if (counter === currentUser.bookings.length) {
-                    console.log(temp);
+                    //console.log(temp);
                     temp.sort(function (a, b) {
                         if (a[0].date === b[0].date) {
                             return a[0].startTime - b[0].startTime;
@@ -72,7 +71,7 @@ function Home() {
                             return a[0].date - b[0].date;
                         }
                     });
-                    console.log(temp);
+                    //console.log(temp);
                     setSlots(temp);
                 }
             })()
