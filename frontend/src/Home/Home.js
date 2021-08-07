@@ -66,7 +66,11 @@ function Home() {
                 if (counter === currentUser.bookings.length) {
                     console.log(temp);
                     temp.sort(function (a, b) {
-                        return a[0].date - b[0].date || a[0].startTime - b[0].startTime;
+                        if (a[0].date === b[0].date) {
+                            return a[0].startTime - b[0].startTime;
+                        } else {
+                            return a[0].date - b[0].date;
+                        }
                     });
                     console.log(temp);
                     setSlots(temp);
