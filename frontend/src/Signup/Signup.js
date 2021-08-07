@@ -96,7 +96,7 @@ function Signup() {
         AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
                 notifOk("Registration Successful");
-                console.log(user.email + " has registered");
+                console.log(user.email + " has successfully registered");
                 setTimeout(
                     () => {
                         history.push("/");

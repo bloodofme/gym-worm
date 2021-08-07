@@ -36,7 +36,7 @@ const notifOk = (message) => {
 };
 
 function Bookings() {
-    console.log(deployTo)
+    //console.log(deployTo)
     var currentUser = AuthService.getCurrentUser()
 
     //delete bookings
@@ -59,7 +59,7 @@ function Bookings() {
         const onChange = (e) => {
             console.log("Selected slot is " + props.slot._id);
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 cancelSlotsD.push(props.slot);
 
@@ -68,7 +68,7 @@ function Bookings() {
                     cancelSlotsD = cancelSlotsD.filter(element => element !== props.slot)
                 }
             }
-            console.log(cancelSlotsD);
+            //console.log(cancelSlotsD);
         }
 
         const Time = (time) => {
@@ -117,7 +117,9 @@ function Bookings() {
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
-                    temp.push([posts, booking]);
+                    if (res.data.slot.startTime >= today.getHours()) {
+                        temp.push([posts, booking]);
+                    }
                 }
 
                 if (counter === currentUser.bookings.length) {
@@ -211,7 +213,7 @@ function Bookings() {
                 }
             })()
         });
-        console.log(userSlots)
+        //console.log(userSlots)
     }, [])
 
     function getAvailSlots(slotsArr, theDate, sAvail) {
@@ -234,7 +236,7 @@ function Bookings() {
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
                 let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                console.log(tempSlots);
+                //console.log(tempSlots);
                 let validSlots = [];
 
                 tempSlots.forEach(s => {
@@ -288,7 +290,7 @@ function Bookings() {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 bookedSlots.push(props.slot)
             } else {
@@ -296,7 +298,7 @@ function Bookings() {
                     bookedSlots = bookedSlots.filter(element => element !== props.slot)
                 }
             }
-            console.log(bookedSlots);
+            //console.log(bookedSlots);
         }
 
         const Time = (time) => {
@@ -345,7 +347,7 @@ function Bookings() {
                                     {
                                         slotsD.forEach(element => {
                                             arrSlotsD.push(<DisplayBookingsD slot={element[0]} />)
-                                            console.log(element)
+                                            //console.log(element)
                                         })
                                     }
                                     {
@@ -361,13 +363,13 @@ function Bookings() {
                                         let x = 0;
                                         cancelSlotsD.forEach(slot => {
                                             x++;
-                                            console.log(slot._id);
-                                            console.log(currentUser.bookings);
+                                            //console.log(slot._id);
+                                            //console.log(currentUser.bookings);
 
                                             // auth cancel
                                             AuthService.cancelBooking(currentUser.email, slot._id).then((res) => {
-                                                console.log(res);
-                                                console.log(res.message);
+                                                //console.log(res);
+                                                //console.log(res.message);
                                                 if (res.message === "Slot is less than 2 hour away") {
                                                     notifWarning("Cancellation of booking is not allowed as it is less than 2 hours away.");
                                                     console.log("Unable to Cancel, slot less than 2 hours away");
@@ -380,7 +382,7 @@ function Bookings() {
                                                 } else {
                                                     // slot cancel
                                                     SlotService.cancelledBooking(slot._id, currentUser.id).then(() => {
-                                                        console.log(slot._id);
+                                                        //console.log(slot._id);
                                                         if (x === cancelSlotsD.length) {
                                                             AuthService.updateCurrentUser(currentUser.email, currentUser.password);
                                                             notifOk("Booking has been cancelled.");

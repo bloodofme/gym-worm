@@ -80,7 +80,7 @@ function Home() {
 
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 arrSlots.push(props.slot)
             } else {
@@ -88,7 +88,7 @@ function Home() {
                     arrSlots = arrSlots.filter(element => element !== props.slot)
                 }
             }
-            console.log(arrSlots)
+            //console.log(arrSlots)
         }
 
         const Time = (time) => {

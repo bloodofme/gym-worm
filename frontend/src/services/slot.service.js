@@ -106,7 +106,7 @@ class SlotService {
     }
 
     async updateSlotSetting(startTime, endTime, capacity) {
-        console.log(startTime + " " + endTime + " " + capacity);
+        //console.log(startTime + " " + endTime + " " + capacity);
         return await axios
             .put(API_URL + "updateSlotSetting", {
                 startTime,
