@@ -56,7 +56,7 @@ function Bookings() {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
 
         const onChange = (e) => {
-            console.log("Selected slot is " + props.slot._id);
+            //console.log("Selected slot is " + props.slot._id);
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
             //console.log(isChecked);
             if (isChecked.current[0]) {
@@ -120,7 +120,7 @@ function Bookings() {
                     if (res.data.slot.startTime >= now.getHours()) {
                         temp.push([posts, booking]);
                     }
-                } else {
+                } else if (new Date(res.data.slot.date).getDate() > today.getDate() ) {
                     temp.push([posts, booking]);
                 }
 
@@ -211,7 +211,7 @@ function Bookings() {
                     today.setHours(8, 0, 0, 0); // for local
                 }
 
-                if (new Date(res.data.slot.date) >= today.getDate()) {
+                if (new Date(res.data.slot.date) >= today.getTime()) {
                     if (currentUser.bookings.length === temp.length) {
                         temp.sort((first, second) => first.startTime - second.startTime);
                         setUserSlots(temp);
