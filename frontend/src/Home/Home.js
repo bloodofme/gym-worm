@@ -57,9 +57,9 @@ function Home() {
                 //today.setHours(0, 0, 0, 0); // for heroku
                 counter++;
                 if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
-                    if (res.data.slot.startTime >= date.getHours()) {
-                        temp.push([posts, booking]);
-                    }
+                    temp.push([posts, booking]);
+                } else if (res.data.slot.startTime >= date.getHours()) {
+                    temp.push([posts, booking]);
                 }
 
                 if (counter === currentUser.bookings.length) {
