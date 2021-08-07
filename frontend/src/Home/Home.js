@@ -55,18 +55,18 @@ function Home() {
                 }
 
                 console.log("slot time is ");
-                console.log(new Date(res.data.slot.date));
+                console.log(new Date(res.data.slot.date).getDate());
                 console.log("today time is ");
-                console.log(today);
+                console.log(today.getDate());
                 console.log("slot starttime is " + res.data.slot.startTime);
                 console.log("now hour is " + date.getHours());
 
                 counter++;
-                if (new Date(res.data.slot.date).getTime() === today.getTime()) {
+                if (new Date(res.data.slot.date).getDate() === today.getDate()) {
                     if (res.data.slot.startTime >= now.getHours()) {
                         temp.push([posts, booking]);
                     }
-                } else if (new Date(res.data.slot.date).getTime() > today.getTime()) {
+                } else {
                     temp.push([posts, booking]);
                 }
 
