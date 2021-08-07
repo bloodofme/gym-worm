@@ -55,9 +55,9 @@ function Home() {
                 }
 
                 console.log("slot time is ");
-                console.log(new Date(res.data.slot.date).getTime());
+                console.log(new Date(res.data.slot.date));
                 console.log("today time is ");
-                console.log(today.getTime());
+                console.log(today);
                 console.log("slot starttime is " + res.data.slot.startTime);
                 console.log("now hour is " + date.getHours());
 
