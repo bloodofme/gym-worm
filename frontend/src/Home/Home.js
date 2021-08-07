@@ -43,6 +43,7 @@ function Home() {
                 const posts = res.data.slot;
                 let date = new Date();
                 let today = new Date(date);
+                let now = new Date(date);
                 if (deployTo === "heroku") { // for heroku
                     if (date.getHours() >= 16) {
                         today.setHours(24, 0, 0, 0);
@@ -53,12 +54,17 @@ function Home() {
                     today.setHours(8, 0, 0, 0); // for local
                 }
 
-                //today.setHours(8, 0, 0, 0); // for local
-                //today.setHours(0, 0, 0, 0); // for heroku
+                console.log("slot time is " + new Date(res.data.slot.date).getTime());
+                console.log("today time is " + today.getTime());
+                console.log("slot starttime is " + res.data.slot.startTime);
+                console.log("now hour is " + date.getHours());
+
                 counter++;
-                if (new Date(res.data.slot.date).getTime() > today.getTime()) {
-                    temp.push([posts, booking]);
-                } else if (res.data.slot.startTime >= date.getHours()) {
+                if (new Date(res.data.slot.date).getTime() === today.getTime()) {
+                    if (res.data.slot.startTime >= now.getHours()) {
+                        temp.push([posts, booking]);
+                    }
+                } else if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
                 }
 
