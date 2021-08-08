@@ -389,20 +389,18 @@ exports.cancelBooking = (req, res) => {
                     if (err) {
                       return res.status(400).send({ message: err })
                     }
+                    user.creditCounter--;
+
+                    user.save((err, newUser) => {
+                      if (err) {
+                        return res.status(400).send({ message: err })
+                      }
+                      //return res.status(200).send({ message: "Booking is removed for user" });
+                      console.log("Booking is updated as invalid and removed for user");
+                      return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
+                    });
                     //console.log(newBooking);
-                    console.log("Booking is updated as invalid");
                   });
-
-                  user.creditCounter--;
-
-                  user.save((err, newUser) => {
-                    if (err) {
-                      return res.status(400).send({ message: err })
-                    }
-                    //return res.status(200).send({ message: "Booking is removed for user" });
-                    console.log("Booking is removed for user");
-                  });
-
                 }
               });
           } else {
@@ -428,18 +426,17 @@ exports.cancelBooking = (req, res) => {
                     if (err) {
                       return res.status(400).send({ message: err })
                     }
+                    user.creditCounter--;
+
+                    user.save((err, newUser) => {
+                      if (err) {
+                        return res.status(400).send({ message: err })
+                      }
+                      //return res.status(200).send({ message: "Booking is removed for user" });
+                      console.log("Booking is updated as invalid and removed for user");
+                      return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
+                    });
                     //console.log(newBooking);
-                    console.log("Booking is updated as invalid");
-                  });
-
-                  user.creditCounter--;
-
-                  user.save((err, newUser) => {
-                    if (err) {
-                      return res.status(400).send({ message: err })
-                    }
-                    //return res.status(200).send({ message: "Booking is removed for user" });
-                    console.log("Booking is removed for user");
                   });
 
                 }
