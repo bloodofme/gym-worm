@@ -111,17 +111,18 @@ function Bookings() {
                 } else {
                     today.setHours(8, 0, 0, 0); // for local
                 }
+                let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
 
-                //today.setHours(8, 0, 0, 0); // for local
-                //today.setHours(0,0,0,0); // for heroku
                 counter++;
 
-                if (new Date(res.data.slot.date).getTime() === today.getTime()) {
-                    if (res.data.slot.startTime >= now.getHours()) {
-                        temp.push([posts, booking]);
-                    }
-                } else if (new Date(res.data.slot.date).getTime() > today.getTime() ) {
+                if (new Date(res.data.slot.date).getTime() > later.getTime()) {
                     temp.push([posts, booking]);
+                    //console.log("slot should show");
+                } else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
+                    if (res.data.slot.startTime >= date.getHours()) {
+                        temp.push([posts, booking]);
+                        //console.log("slot should show");
+                    }
                 }
 
                 if (counter === currentUser.bookings.length) {
