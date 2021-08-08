@@ -363,8 +363,11 @@ exports.cancelBooking = (req, res) => {
           console.log("Cancelling slot's start time is " + slot.startTime);
 
           if ((today.getHours() - slot.startTime) < 2) {
-            console.log("Slot is less than 2 hours away, cancelling not allowed");
-            return res.status(404).send({ message: "Slot is less than 2 hour away" });
+            if (today.getDate() === slot.date.getDate()) {
+              console.log("Slot is less than 2 hours away, cancelling not allowed");
+              return res.status(404).send({ message: "Slot is less than 2 hour away" });
+            }
+            console.log("Slot is more than 2 hours away, cancelling is ok");
           } else {
             console.log("Slot is more than 2 hours away, cancelling is ok");
 
