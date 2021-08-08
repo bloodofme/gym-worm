@@ -372,7 +372,7 @@ exports.cancelBooking = (req, res) => {
             console.log("Slot is more than 2 hours away, cancelling is ok");
 
             Booking.findOne({
-              "user": user._id, "slot": req.body.slotID, "valid": true
+              "user": user._id, "slot": slot._id, "valid": true
             })
               .exec((err, booking) => {
                 if (err) {
