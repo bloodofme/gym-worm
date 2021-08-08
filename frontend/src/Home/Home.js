@@ -46,7 +46,7 @@ function Home() {
         } else {
             today.setHours(8, 0, 0, 0); // for local
         }
-        let later = new Date(today + 8 * (60 * 60 * 1000));
+        let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
 
         console.log("now time is ");
         console.log(date);
