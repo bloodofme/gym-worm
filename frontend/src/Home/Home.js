@@ -35,56 +35,70 @@ function Home() {
         const temp = [];
         let counter = 0;
 
+        let date = new Date();
+        let today = new Date(date);
+        let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
+        if (deployTo === "heroku") { // for heroku
+            if (date.getHours() >= 16) {
+                today.setHours(24, 0, 0, 0);
+            } else {
+                today.setHours(0, 0, 0, 0);
+            }
+        } else {
+            today.setHours(8, 0, 0, 0); // for local
+        }
+
+        console.log("now time is ");
+        console.log(date);
+        console.log(date.getTime());
+        console.log("today time is ");
+        console.log(today);
+        console.log(today.getTime());
+        console.log("later time is ");
+        console.log(later);
+        console.log(later.getTime());
+
         currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let date = new Date();
-                let today = new Date(date);
-                let later = new Date(Date.now() + 8 * (60 * 60 * 1000));
-                if (deployTo === "heroku") { // for heroku
-                    if (date.getHours() >= 16) {
-                        today.setHours(24, 0, 0, 0);
-                    } else {
-                        today.setHours(0, 0, 0, 0);
-                    }
-                } else {
-                    today.setHours(8, 0, 0, 0); // for local
-                }
-/*
+
                 console.log("slot time is ");
                 console.log(new Date(res.data.slot.date));
                 console.log(new Date(res.data.slot.date).getTime());
-                console.log("today time is ");
-                console.log(today);
-                console.log(today.getTime());
+
                 console.log("slot starttime is " + res.data.slot.startTime);
-                console.log("now hour is " + later.getHours());
-*/
+                console.log("later hour is " + later.getHours());
+                console.log("now hour is " + date.getHours());
+
                 counter++;
 
-                if ( new Date(res.data.slot.date).getTime() > today.getTime() ) {
+                if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
-                } else if ( new Date(res.data.slot.date).getTime() === today.getTime() ) {
-                    if ( res.data.slot.startTime >= later.getHours() ) {
-                        temp.push([posts, booking]);
-                    }
-                }
-/*
-                if (new Date(res.data.slot.date).getDate() === today.getDate()) {
+                    console.log("slot should show");
+
+                } else if (new Date(res.data.slot.date).getTime() === today.getTime()) {
                     if (res.data.slot.startTime >= later.getHours()) {
                         temp.push([posts, booking]);
-                        //console.log("slot should show");
-                    } else {
-                        //console.log("slot should not show");
+                        console.log("slot should show");
+
                     }
-                } else {
-                    temp.push([posts, booking]);
-                    //console.log("slot should show");
                 }
-*/
+                /*
+                                if (new Date(res.data.slot.date).getDate() === today.getDate()) {
+                                    if (res.data.slot.startTime >= later.getHours()) {
+                                        temp.push([posts, booking]);
+                                        //console.log("slot should show");
+                                    } else {
+                                        //console.log("slot should not show");
+                                    }
+                                } else {
+                                    temp.push([posts, booking]);
+                                    //console.log("slot should show");
+                                }
+                */
                 if (counter === currentUser.bookings.length) {
                     //console.log(temp);
                     temp.sort(function (a, b) {
