@@ -44,14 +44,14 @@ exports.signup = (req, res) => {
       <p>Hello ${user.firstName},</p>
       <br>
       <h3>Welcome to GymWorm!</h3>
-      <p>Start your journey to fitness by booking your slots <a href="http://gym-worm.herokuapp.com/">here</a> now!</p>
+      <p>Start your journey to fitness by booking your slots <a href="https://gym-worm.herokuapp.com/">here</a> now!</p>
       
       <p><u>If you did not create this account</u>, let us know by replying to this email.</p>
       <br>
       <p>Regards,</p>
       <p>GymWorm Team</p>
-      <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
-      <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+      <a href="https://gym-worm.herokuapp.com/">GymWorm Website</a>
+      <a href="https://t.me/GymWorm_bot">   Telegram Bot</a>
       <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
     `;
 
@@ -676,14 +676,14 @@ exports.resetPasswordReq = (req, res) => {
             const output = `
             <p>Hello ${newUser.firstName},</p>
             <br>
-            <p>Use code <b>${newUser.password}</b> to reset your password <a href="http://gym-worm.herokuapp.com/ChangePassword">here</a>.</p>
+            <p>Use code <b>${newUser.password}</b> to reset your password <a href="https://gym-worm.herokuapp.com/ChangePassword">here</a>.</p>
             
             <p><u>If you did not make this request</u> to reset your GymWorm password, let us know by replying to this email.</p>
             <br>
             <p>Regards,</p>
             <p>GymWorm Team</p>
-            <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
-            <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+            <a href="https://gym-worm.herokuapp.com/">GymWorm Website</a>
+            <a href="https://t.me/GymWorm_bot">   Telegram Bot</a>
             <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
           `;
 
