@@ -368,6 +368,43 @@ exports.cancelBooking = (req, res) => {
               return res.status(404).send({ message: "Slot is less than 2 hour away" });
             }
             console.log("Slot is more than 2 hours away, cancelling is ok");
+
+            Booking.findOne({
+              "user": user._id, "slot": slot._id, "valid": true
+            })
+              .exec((err, booking) => {
+                if (err) {
+                  return res.status(400).send({ message: err });
+                }
+
+                if (booking) {
+                  console.log("Booking " + booking._id + " found with validity " + booking.valid);
+                  console.log("User's booking updated from");
+                  console.log(user.bookings);
+                  user.bookings.pull({ _id: booking._id });
+                  booking.valid = false;
+                  console.log("User's booking updated to");
+                  console.log(user.bookings);
+                  booking.save((err, newBooking) => {
+                    if (err) {
+                      return res.status(400).send({ message: err })
+                    }
+                    //console.log(newBooking);
+                    console.log("Booking is updated as invalid");
+                  });
+
+                  user.creditCounter--;
+
+                  user.save((err, newUser) => {
+                    if (err) {
+                      return res.status(400).send({ message: err })
+                    }
+                    //return res.status(200).send({ message: "Booking is removed for user" });
+                    console.log("Booking is removed for user");
+                  });
+
+                }
+              });
           } else {
             console.log("Slot is more than 2 hours away, cancelling is ok");
 
@@ -407,7 +444,6 @@ exports.cancelBooking = (req, res) => {
 
                 }
               });
-
           }
         })
 
