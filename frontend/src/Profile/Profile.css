@@ -14,6 +14,7 @@
 
   .textProfile {
     color: #3E3E3B;
+    top: 10px;
     font-size: calc(15px + 0.5vw);
   }
 
@@ -28,4 +29,4 @@
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-}
+  }

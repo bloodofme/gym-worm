@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Space, Switch } from 'antd';
+import { Row, Space, Switch, Col } from 'antd';
 import 'antd/dist/antd.css';
 import AuthService from "../../services/auth.service";
 import './../Profile.css'
@@ -64,33 +64,45 @@ class Notif extends Component {
         return (
             <div style={{ alignItems: "center" }}>
                 <Row justify="center" style={{ padding: 10 }}>
-                    <Space direction="vertical" size={'large'} align='center'>
-                        <Space size={'large'} align='center'>
-                        <h1 className="textProfile">Email</h1>
-                        <Switch
-                            style={{bottom: "4px"}}
-                            defaultChecked={currentUser.emailNotification}
-                            onChange={emailNotifChange}
-                        />
-                        </Space>
+                    <Space direction="vertical" size={'large'} align='left'>
+                        <Row align='middle'>
+                            <Col span={18}>
+                                <h1 className="textProfile">Email</h1>
+                            </Col>
+                            <Col span={6}>
+                                <Switch
+                                    style={{bottom: "4px"}}
+                                    defaultChecked={currentUser.emailNotification}
+                                    onChange={emailNotifChange}
+                                />
+                            </Col>
+                        </Row>
+                        
+                        <Row align='middle'>
+                            <Col span={18}>
+                                <h1 className="textProfile">SMS</h1>
+                            </Col>
+                            <Col span={6}>
+                                <Switch
+                                    style={{bottom: "4px"}}
+                                    defaultChecked={currentUser.contactNotification}
+                                    onChange={smsNotifChange}
+                                />
+                            </Col>
+                        </Row>
 
-                        <Space size={'large'} align='center'>
-                        <h1 className="textProfile">SMS</h1>
-                        <Switch
-                            style={{bottom: "4px"}}
-                            defaultChecked={currentUser.contactNotification}
-                            onChange={smsNotifChange}
-                        />
-                        </Space>
-
-                        <Space size={'large'} align='center'>
-                        <h1 className="textProfile">Telegram</h1>
-                        <Switch
-                            style={{bottom: "4px"}}
-                            defaultChecked={currentUser.telegramNotification}
-                            onChange={telegramNotifChange}
-                        />
-                        </Space>
+                        <Row align='middle'>
+                            <Col span={18}>
+                                <h1 className="textProfile">Telegram</h1>
+                            </Col>
+                            <Col span={6}>
+                                <Switch
+                                    style={{bottom: "4px"}}
+                                    defaultChecked={currentUser.telegramNotification}
+                                    onChange={telegramNotifChange}
+                                />
+                            </Col>
+                        </Row>
                     </Space>
                 </Row>
             </div>

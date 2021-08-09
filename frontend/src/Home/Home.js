@@ -100,7 +100,7 @@ function Home() {
                 <Card className='card'>
                     <Row gutter={10}>
                         <Col wrap="false">
-                            <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1>
+                            <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1><br/>
                             <p1 className='textCard'>{`\n Time: ${Time(props.slot.startTime)}`}</p1>
                         </Col>
                     </Row>

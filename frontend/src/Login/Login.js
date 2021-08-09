@@ -189,20 +189,34 @@ function Login() {
                                 ]}
                                 className="fieldSize"
                             >
-                                <Input.Password type="text" onChange={onChangePassword} value={password} />
+                                <Row>
+                                    <Input.Password type="text" onChange={onChangePassword} value={password} />
+                                    <a href="/ForgotPassword">Forgot Password ?</a>
+                                </Row>
                             </Form.Item>
                             <Form.Item {...tailLayout}>
-                                <Button type="primary"
-                                    htmlType="submit"
-                                    disabled={disabled}
-                                    onClick={() => {
-                                        onSubmit()
-                                    }}>
-                                    Log in
-                                </Button>
-                            </Form.Item>
-                            <Form.Item {...tailLayout}>
-                                <a href="/ForgotPassword">Forgot Password ?</a>
+                                <Space size='large'>
+                                    <Button 
+                                        type="primary"
+                                        htmlType="submit"
+                                        disabled={disabled}
+                                        onClick={() => {
+                                            onSubmit()
+                                        }}
+                                    >
+                                        Log in
+                                    </Button>
+
+                                    <Button 
+                                        type="primary"
+                                        htmlType="submit"
+                                        onClick={() => {
+                                            history.push("/Signup")
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Button>
+                                </Space>
                             </Form.Item>
                         </Form>
                     </Row>

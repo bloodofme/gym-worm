@@ -15,6 +15,7 @@
     position: absolute;
     font-size: 3rem;
     color: #EBECED;
+    text-shadow: 2px 1px #3E3E3B;
     text-align: center;
     top: 250px;
     left: 50%;
@@ -37,7 +38,7 @@
 
 .card {
     background: #A2AAB0;
-    width: calc(120px + 7.5vw);
+    width: calc(150px + 5vw);
     font-size: 1.2rem;
     vertical-align: center;
     text-align: center;
