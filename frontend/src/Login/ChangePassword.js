@@ -64,6 +64,7 @@ function ChangePassword() {
         console.log("Changing Password for " + email);
         AuthService.changePasswordSet(email, tempPassword, newPassword).then(
             (res) => {
+                let checker = false;
                 if (res.message === "No account with that email found") {
                     notifWarning("No account with that email found. Please check your email and try again.");
                     console.log("Unable to change password, no account found.");
@@ -76,11 +77,16 @@ function ChangePassword() {
                 } else {
                     notifOk("Password has been changed successfully.");
                     console.log("Password Successfully Changed");
+                    checker = true;
                 }
                 setTimeout(
                     () => {
-                        history.push("/ChangePassword");
-                        window.location.reload();
+                        if (checker) {
+                            history.push("/");
+                        } else {
+                            history.push("/ChangePassword");
+                        }
+                        //window.location.reload();
                     },
                     3.5 * 1000
                 );

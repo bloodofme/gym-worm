@@ -40,14 +40,14 @@ teleRequest = (req, res) => {
 
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
-                        text: "Your telegram handle is not linked to an existing GymWorm account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to create an account or link your account now!"
+                        text: "Your telegram handle is not linked to an existing GymWorm account." + "\n" + "Head to our website at https://gym-worm.herokuapp.com/ to create an account or link your account now!"
                     })
                 } else if (!user.telegramNotification) {
                     console.log("User has notifications disabled " + req.telegramHandle);
 
                     axios.post(`${TELEGRAM_API}/sendMessage`, {
                         chat_id: req.chatID,
-                        text: "You have Telegram Notifications disabled on your account." + "\n" + "Head to our website at http://gym-worm.herokuapp.com/ to enable your Telegram Notifications now!"
+                        text: "You have Telegram Notifications disabled on your account." + "\n" + "Head to our website at https://gym-worm.herokuapp.com/ to enable your Telegram Notifications now!"
                     })
                 } else {
                     let slots = [];
@@ -95,7 +95,7 @@ teleRequest = (req, res) => {
                         //console.log(bookings);
                         let output = '';
                         if (slots.length !== 0) {
-                            slots.sort(function (a, b) { return a.startTime - b.startTime });
+                            slots.sort(function (a, b) { return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime });
 
                             slots.forEach((s) => {
                                 if (s.startTime > 12) {
@@ -187,7 +187,7 @@ teleRequest = (req, res) => {
                             }
                         })
 
-                        output = output + "Head to our website at http://gym-worm.herokuapp.com/ to book a slot now!";
+                        output = output + "Head to our website at https://gym-worm.herokuapp.com/ to book a slot now!";
 
                         axios.post(`${TELEGRAM_API}/sendMessage`, {
                             chat_id: req.chatID,

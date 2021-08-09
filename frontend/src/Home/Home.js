@@ -35,37 +35,55 @@ function Home() {
         const temp = [];
         let counter = 0;
 
+        let date = new Date();
+        let today = new Date(date);
+        if (deployTo === "heroku") { // for heroku
+            if (date.getHours() >= 16) {
+                today.setHours(24, 0, 0, 0);
+            } else {
+                today.setHours(0, 0, 0, 0);
+            }
+        } else {
+            today.setHours(8, 0, 0, 0); // for local
+        }
+        let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
+
         currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
-                let date = new Date();
-                let today = new Date(date);
-                if (deployTo === "heroku") { // for heroku
-                    if (date.getHours() >= 16) {
-                        today.setHours(24, 0, 0, 0);
-                    } else {
-                        today.setHours(0, 0, 0, 0);
-                    }
-                } else {
-                    today.setHours(8, 0, 0, 0); // for local
-                }
 
-                //today.setHours(8, 0, 0, 0); // for local
-                //today.setHours(0, 0, 0, 0); // for heroku
+                /*console.log("slot time is ");
+                console.log(new Date(res.data.slot.date));
+                console.log(new Date(res.data.slot.date).getTime());
+                console.log("slot starttime is " + res.data.slot.startTime);
+                console.log("later hour is " + later.getHours());
+                console.log("now hour is " + date.getHours());*/
+
                 counter++;
 
-                if (new Date(res.data.slot.date).getTime() >= today.getTime()) {
+                if (new Date(res.data.slot.date).getTime() > later.getTime()) {
                     temp.push([posts, booking]);
+                    //console.log("slot should show");
+                } else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
+                    if (res.data.slot.startTime >= date.getHours()) {
+                        temp.push([posts, booking]);
+                        //console.log("slot should show");
+                    }
                 }
 
                 if (counter === currentUser.bookings.length) {
                     //console.log(temp);
                     temp.sort(function (a, b) {
-                        return a[0].date - b[0].date || a[0].startTime - b[0].startTime;
+                        if (a[0].date === b[0].date) {
+                            return a[0].startTime - b[0].startTime;
+                        } else {
+                            return a[0].date - b[0].date;
+                        }
                     });
+                    //console.log(temp);
                     setSlots(temp);
                 }
             })()
@@ -80,7 +98,7 @@ function Home() {
 
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 arrSlots.push(props.slot)
             } else {
@@ -88,7 +106,7 @@ function Home() {
                     arrSlots = arrSlots.filter(element => element !== props.slot)
                 }
             }
-            console.log(arrSlots)
+            //console.log(arrSlots)
         }
 
         const Time = (time) => {
@@ -118,7 +136,7 @@ function Home() {
                     <h1 className="textHome">Welcome to GymWorm, {currentUser.firstName + " " + currentUser.lastName} </h1>
                 </Header>
                 <Content style={{ background: "#74828F" }}>
-                    <Layout className='layout'>     
+                    <Layout className='layout'>
                         <Card style={{ whiteSpace: 'pre-line' }}>
                             <Row align='center'>
                                 <Space direction="vertical" size={10} align='center'>
@@ -145,12 +163,12 @@ function Home() {
                                     <Credits></Credits>
                                 </Space>
                             </Row>
-                        </Card> 
-                    </Layout> 
+                        </Card>
+                    </Layout>
                 </Content>
             </Layout>
-        </div> 
-    
+        </div>
+
     )
 }
 

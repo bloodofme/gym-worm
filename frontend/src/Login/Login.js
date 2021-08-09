@@ -70,7 +70,7 @@ function Login() {
                 console.log("Successfully Logged In");
                 setTimeout(
                     () => {
-                        console.log(accessStatus)
+                        //console.log(accessStatus)
                         accessStatus === 'Admin' ? history.push('/Admin') : history.push("/Home");
                         window.location.reload();
                     },

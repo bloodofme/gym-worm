@@ -73,7 +73,10 @@ class AuthService {
       })
       .then(response => {
         return response.data;
-      })
+    },
+        (error) => {
+            return error.response.data;
+        });
   }
 
   register(firstName, lastName, email, password, contactNo, telegramHandle) {

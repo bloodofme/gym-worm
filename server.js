@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const deployTo = "local" // change between "local" or "heroku"
+const deployTo = "heroku" // change between "local" or "heroku"
 
 app.use(cors({
   origin: "http://localhost:3000", // React Frontend  port,

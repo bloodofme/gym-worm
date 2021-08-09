@@ -83,7 +83,7 @@ function Admin() {
 
     function onChangeUpdateDateV(theDate, dateString) {
         dateUpdateV.current = JSON.parse(JSON.stringify(dateString));
-        console.log("date is " + dateUpdateV.current.toString());
+        console.log("Date is " + dateUpdateV.current.toString());
 
         const checkDate = {
             currentDate: dateUpdateV.current,
@@ -99,7 +99,7 @@ function Admin() {
                 setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
-                console.log("cant find slot for " + dateUpdateV.current + " " + error);
+                console.log("Can't find slot for " + dateUpdateV.current + " " + error);
                 notif(`No slots for ${dateUpdateV.current}`);
                 //window.location.reload(false);
             }
@@ -205,7 +205,7 @@ function Admin() {
 
     function onChangeUpdateDateE(theDate, dateString) {
         dateUpdateE.current = JSON.parse(JSON.stringify(dateString));
-        console.log("date is " + dateUpdateE.current.toString());
+        console.log("Date is " + dateUpdateE.current.toString());
 
         const checkDate = {
             currentDate: dateUpdateE.current,
@@ -217,7 +217,7 @@ function Admin() {
                 setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
-                console.log("cant find slot for " + dateUpdateE.current + " " + error);
+                console.log("Can't find slot for " + dateUpdateE.current + " " + error);
                 notif(`No slots for ${dateUpdateE.current}`);
                 //window.location.reload(false);
             }
@@ -247,13 +247,13 @@ function Admin() {
         })
     }
 
-    console.log(dateUpdateE)
+    //console.log(dateUpdateE)
 
     function DisplayBookings(props) {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 selectedSlots.push(props.slot)
             } else {
@@ -261,7 +261,7 @@ function Admin() {
                     selectedSlots = selectedSlots.filter(element => element !== props.slot)
                 }
             }
-            console.log(selectedSlots);
+            //console.log(selectedSlots);
         }
 
         const Time = (time) => {
@@ -321,7 +321,7 @@ function Admin() {
 
     function onChangeUpdateDateD(theDate, dateString) {
         dateUpdateD.current = JSON.parse(JSON.stringify(dateString));
-        console.log("date is " + dateUpdateD.current.toString());
+        console.log("Date is " + dateUpdateD.current.toString());
 
         const checkDate = {
             currentDate: dateUpdateD.current,
@@ -362,9 +362,9 @@ function Admin() {
         var count = 0;
 
         const onChange = (e, username) => {
-            console.log(e);
+            //console.log(e);
             isChecked.current = [e.target.checked, username];
-            console.log(isChecked);
+            //console.log(isChecked);
             if (isChecked.current[0]) {
                 selectedUsersD.push(username);
             } else {
@@ -374,7 +374,7 @@ function Admin() {
                     idx !== -1 && selectedUsersD.splice(idx, 1);
                 }
             }
-            console.log(selectedUsersD);
+            //console.log(selectedUsersD);
         }
 
         const Time = (time) => { return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm` }
@@ -394,11 +394,11 @@ function Admin() {
             })
         }, [])
 
-        console.log(users)
-        console.log(props.slot.userList)
+        //console.log(users)
+        //console.log(props.slot.userList)
 
         const userNames = (username, count) => {
-            console.log(username);
+            //console.log(username);
             return (
                 <Menu.Item key={`${count}`} >
                     <Checkbox onChange={(e) => onChange(e, username)} style={{ marginRight: '40px' }} />
@@ -525,11 +525,11 @@ function Admin() {
 
     function handleButtonClickOC(e) {
         message.info('Click on left button.');
-        console.log('click left button', e);
+        //console.log('click left button', e);
     }
 
     function handleMenuClickOC(username) {
-        console.log('click', username);
+        //console.log('click', username);
         setSelectedUserOC([username]);
     }
 
@@ -625,7 +625,7 @@ function Admin() {
                                 type="primary"
                                 shape="round"
                                 onClick={() => {
-                                    console.log("button pressed");
+                                    //console.log("button pressed");
                                     onUpdate();
                                 }}
                             >
@@ -666,7 +666,7 @@ function Admin() {
                                 type="primary"
                                 shape="round"
                                 onClick={() => {
-                                    console.log("button pressed");
+                                    //console.log("button pressed");
                                     onUpdateExistingSlots();
                                 }}
                             >
@@ -699,11 +699,11 @@ function Admin() {
                                 type="primary"
                                 shape="round"
                                 onClick={() => {
-                                    console.log("button pressed");
+                                    //console.log("button pressed");
                                     onCreate();
-                                    console.log(dateCreate)
-                                    console.log(timeCreate)
-                                    console.log(capacityCreate)
+                                    //console.log(dateCreate)
+                                    //console.log(timeCreate)
+                                    //console.log(capacityCreate)
                                 }}
                             >
                                 Confirm

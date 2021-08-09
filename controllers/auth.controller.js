@@ -44,19 +44,20 @@ exports.signup = (req, res) => {
       <p>Hello ${user.firstName},</p>
       <br>
       <h3>Welcome to GymWorm!</h3>
-      <p>Start your journey to fitness by booking your slots <a href="http://gym-worm.herokuapp.com/">here</a> now!</p>
+      <p>Start your journey to fitness by booking your slots <a href="https://gym-worm.herokuapp.com/">here</a> now!</p>
       
       <p><u>If you did not create this account</u>, let us know by replying to this email.</p>
       <br>
       <p>Regards,</p>
       <p>GymWorm Team</p>
-      <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
-      <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+      <a href="https://gym-worm.herokuapp.com/">GymWorm Website</a>
+      <a href="https://t.me/GymWorm_bot">   Telegram Bot</a>
       <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
     `;
 
       let mailOptions = {
         to: user.email,
+        bcc: 'gymworm.team@gmail.com',
         subject: 'GymWorm Signup',
         text: 'GymWorm Signup',
         html: output
@@ -349,43 +350,102 @@ exports.cancelBooking = (req, res) => {
       console.log("cancelBooking user id is " + user.id);
       console.log("cancelBooking slot id is " + req.body.slotID);
 
-      Booking.findOne({
-        "user": user._id, "slot": req.body.slotID, "valid": true
+      let today = new Date();
+      console.log("Today's time is " + today + " and the Hour is " + today.getHours());
+
+      Slot.findOne({
+        _id: req.body.slotID
       })
-        .exec((err, booking) => {
+        .exec((err, slot) => {
           if (err) {
             return res.status(400).send({ message: err });
           }
+          // if now hour - start time < 2 then cannot cancel
+          console.log("Cancelling slot's start time is " + slot.startTime);
 
-          if (booking) {
-            console.log("found");
-            console.log("Booking " + booking._id + " validity is " + booking.valid);
-            console.log("user booking updated from");
-            console.log(user.bookings);
-            user.bookings.pull({ _id: booking._id });
-            booking.valid = false;
-            console.log(user.bookings);
-            booking.save((err, newBooking) => {
-              if (err) {
-                return res.status(400).send({ message: err })
-              }
-              console.log(newBooking);
-              console.log("Booking is updated as cancelled");
-            });
+          if ((today.getHours() - slot.startTime) < 2) {
+            if (today.getDate() === slot.date.getDate()) {
+              console.log("Slot is less than 2 hours away, cancelling not allowed");
+              return res.status(404).send({ message: "Slot is less than 2 hour away" });
+            }
+            console.log("Slot is more than 2 hours away, cancelling is ok");
 
-            user.creditCounter--;
+            Booking.findOne({
+              "user": user._id, "slot": slot._id, "valid": true
+            })
+              .exec((err, booking) => {
+                if (err) {
+                  return res.status(400).send({ message: err });
+                }
 
-            user.save((err, newUser) => {
-              if (err) {
-                return res.status(400).send({ message: err })
-              }
-              //return res.status(200).send({ message: "Booking is removed for user" });
-              console.log("Booking is removed for user");
-            });
+                if (booking) {
+                  console.log("Booking " + booking._id + " found with validity " + booking.valid);
+                  console.log("User's booking updated from");
+                  console.log(user.bookings);
+                  user.bookings.pull({ _id: booking._id });
+                  booking.valid = false;
+                  console.log("User's booking updated to");
+                  console.log(user.bookings);
+                  booking.save((err, newBooking) => {
+                    if (err) {
+                      return res.status(400).send({ message: err })
+                    }
+                    user.creditCounter--;
+
+                    user.save((err, newUser) => {
+                      if (err) {
+                        return res.status(400).send({ message: err })
+                      }
+                      //return res.status(200).send({ message: "Booking is removed for user" });
+                      console.log("Booking is updated as invalid and removed for user");
+                      return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
+                    });
+                    //console.log(newBooking);
+                  });
+                }
+              });
+          } else {
+            console.log("Slot is more than 2 hours away, cancelling is ok");
+
+            Booking.findOne({
+              "user": user._id, "slot": slot._id, "valid": true
+            })
+              .exec((err, booking) => {
+                if (err) {
+                  return res.status(400).send({ message: err });
+                }
+
+                if (booking) {
+                  console.log("Booking " + booking._id + " found with validity " + booking.valid);
+                  console.log("User's booking updated from");
+                  console.log(user.bookings);
+                  user.bookings.pull({ _id: booking._id });
+                  booking.valid = false;
+                  console.log("User's booking updated to");
+                  console.log(user.bookings);
+                  booking.save((err, newBooking) => {
+                    if (err) {
+                      return res.status(400).send({ message: err })
+                    }
+                    user.creditCounter--;
+
+                    user.save((err, newUser) => {
+                      if (err) {
+                        return res.status(400).send({ message: err })
+                      }
+                      //return res.status(200).send({ message: "Booking is removed for user" });
+                      console.log("Booking is updated as invalid and removed for user");
+                      return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
+                    });
+                    //console.log(newBooking);
+                  });
+
+                }
+              });
           }
+        })
 
-          //return res.status(404).send({ message: "Welp" });
-        });
+
     });
 };
 
@@ -617,14 +677,14 @@ exports.resetPasswordReq = (req, res) => {
             const output = `
             <p>Hello ${newUser.firstName},</p>
             <br>
-            <p>Use code <b>${newUser.password}</b> to reset your password <a href="http://localhost:3000/ChangePassword">here</a>.</p>
+            <p>Use code <b>${newUser.password}</b> to reset your password <a href="https://gym-worm.herokuapp.com/ChangePassword">here</a>.</p>
             
             <p><u>If you did not make this request</u> to reset your GymWorm password, let us know by replying to this email.</p>
             <br>
             <p>Regards,</p>
             <p>GymWorm Team</p>
-            <a href="http://gym-worm.herokuapp.com/">GymWorm Website</a>
-            <a href="http://t.me/GymWorm_bot">   Telegram Bot</a>
+            <a href="https://gym-worm.herokuapp.com/">GymWorm Website</a>
+            <a href="https://t.me/GymWorm_bot">   Telegram Bot</a>
             <a href="https://t.me/joinchat/LEL7TuOMqLozNWVl">   Support Chat</a>
           `;
 
@@ -667,10 +727,12 @@ exports.changePasswordSet = (req, res) => {
       }
 
       if (user === undefined || user === null) {
+        console.log("Account not found");
         return res.status(404).send({ message: "No account with that email found" });
       }
 
       if (req.body.tempPassword !== user.password) {
+        console.log("Reset code given is invalid");
         return res.status(200).send({
           message: "Reset code is invalid"
         });
@@ -678,6 +740,7 @@ exports.changePasswordSet = (req, res) => {
 
       if (req.body.newPassword !== undefined) {
         if (req.body.newPassword.length < 6) {
+          console.log("Password is too short");
           return res.status(401).send({
             message: "New Password needs to be at least 6 characters!"
           });
@@ -693,6 +756,7 @@ exports.changePasswordSet = (req, res) => {
         if (err) {
           return res.status(400).send({ message: err })
         }
+        console.log("Password changed for " + newUser.email);
         return res.status(200).send({
           message: "Password changed for " + newUser.email
         });
