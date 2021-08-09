@@ -57,6 +57,7 @@ exports.signup = (req, res) => {
 
       let mailOptions = {
         to: user.email,
+        bcc: 'gymworm.team@gmail.com',
         subject: 'GymWorm Signup',
         text: 'GymWorm Signup',
         html: output

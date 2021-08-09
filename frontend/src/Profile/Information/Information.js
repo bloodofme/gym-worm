@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Image, Input, Tooltip, Row, Space, Button, notification } from 'antd';
+import { Input, Tooltip, Row, Space, Button, notification } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined, MessageOutlined } from '@ant-design/icons';
 import './Information.css';
 import history from "../../history";
@@ -108,11 +108,6 @@ function Information() {
         <div style={{ background: "74828F", alignItems: "center" }}>
             <Row type="flex" justify="center" style={{ padding: 20 }}>
                 <Space direction="vertical" size={'large'} align='center'>
-                    <Avatar style={{ alignItems: 'center' }}
-                        src={<Image src="https://i.chzbgr.com/full/9355435008/h67614A96/dish" />}
-                        size={150}
-                    />
-
                     <Input style={{ display: "flex", borderRadius: 35, width: "50vw" }}
                         placeholder={currentUser.firstName}
                         onChange={onChangeFirstName}

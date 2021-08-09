@@ -86,7 +86,7 @@ function ChangePassword() {
                         } else {
                             history.push("/ChangePassword");
                         }
-                        window.location.reload();
+                        //window.location.reload();
                     },
                     3.5 * 1000
                 );
