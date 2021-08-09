@@ -30,7 +30,7 @@ const notifWarning = (message) => {
     notification["warning"]({
         message: 'GymWorm',
         description: message,
-        duration: 3.5,
+        duration: 3,
     });
 };
 
@@ -85,10 +85,10 @@ function ChangePassword() {
                             history.push("/");
                         } else {
                             history.push("/ChangePassword");
+                            window.location.reload();
                         }
-                        //window.location.reload();
                     },
-                    3.5 * 1000
+                    3 * 1000
                 );
             },
             error => {
