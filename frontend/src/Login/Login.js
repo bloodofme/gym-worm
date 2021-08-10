@@ -212,6 +212,7 @@ function Login() {
                                         htmlType="submit"
                                         onClick={() => {
                                             history.push("/Signup")
+                                            window.location.reload(); 
                                         }}
                                     >
                                         Sign Up
