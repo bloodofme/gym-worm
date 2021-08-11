@@ -101,24 +101,14 @@ function Bookings() {
                 const posts = res.data.slot;
                 let date = new Date();
                 let today = new Date(date);
-                let now = new Date(date);
-                if (deployTo === "heroku") { // for heroku
-                    if (date.getHours() >= 16) {
-                        today.setHours(24, 0, 0, 0);
-                    } else {
-                        today.setHours(0, 0, 0, 0);
-                    }
-                } else {
-                    today.setHours(8, 0, 0, 0); // for local
-                }
-                let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
-
+                today.setHours(8, 0, 0, 0);
+                
                 counter++;
 
-                if (new Date(res.data.slot.date).getTime() > later.getTime()) {
+                if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
                     //console.log("slot should show");
-                } else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
+                } else if (new Date(res.data.slot.date).getTime() === today.getTime()) {
                     if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
                         //console.log("slot should show");
@@ -202,15 +192,7 @@ function Bookings() {
                 temp.push(posts);
                 let date = new Date();
                 let today = new Date(date);
-                if (deployTo === "heroku") { // for heroku
-                    if (date.getHours() >= 16) {
-                        today.setHours(24, 0, 0, 0);
-                    } else {
-                        today.setHours(0, 0, 0, 0);
-                    }
-                } else {
-                    today.setHours(8, 0, 0, 0); // for local
-                }
+                today.setHours(8, 0, 0, 0);
 
                 if (new Date(res.data.slot.date) >= today.getTime()) {
                     if (currentUser.bookings.length === temp.length) {
