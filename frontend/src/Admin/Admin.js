@@ -73,7 +73,7 @@ function Admin() {
     const dateFormat = "YYYY-MM-DD";
     const timeFormat = "HH"
     const currentUser = AuthService.getCurrentUser()
-    
+
     const [typeView, setTypeView] = useState('time')
 
     //view slots
@@ -226,14 +226,11 @@ function Admin() {
 
     const onUpdateExistingSlots = (e) => {
         selectedSlots.forEach(value => {
-            const slotCreationSettings = {
-                fullCapacity: capacityUpdateE === undefined ? value.capacity : capacityUpdateE
-            }
+            let diff = capacityUpdateE - value.capacity;
+            let newFullCapacity = value.fullCapacity + diff;
 
-            const vacancy = slotCreationSettings.fullCapacity - value.fullCapacity + value.capacity;
-
-            SlotService.updateSlot(value._id, dateUpdateE.current, value.startTime,
-                vacancy, slotCreationSettings.fullCapacity)
+            SlotService.updateSlot(value._id, undefined, value.startTime,
+                capacityUpdateE, newFullCapacity)
                 .then(() => {
                     notif("Slot Settings have been updated");
                     console.log("Successfully Updated");
@@ -242,7 +239,7 @@ function Admin() {
                     err => {
                         notif("Unable to Update");
                         console.log("Unable to update " + err);
-                        console.log(err);
+                        //console.log(err);
                         //window.location.reload();
                     });
         })
