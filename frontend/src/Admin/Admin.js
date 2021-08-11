@@ -655,7 +655,7 @@ function Admin() {
                             />
 
                             <text style={{ borderRadius: 35, width: "50vw" }}>
-                                {"Current Capacity: " + capacityUpdateE}
+                                {"New Capacity: " + capacityUpdateE}
                             </text>
 
                             {slots.forEach(element => { arrSlots.push(<DisplayBookings slot={element} />) })}
