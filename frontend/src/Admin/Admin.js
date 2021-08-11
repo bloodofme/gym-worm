@@ -92,10 +92,10 @@ function Admin() {
         SlotService.fetchSlots(checkDate.currentDate).then(
             () => {
                 console.log("Finding slots for " + dateUpdateV.current);
-                /*let temps = SlotService.getCurrentSlots(checkDate.currentDate);
+                let temps = SlotService.getCurrentSlots(checkDate.currentDate);
                 temps.sort(function (a, b) {
-                    return a.date.getTime() - b.date.getTime() || a.startTime - b.startTime;
-                });*/
+                    return a.startTime - b.startTime;
+                });
                 setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
             },
             error => {
