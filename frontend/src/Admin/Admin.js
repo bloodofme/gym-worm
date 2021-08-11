@@ -242,6 +242,7 @@ function Admin() {
                     err => {
                         notif("Unable to Update");
                         console.log("Unable to update " + err);
+                        console.log(err);
                         //window.location.reload();
                     });
         })
