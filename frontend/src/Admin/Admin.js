@@ -344,7 +344,7 @@ function Admin() {
         selectedUsersD.forEach(user => {
             AuthService.demeritUser(user._id)
                 .then(() => {
-                    notifOk("Successfully Updated");
+                    notifOk("Demerit applied for " + user.firstName + " " + user.lastName);
                     console.log("Demerit applied for " + user.email);
                 },
                     err => {
@@ -714,7 +714,7 @@ function Admin() {
 
                 <Card style={{ whiteSpace: 'pre-line' }}>
                     <Header alignItems="center" style={{ background: '#4C586F', padding: "30px", alignItems: 'center', display: "flex" }}>
-                        <h1 style={{ color: '#FFFFFF' }}>Credits</h1>
+                        <h1 style={{ color: '#FFFFFF' }}>Demerit User</h1>
                     </Header>
 
                     <Row type="flex" justify="center" style={{ padding: 20 }}>
