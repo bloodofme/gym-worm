@@ -47,6 +47,12 @@ function Home() {
             today.setHours(8, 0, 0, 0); // for local
         }
         let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
+        console.log("later time is ");
+        console.log(later);
+        console.log(later.getTime());
+        console.log("now time is ");
+        console.log(date);
+        console.log(date.getTime());
 
         currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
@@ -55,22 +61,22 @@ function Home() {
 
                 const posts = res.data.slot;
 
-                /*console.log("slot time is ");
+                console.log("slot time is ");
                 console.log(new Date(res.data.slot.date));
                 console.log(new Date(res.data.slot.date).getTime());
                 console.log("slot starttime is " + res.data.slot.startTime);
                 console.log("later hour is " + later.getHours());
-                console.log("now hour is " + date.getHours());*/
+                console.log("now hour is " + date.getHours());
 
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() > later.getTime()) {
                     temp.push([posts, booking]);
-                    //console.log("slot should show");
+                    console.log("slot should show");
                 } else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
                     if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
-                        //console.log("slot should show");
+                        console.log("slot should show");
                     }
                 }
 
