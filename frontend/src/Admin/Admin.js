@@ -96,7 +96,7 @@ function Admin() {
                 temps.sort(function (a, b) {
                     return a.startTime - b.startTime;
                 });
-                setSlotsV(SlotService.getCurrentSlots(checkDate.currentDate));
+                setSlotsV(temps);
             },
             error => {
                 console.log("Can't find slot for " + dateUpdateV.current + " " + error);
