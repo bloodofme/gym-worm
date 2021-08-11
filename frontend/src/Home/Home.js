@@ -38,21 +38,20 @@ function Home() {
         let date = new Date();
         let today = new Date(date);
         if (deployTo === "heroku") { // for heroku
-            if (date.getHours() >= 16) {
+            /*if (date.getHours() >= 16) {
                 today.setHours(24, 0, 0, 0);
             } else {
                 today.setHours(0, 0, 0, 0);
-            }
+            }*/
+            today.setHours(8, 0, 0, 0);
         } else {
             today.setHours(8, 0, 0, 0); // for local
         }
         let later = new Date(today.getTime() + 8 * (60 * 60 * 1000));
-        console.log("later time is ");
-        console.log(later);
-        console.log(later.getTime());
+        /*console.log("later time is ");
+        console.log(later);*/
         console.log("now time is ");
         console.log(date);
-        console.log(date.getTime());
 
         currentUser.bookings.forEach(booking => {
             //console.log("Booking ID is " + slot); // booking id
@@ -63,17 +62,18 @@ function Home() {
 
                 console.log("slot time is ");
                 console.log(new Date(res.data.slot.date));
-                console.log(new Date(res.data.slot.date).getTime());
                 console.log("slot starttime is " + res.data.slot.startTime);
-                console.log("later hour is " + later.getHours());
+                //console.log("later hour is " + later.getHours());
                 console.log("now hour is " + date.getHours());
 
                 counter++;
 
-                if (new Date(res.data.slot.date).getTime() > later.getTime()) {
+                //if (new Date(res.data.slot.date).getTime() > later.getTime()) {
+                if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
                     console.log("slot should show");
-                } else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
+                //} else if (new Date(res.data.slot.date).getTime() === later.getTime()) {
+                } else if (new Date(res.data.slot.date).getTime() === today.getTime()) {
                     if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
                         console.log("slot should show");
@@ -124,7 +124,7 @@ function Home() {
                 <Card className='card'>
                     <Row gutter={10}>
                         <Col wrap="false">
-                            <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1><br/>
+                            <p1 className='textCard'>{`Date: ${props.slot.date.slice(0, 10)}`}</p1><br />
                             <p1 className='textCard'>{`\n Time: ${Time(props.slot.startTime)}`}</p1>
                         </Col>
                     </Row>
