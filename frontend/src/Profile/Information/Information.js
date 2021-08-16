@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Input, Tooltip, Row, Space, Button, notification } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined, PhoneOutlined, MessageOutlined } from '@ant-design/icons';
 import './Information.css';
-import history from "../../history";
 import AuthService from "../../services/auth.service";
 
 const notifWarning = (message) => {
@@ -28,7 +27,6 @@ function Information() {
     const [email, setEmail] = useState(currentUser.email);
     const [contactNo, setContactNo] = useState(currentUser.contactNo);
     const [telegramHandle, setTelegramHandle] = useState(currentUser.telegramHandle);
-    const [accessStatus] = useState(sessionStorage.getItem('access'));
 
     useEffect(() => {
         async function getUser() {
@@ -67,13 +65,6 @@ function Information() {
             contactNo: contactNo === undefined ? currentUser.contactNo : contactNo,
             telegramHandle: telegramHandle === undefined ? currentUser.telegramHandle : (telegramHandle.charAt(0) === '@' ? telegramHandle.slice(1) : telegramHandle)
         }
-
-        /*console.log("Current User details are : ");
-        console.log(currentUser.contactNo);
-
-        console.log("New User details are : ");
-        console.log(user);
-        console.log(user.contactNo);*/
 
         AuthService.updateInfo(user.firstName, user.lastName, user.email, user.contactNo, currentUser.roles, user.telegramHandle)
             .then(

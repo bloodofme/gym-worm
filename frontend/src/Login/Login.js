@@ -8,7 +8,7 @@ import NavBar from "../components/Navbar/Navbar"
 
 document.body.style = 'background: #74828F;';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 const layout = {
     labelCol: {
@@ -62,7 +62,6 @@ function Login() {
             password: password,
         }
 
-        //console.log(user);
         console.log("Login request");
         AuthService.login(user.email, user.password).then(
             () => {
@@ -70,7 +69,6 @@ function Login() {
                 console.log("Successfully Logged In");
                 setTimeout(
                     () => {
-                        //console.log(accessStatus)
                         accessStatus === 'Admin' ? history.push('/Admin') : history.push("/Home");
                         window.location.reload();
                     },
@@ -100,12 +98,10 @@ function Login() {
     }
 
     const onFinish = (values) => {
-        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 

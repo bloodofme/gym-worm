@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Row, Layout, Card, Space, notification } from 'antd';
+import { Form, Input, Button, Row, Layout, notification } from 'antd';
 import 'antd/dist/antd.css';
 import './Signup.css';
 import history from './../history';
@@ -8,7 +8,7 @@ import NavBar from "../components/Navbar/Navbar"
 
 document.body.style.backgroundColor = '#ebeced';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 const layout = {
     labelCol: {
@@ -91,8 +91,6 @@ function Signup() {
             roles: ["user"]
         }
 
-        //console.log(user);
-
         AuthService.register(user.firstName, user.lastName, user.email, user.password, user.contactNo, user.telegramHandle).then(
             () => {
                 notifOk("Registration Successful");
@@ -126,12 +124,10 @@ function Signup() {
     }
 
     const onFinish = (values) => {
-        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 

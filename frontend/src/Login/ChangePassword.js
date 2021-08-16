@@ -8,7 +8,7 @@ import NavBar from "../components/Navbar/Navbar"
 
 document.body.style = 'background: #74828F;';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 
 const layout = {
     labelCol: {

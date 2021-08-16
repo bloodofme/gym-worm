@@ -4,8 +4,6 @@ import 'antd/dist/antd.css';
 import Information from "./Information/Information";
 import Notif from "./Notif/Notif";
 import Navbar from '../components/Navbar/Navbar';
-import history from "../history";
-import AuthService from "../services/auth.service";
 
 document.body.style.backgroundColor = '#4c586f';
 
@@ -19,8 +17,6 @@ class Profile extends Component {
             clicked: true
         };
     }
-
-    //state = { clicked: true }
 
     handleClick = (theState) => {
         this.setState({ clicked: theState })

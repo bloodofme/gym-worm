@@ -94,12 +94,10 @@ function ForgotPassword() {
     }
 
     const onFinish = (values) => {
-        //console.log('Success:', values);
         setDisabled(false);
     };
 
     const onFinishFailed = (errorInfo) => {
-        //console.log('Failed:', errorInfo);
         setDisabled(true);
     };
 

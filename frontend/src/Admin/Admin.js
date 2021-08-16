@@ -1,14 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Select, Card, Row, Col, Checkbox, Menu, Dropdown, Collapse, message, notification } from 'antd';
+import { Input, Tooltip, Space, Button, Layout, DatePicker, TimePicker, Card, Row, Col, Checkbox, Menu, Dropdown, Collapse, message, notification } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import './Admin.css';
 import Navbar from '../components/Navbar/Navbar';
 import SlotService from "../services/slot.service";
 import AuthService from "../services/auth.service";
-import history from "../history";
 import moment from 'moment';
 import axios from "axios";
-import { FormProvider } from 'antd/lib/form/context';
 import Deployment from "../DeploymentMethod"
 //import { listEmailNotif } from '../../../controllers/auth.controller';
 
@@ -17,12 +15,6 @@ const { Panel } = Collapse;
 
 const deployTo = Deployment() // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
-
-function PickerWithTypeView({ type, onChange }) {
-    if (type === 'time') return <TimePicker onChange={onChange} />;
-    if (type === 'date') return <DatePicker onChange={onChange} />;
-    return <DatePicker picker={type} onChange={onChange} />;
-}
 
 function PickerWithTypeSlot({ type, onChange }) {
     if (type === 'time') return <TimePicker onChange={onChange} />;
@@ -101,7 +93,6 @@ function Admin() {
             error => {
                 console.log("Can't find slot for " + dateUpdateV.current + " " + error);
                 notif(`No slots for ${dateUpdateV.current}`);
-                //window.location.reload(false);
             }
         );
     }
@@ -151,7 +142,6 @@ function Admin() {
             originalInfo.startTime = response.startTime;
             originalInfo.endTime = response.endTime;
             originalInfo.capacity = response.capacity;
-            //console.log(originalInfo);
         }
         getSettings()
     }, []);
@@ -219,7 +209,6 @@ function Admin() {
             error => {
                 console.log("Can't find slot for " + dateUpdateE.current + " " + error);
                 notif(`No slots for ${dateUpdateE.current}`);
-                //window.location.reload(false);
             }
         );
     }
@@ -239,19 +228,14 @@ function Admin() {
                     err => {
                         notif("Unable to Update");
                         console.log("Unable to update " + err);
-                        //console.log(err);
-                        //window.location.reload();
                     });
         })
     }
-
-    //console.log(dateUpdateE)
 
     function DisplayBookings(props) {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            //console.log(isChecked);
             if (isChecked.current[0]) {
                 selectedSlots.push(props.slot)
             } else {
@@ -259,7 +243,6 @@ function Admin() {
                     selectedSlots = selectedSlots.filter(element => element !== props.slot)
                 }
             }
-            //console.log(selectedSlots);
         }
 
         const Time = (time) => {
@@ -360,9 +343,7 @@ function Admin() {
         var count = 0;
 
         const onChange = (e, username) => {
-            //console.log(e);
             isChecked.current = [e.target.checked, username];
-            //console.log(isChecked);
             if (isChecked.current[0]) {
                 selectedUsersD.push(username);
             } else {
@@ -372,7 +353,6 @@ function Admin() {
                     idx !== -1 && selectedUsersD.splice(idx, 1);
                 }
             }
-            //console.log(selectedUsersD);
         }
 
         const Time = (time) => { return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm` }
@@ -392,11 +372,7 @@ function Admin() {
             })
         }, [])
 
-        //console.log(users)
-        //console.log(props.slot.userList)
-
         const userNames = (username, count) => {
-            //console.log(username);
             return (
                 <Menu.Item key={`${count}`} >
                     <Checkbox onChange={(e) => onChange(e, username)} style={{ marginRight: '40px' }} />
@@ -509,7 +485,6 @@ function Admin() {
 
     //One Customer (OC)
     const [usersOC, setUsersOC] = useState([])
-    const [visibleOC, setVisibleOC] = useState(false)
     const [selectedUserOC, setSelectedUserOC] = useState([])
     const arrUsersOC = []
     var count = 0;
@@ -520,11 +495,6 @@ function Admin() {
             setUsersOC(res.data.customerList)
         })()
     }, [])
-
-    function handleButtonClickOC(e) {
-        message.info('Click on left button.');
-        //console.log('click left button', e);
-    }
 
     function handleMenuClickOC(username) {
         //console.log('click', username);

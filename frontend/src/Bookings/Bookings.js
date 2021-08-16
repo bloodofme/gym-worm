@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import { Button, Space, Col, Row, Card, Checkbox, Layout, notification, Tabs } from 'antd';
-import history from "../history";
 import 'antd/dist/antd.css';
 import './Bookings.css'
 import AuthService from "../services/auth.service";
@@ -35,7 +34,6 @@ const notifOk = (message) => {
 };
 
 function Bookings() {
-    //console.log(deployTo)
     var currentUser = AuthService.getCurrentUser()
 
     //delete bookings
@@ -56,9 +54,7 @@ function Bookings() {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
 
         const onChange = (e) => {
-            //console.log("Selected slot is " + props.slot._id);
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            //console.log(isChecked);
             if (isChecked.current[0]) {
                 cancelSlotsD.push(props.slot);
 
@@ -67,7 +63,6 @@ function Bookings() {
                     cancelSlotsD = cancelSlotsD.filter(element => element !== props.slot)
                 }
             }
-            //console.log(cancelSlotsD);
         }
 
         const Time = (time) => {
@@ -94,29 +89,24 @@ function Bookings() {
         const temp = [];
         let counter = 0;
         currentUser.bookings.forEach(booking => {
-            //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
 
                 const posts = res.data.slot;
                 let date = new Date();
                 let today = new Date(date);
-                today.setHours(8, 0, 0, 0);
-                
+                today.setHours(8, 0, 0, 0);     
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
-                    //console.log("slot should show");
                 } else if (new Date(res.data.slot.date).getTime() === today.getTime()) {
                     if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
-                        //console.log("slot should show");
                     }
                 }
 
                 if (counter === currentUser.bookings.length) {
-                    //console.log(temp);
                     temp.sort(function (a, b) {
                         if (a[0].date === b[0].date) {
                             return a[0].startTime - b[0].startTime;
@@ -130,23 +120,12 @@ function Bookings() {
         });
     }, [])
 
-    //console.log(currentUser.bookings)
-
     //MakeBookings
     const dateFormat = "YYYY-MM-DD";
-    const date = useRef(moment().format(dateFormat).toString());
     const tdy = moment().format(dateFormat)
     const tmr = moment().add(1, 'days').format(dateFormat)
     const dayAfter = moment().add(2, 'days').format(dateFormat)
     const isMobile = useMediaQuery({ query: `(max-width: 800px)` });
-
-    const notifWarningM = (message) => {
-        notification["warning"]({
-            message: 'GymWorm',
-            description: message,
-            duration: 3.5,
-        });
-    };
 
     const notifOkM = (message) => {
         notification["success"]({
@@ -168,27 +147,26 @@ function Bookings() {
         aToday.setHours(8, 0, 0, 0); // for local
     }
 
-    const [slotsAvail, setSlotAvail] = useState(true)
-    const [slotsAvail1, setSlotAvail1] = useState(true)
-    const [slotsAvail2, setSlotAvail2] = useState(true)
+    const [slotsAvail, setSlotAvail] = useState(true);
+    const [slotsAvail1, setSlotAvail1] = useState(true);
+    const [slotsAvail2, setSlotAvail2] = useState(true);
     const [userSlots, setUserSlots] = useState([]);
-    const arrSlots = []
-    const arrSlots1 = []
-    const arrSlots2 = []
-    var bookedSlots = []
-    const [slots, setSlots] = useState([])
-    const [slots1, setSlots1] = useState([])
-    const [slots2, setSlots2] = useState([])
+    const arrSlots = [];
+    const arrSlots1 = [];
+    const arrSlots2 = [];
+    const [slots, setSlots] = useState([]);
+    const [slots1, setSlots1] = useState([]);
+    const [slots2, setSlots2] = useState([]);
+    var bookedSlots = [];
 
     useEffect(() => {
-        const temp = []
+        const temp = [];
 
         currentUser.bookings.forEach(slot => {
-            //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: slot });
-
                 const posts = res.data.slot;
+
                 temp.push(posts);
                 let date = new Date();
                 let today = new Date(date);
@@ -202,7 +180,6 @@ function Bookings() {
                 }
             })()
         });
-        //console.log(userSlots)
     }, [])
 
     function getAvailSlots(slotsArr, theDate, sAvail) {
@@ -219,27 +196,15 @@ function Bookings() {
 
         SlotService.fetchSlots(theDate).then(
             () => {
-                console.log("Finding slots for " + theDate);
-                //setSlots(SlotService.getCurrentSlots(checkDate.currentDate));
                 let tempSlots = SlotService.getCurrentSlots(theDate);
                 tempSlots.sort((first, second) => first.startTime - second.startTime);
 
-                let time = new Date(Date.now()/* + 8 * (60 * 60 * 1000)*/);
-                //console.log(tempSlots);
+                let time = new Date(Date.now());
                 let validSlots = [];
 
                 tempSlots.forEach(s => {
-                    //console.log(new Date(s.date).getDate());
-                    //console.log(time.getDate());
-                    //console.log(s.startTime);
-                    //console.log(time.getHours());
                     if (new Date(s.date).getDate() === time.getDate()) {
-                        if (s.startTime < time.getHours()) {
-                            //console.log(s);
-                            //console.log("should not show");
-                        } else {
-                            validSlots.push(s);
-                        }
+                        validSlots.push(s);
                     } else {
                         validSlots.push(s);
                     }
@@ -250,17 +215,13 @@ function Bookings() {
                     notif(theDate)
                     sAvail(false);
                 } else {
-                    //console.log(validSlots);
                     slotsArr(validSlots);
-                    //validSlots === 0 ? setSlotAvail(false) : setSlotAvail(true)
                 }
             },
             error => {
                 console.log("Can't find slots for " + theDate + " " + error);
                 notif(theDate)
                 sAvail(false);
-                //window.location.reload(false);
-                //onChangeDate(null, todayDate);
             }
         );
     }
@@ -279,7 +240,6 @@ function Bookings() {
         const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
         const onChange = (e) => {
             isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            //console.log(isChecked);
             if (isChecked.current[0]) {
                 bookedSlots.push(props.slot)
             } else {
@@ -287,7 +247,6 @@ function Bookings() {
                     bookedSlots = bookedSlots.filter(element => element !== props.slot)
                 }
             }
-            //console.log(bookedSlots);
         }
 
         const Time = (time) => {
@@ -352,13 +311,8 @@ function Bookings() {
                                         let x = 0;
                                         cancelSlotsD.forEach(slot => {
                                             x++;
-                                            //console.log(slot._id);
-                                            //console.log(currentUser.bookings);
-
                                             // auth cancel
                                             AuthService.cancelBooking(currentUser.email, slot._id).then((res) => {
-                                                //console.log(res);
-                                                //console.log(res.message);
                                                 if (res.message === "Slot is less than 2 hour away") {
                                                     notifWarning("Cancellation of booking is not allowed as it is less than 2 hours away.");
                                                     console.log("Unable to Cancel, slot less than 2 hours away");
@@ -371,7 +325,6 @@ function Bookings() {
                                                 } else {
                                                     // slot cancel
                                                     SlotService.cancelledBooking(slot._id, currentUser.id).then(() => {
-                                                        //console.log(slot._id);
                                                         if (x === cancelSlotsD.length) {
                                                             AuthService.updateCurrentUser(currentUser.email, currentUser.password);
                                                             notifOk("Booking has been cancelled.");
@@ -388,7 +341,6 @@ function Bookings() {
                                             })
 
                                         });
-                                        //setTimeout(window.location.reload(), 2000);
                                     }}
                                 >
                                     Cancel Bookings
@@ -553,7 +505,6 @@ function Bookings() {
                                             x++
                                             if (elements.capacity <= 0) {
                                                 notifWarning("Unable to book, this slot is already full!");
-                                                console.log("Unable to Book, slot is full");
                                                 if (x === bookedSlots.length) {
                                                     AuthService.updateCurrentUser(currentUser.email, currentUser.password).then(() =>
                                                         currentUser = AuthService.getCurrentUser()
@@ -567,9 +518,7 @@ function Bookings() {
                                                 SlotService.bookSlot(elements._id, currentUser.id, currentUser.email).then(() => {
                                                     // create booking
                                                     SlotService.recordBooking(elements._id, currentUser.id).then(() => {
-                                                        console.log("Booking Successful, See you there!");
                                                         notifOkM(`Booking for ${elements.date.substring(0, 10)} Successful, Please refresh to update`)
-                                                        //SlotService.clearCurrentSlots(elements.date.substring(0, 10));
                                                         if (x === bookedSlots.length) {
                                                             AuthService.updateCurrentUser(currentUser.email, currentUser.password).then(() =>
                                                                 currentUser = AuthService.getCurrentUser()
@@ -583,7 +532,6 @@ function Bookings() {
                                                 })
                                             }
                                         });
-
                                     }}
                                 >
                                     Confirm Booking

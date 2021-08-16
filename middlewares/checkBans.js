@@ -2,7 +2,7 @@ const db = require("../models");
 const User = db.user;
 const axios = require("axios");
 
-const deployTo = "heroku" // change between "local" or "heroku"
+const deployTo = "local" // change between "local" or "heroku"
 const API_URL = (deployTo === "heroku") ? "https://gym-worm.herokuapp.com/api/auth/" : "http://localhost:5000/api/auth/";
 
 checkAll = (req, res) => {

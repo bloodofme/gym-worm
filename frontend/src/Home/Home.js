@@ -5,12 +5,8 @@ import './Home.css';
 import Navbar from '../components/Navbar/Navbar';
 import Credits from './Credits/Credits';
 import AuthService from "../services/auth.service";
-import UserService from "../services/user.service";
-import history from "../history";
 import axios from "axios";
-import moment from 'moment';
-import Deployment from "../DeploymentMethod"
-import Admin from "../Admin/Admin"
+import Deployment from "../DeploymentMethod";
 
 const { Header, Content } = Layout;
 
@@ -22,13 +18,10 @@ document.body.style = 'background: #74828F;';
 function Home() {
     const arrSlots = [];
     const [slots, setSlots] = useState([])
-    const [accessStatus] = useState(sessionStorage.getItem('access'));
-
     const currentUser = AuthService.getCurrentUser()
 
     if (currentUser) {
         AuthService.updateCurrentUser(currentUser.email, currentUser.password);
-        //UserService.getAdminBoard();
     }
 
     useEffect(() => {
@@ -39,35 +32,22 @@ function Home() {
         let today = new Date(date);
         today.setHours(8, 0, 0, 0);
 
-        /*console.log("now time is ");
-        console.log(date);*/
-
         currentUser.bookings.forEach(booking => {
-            //console.log("Booking ID is " + slot); // booking id
             (async () => {
                 const res = await axios.post(API_URL + 'retrieveSlot', { bookingID: booking });
-
                 const posts = res.data.slot;
-
-                /*console.log("slot time is ");
-                console.log(new Date(res.data.slot.date));
-                console.log("slot starttime is " + res.data.slot.startTime);
-                console.log("now hour is " + date.getHours());*/
 
                 counter++;
 
                 if (new Date(res.data.slot.date).getTime() > today.getTime()) {
                     temp.push([posts, booking]);
-                    //console.log("slot should show");
                 } else if (new Date(res.data.slot.date).getTime() === today.getTime()) {
                     if (res.data.slot.startTime >= date.getHours()) {
                         temp.push([posts, booking]);
-                        //console.log("slot should show");
                     }
                 }
 
                 if (counter === currentUser.bookings.length) {
-                    //console.log(temp);
                     temp.sort(function (a, b) {
                         if (a[0].date === b[0].date) {
                             return a[0].startTime - b[0].startTime;
@@ -75,32 +55,13 @@ function Home() {
                             return a[0].date - b[0].date;
                         }
                     });
-                    //console.log(temp);
                     setSlots(temp);
                 }
             })()
         });
     }, [])
 
-    //do not remove this!!!
-    //console.log(slots);
-
     function DisplayBookings(props) {
-        const isChecked = useRef([false, props.slot.date.slice(0, 10), props.slot.startTime]);
-
-        const onChange = (e) => {
-            isChecked.current = [e.target.checked, props.slot.date.slice(0, 10), props.slot.startTime];
-            //console.log(isChecked);
-            if (isChecked.current[0]) {
-                arrSlots.push(props.slot)
-            } else {
-                if (arrSlots.length !== 0) {
-                    arrSlots = arrSlots.filter(element => element !== props.slot)
-                }
-            }
-            //console.log(arrSlots)
-        }
-
         const Time = (time) => {
             return time < 12 ? `${time}am` : time === 12 ? `${time}pm` : `${time - 12}pm`
         }
