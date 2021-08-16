@@ -21,7 +21,7 @@ class Credits extends Component {
         return(
             <div>
                  <Card className='creditsStyle'>
-                    <p className='amountCredits'>{currentUser.creditScore}%</p>
+                    <p className='amountCredits'>{Math.round(currentUser.creditScore * 100)/100}%</p>
                     <p className='penaltiesText'>
                         { currentUser.banStatus ? (currentUser.creditScore < 65 ? 'You have a 2 week Booking Ban active from ' + new Date(currentUser.banStartDate).toString().substring(0, 16) : 'You have a 1 week Booking Ban active from ' + new Date(currentUser.banStartDate).toString().substring(0, 16)) : "No Penalties Issued" }
                     </p>
