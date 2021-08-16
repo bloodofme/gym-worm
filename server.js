@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const deployTo = "local" // change between "local" or "heroku"
+const deployTo = "heroku" // change between "local" or "heroku"
 
 app.use(cors({
   origin: "http://localhost:3000", // React Frontend  port,
@@ -47,21 +47,15 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
 const { botRequest } = require("./middlewares");
-//console.log(WEBHOOK_URL); // test
-//console.log(TELEGRAM_API);
-
-
 
 const botInit = async () => { // for Initializing connection to GymWorm_bot
   const result = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
-  //console.log(result.data);
 }
 
 app.post(URI, async (req, res) => { // GymWorm_bot functions
   //console.log(req.body);
   const chatID = req.body.message.chat.id;
   const teleID = req.body.message.chat.username;
-  //console.log(req.body.message.text);
 
   if (req.body.message.text === '/bookings') {
     console.log("Fetch Bookings Command Match")
@@ -141,11 +135,6 @@ function checkSlots() { // Check user's ban status
   // Checking tomorrow's date
   let nextDate = new Date(nowDate);
   nextDate.setHours(24, 0, 0, 0);
-  /*if (deployTo === "local") {
-    nextDate.setHours(32, 0, 0, 0); // use this for local testing
-  } else {
-    nextDate.setHours(24, 0, 0, 0); // use this for deploying to heroku
-  }*/
   console.log("Time tomorrow is ");
   console.log(nextDate);
   autoSlots.generateSlots({ date: nextDate });
@@ -153,11 +142,6 @@ function checkSlots() { // Check user's ban status
   // Checking next day's date
   let nextDayDate = new Date(nowDate);
   nextDayDate.setHours(48, 0, 0, 0);
-  /*if (deployTo === "local") {
-    nextDayDate.setHours(56, 0, 0, 0); // use this for local testing
-  } else {
-    nextDayDate.setHours(48, 0, 0, 0); // use this for deploying to heroku
-  }*/
   console.log("Time next day is ");
   console.log(nextDayDate);
   autoSlots.generateSlots({ date: nextDayDate });
@@ -174,12 +158,6 @@ function checkBan() {
   console.log("Check Bans Request");
   checkBans.checkAll();
 }
-
-// Error handling, disable for now
-/*app.use(function (err, req, res, next) {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
-})*/
 
 if (process.env.NODE_ENV === 'production') { // Building app for Heroku
   app.use(express.static('frontend/build'));

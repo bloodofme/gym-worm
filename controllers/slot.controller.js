@@ -141,7 +141,7 @@ exports.bookSlot = (req, res) => {
     if (slot.capacity > 0) {
       slot.capacity--;
       slot.userList.push(req.body.userID);
-    } else { // add in wait list later on
+    } else { 
       return res.status(400).send({ message: "Slot is already full" });
     }
 
@@ -199,7 +199,6 @@ exports.recordBooking = (req, res) => {
           if (err) {
             return res.status(400).send({ message: err })
           }
-          //return res.status(200).send(newUser);
         });
       });
 

@@ -396,11 +396,9 @@ exports.cancelBooking = (req, res) => {
                       if (err) {
                         return res.status(400).send({ message: err })
                       }
-                      //return res.status(200).send({ message: "Booking is removed for user" });
                       console.log("Booking is updated as invalid and removed for user");
                       return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
                     });
-                    //console.log(newBooking);
                   });
                 }
               });
@@ -433,11 +431,9 @@ exports.cancelBooking = (req, res) => {
                       if (err) {
                         return res.status(400).send({ message: err })
                       }
-                      //return res.status(200).send({ message: "Booking is removed for user" });
                       console.log("Booking is updated as invalid and removed for user");
                       return res.status(200).send({ message: "Booking is updated as invalid and removed for user" })
                     });
-                    //console.log(newBooking);
                   });
 
                 }
